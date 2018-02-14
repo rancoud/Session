@@ -1,0 +1,18 @@
+# IntelliJ
+.idea
+*.iml
+
+# Composer
+vendor/
+composer.lock
+
+# PHP code sniffer
+.php_cs.cache
+
+# PHP Unit
+build/
+
+# Dev / Testing
+test.php
+coverage/*
+!coverage/.gitkeep
