@@ -94,9 +94,4 @@ class File implements SessionHandlerInterface
 
         return true;
     }
-
-    public function writeClose(): void
-    {
-        session_write_close();
-    }
 }

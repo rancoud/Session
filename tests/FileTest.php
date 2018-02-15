@@ -14,18 +14,16 @@ class FileTest extends TestCase
 {
     public static function setUpBeforeClass()
     {
-        rmdir(__DIR__ . '/toto');
+        if (file_exists(__DIR__ . '/toto')) {
+            rmdir(__DIR__ . '/toto');
+        }
     }
 
     public static function setUpAfterClass()
     {
-        rmdir(__DIR__ . '/toto');
-    }
-
-    public function testConstruct()
-    {
-        new File();
-        static::assertTrue(true);
+        if (file_exists(__DIR__ . '/toto')) {
+            rmdir(__DIR__ . '/toto');
+        }
     }
 
     public function testOpen()
@@ -91,13 +89,6 @@ class FileTest extends TestCase
         $file = new File();
         $lifetime = -1000;
         $file->gc($lifetime);
-        static::assertTrue(true);
-    }
-
-    public function testWriteClose()
-    {
-        $file = new File();
-        $file->writeClose();
         static::assertTrue(true);
     }
 }

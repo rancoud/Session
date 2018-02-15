@@ -104,6 +104,42 @@ class Session
         static::$name = $name;
     }
 
+    /**
+     * @param string $folder
+     *
+     * @throws \Exception
+     */
+    public static function setFolder(string $folder): void
+    {
+        static::throwExceptionIfHasStarted();
+
+        static::$folder = $folder;
+    }
+
+    /**
+     * @param string $cookieDomain
+     *
+     * @throws Exception
+     */
+    public static function setCookieDomain(string $cookieDomain): void
+    {
+        static::throwExceptionIfHasStarted();
+
+        static::$cookieDomain = $cookieDomain;
+    }
+
+    /**
+     * @param int $lifetime
+     *
+     * @throws \Exception
+     */
+    public static function setLifetime(int $lifetime): void
+    {
+        static::throwExceptionIfHasStarted();
+
+        static::$lifetime = $lifetime;
+    }
+
     protected static function setupSessionParameters(): void
     {
         if (!empty(static::$name)) {
