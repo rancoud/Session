@@ -17,6 +17,11 @@ class FileTest extends TestCase
         rmdir(__DIR__ . '/toto');
     }
 
+    public static function setUpAfterClass()
+    {
+        rmdir(__DIR__ . '/toto');
+    }
+
     public function testConstruct()
     {
         new File();
@@ -48,7 +53,7 @@ class FileTest extends TestCase
     {
         $file = new File();
         $sessionId = 'test';
-        $data = '';
+        $data = 'azerty';
         $success = $file->write($sessionId, $data);
         static::assertTrue($success);
     }

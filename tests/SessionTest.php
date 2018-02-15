@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rancoud\Session\Test;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Rancoud\Session\Session;
 
@@ -12,10 +13,79 @@ use Rancoud\Session\Session;
  */
 class SessionTest extends TestCase
 {
-    public function testConstruct()
+    /**
+     * @runInSeparateProcess
+     */
+    public function testGetNullSession()
     {
-        $conf = ['driver' => 'file', 'name' => 'myapp', 'folder'=>'./tests', 'cookie_domain'=> '/', 'lifetime'=> 50];
-        new Session($conf);
-        static::assertTrue(true);
+        $value = Session::get('emptykey');
+        static::assertNull($value);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testSetSession()
+    {
+        Session::set('a', 'b');
+        $value = Session::get('a');
+        static::assertEquals('b', $value);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testHasSession()
+    {
+        Session::set('a', 'b');
+
+        $value = Session::has('a');
+        static::assertTrue($value);
+
+        $value = Session::has('empty');
+        static::assertFalse($value);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testHasKeyAndValueSession()
+    {
+        Session::set('a', 'b');
+
+        $value = Session::hasKeyAndValue('a', 'b');
+        static::assertTrue($value);
+
+        $value = Session::has('empty');
+        static::assertFalse($value);
+
+        $value = Session::hasKeyAndValue('a', 'empty');
+        static::assertFalse($value);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testRemoveSession()
+    {
+        Session::set('a', 'b');
+
+        Session::remove('a');
+        $value = Session::get('a');
+        static::assertNull($value);
+
+        Session::remove('empty');
+        $value = Session::get('empty');
+        static::assertNull($value);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testStartExceptionSession()
+    {
+        static::expectException(Exception::class);
+        Session::start();
+        Session::start();
     }
 }

@@ -13,79 +13,104 @@ use SessionHandlerInterface;
  */
 class Session
 {
+    protected static $hasStarted = false;
     /** @var SessionHandlerInterface */
-    protected $driver = null;
+    protected static $driver = null;
     /** @var string */
-    protected $name = null;
+    protected static $name = null;
     /** @var string */
-    protected $folder = null;
+    protected static $folder = null;
     /** @var string */
-    protected $cookieDomain = null;
+    protected static $cookieDomain = null;
     /** @var string */
-    protected $lifetime = null;
+    protected static $lifetime = 0;
 
     /**
-     * Session constructor.
-     *
-     * @param array $configuration
-     *
-     * @throws Exception
+     * @throws \Exception
      */
-    public function __construct(array $configuration)
+    public static function start(): void
     {
-        $this->validateConfiguration($configuration);
-        $this->applyConfigurationToAttributes($configuration);
-        $this->configureDriver();
-        $this->setupSessionParameters();
-        $this->startSession();
-        $this->driver->gc($this->lifetime);
+        static::throwExceptionIfHasStarted();
+
+        static::configureDriver();
+        static::setupSessionParameters();
+        static::startSession();
+        static::$driver->gc(static::$lifetime);
+
+        static::$hasStarted = true;
     }
 
     /**
-     * @param array $configuration
-     *
-     * @throws Exception
+     * @throws \Exception
      */
-    protected function validateConfiguration(array $configuration): void
+    protected static function throwExceptionIfHasStarted(): void
     {
-        $props = ['driver', 'name', 'folder', 'cookie_domain', 'lifetime'];
-        foreach ($props as $prop) {
-            if (!array_key_exists($prop, $configuration)) {
-                throw new Exception('Property "' . $prop . '" missing in Session Configuration');
-            }
+        if (static::$hasStarted) {
+            throw new Exception('Session already started');
         }
     }
 
     /**
-     * @param array $configuration
+     * @throws \Exception
      */
-    protected function applyConfigurationToAttributes(array $configuration): void
+    protected static function configureDriver(): void
     {
-        $this->driver = $configuration['driver'];
-        $this->name = $configuration['name'];
-        $this->folder = $configuration['folder'];
-        $this->cookieDomain = $configuration['cookie_domain'];
-        $this->lifetime = $configuration['lifetime'];
+        if (empty(static::$driver)) {
+            static::useDefaultDriver();
+        }
     }
 
-    protected function configureDriver(): void
+    /**
+     * @throws \Exception
+     */
+    public static function useDefaultDriver(): void
     {
-        switch ($this->driver) {
-            case 'file':
-                $this->driver = 'Rancoud\Session\File';
-                break;
-            default:
-                $this->driver = new SessionHandler();
+        static::throwExceptionIfHasStarted();
+
+        static::$driver = new SessionHandler();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public static function useFileDriver(): void
+    {
+        static::throwExceptionIfHasStarted();
+
+        static::$driver = new File();
+    }
+
+    /**
+     * @param \SessionHandlerInterface $customDriver
+     *
+     * @throws \Exception
+     */
+    public static function useCustomDriver(SessionHandlerInterface $customDriver): void
+    {
+        static::throwExceptionIfHasStarted();
+
+        static::$driver = $customDriver;
+    }
+
+    /**
+     * @param string $name
+     *
+     * @throws \Exception
+     */
+    public static function setName(string $name): void
+    {
+        static::throwExceptionIfHasStarted();
+
+        static::$name = $name;
+    }
+
+    protected static function setupSessionParameters(): void
+    {
+        if (!empty(static::$name)) {
+            session_name(static::$name);
         }
 
-        $this->driver = new $this->driver();
-    }
-
-    protected function setupSessionParameters(): void
-    {
-        session_name($this->name);
-
-        session_set_save_handler($this->driver);
+        session_set_save_handler(static::$driver);
 
         register_shutdown_function('session_write_close');
     }
@@ -93,34 +118,45 @@ class Session
     /**
      * @return bool
      */
-    protected function startSession(): bool
+    protected static function startSession(): bool
     {
-        ini_set('session.cookie_domain', $this->cookieDomain);
+        if (!empty(static::$cookieDomain)) {
+            ini_set('session.cookie_domain', static::$cookieDomain);
+        }
+
         ini_set('session.cookie_httponly', '1');
-        ini_set('session.save_path', $this->folder);
+        if (!empty(static::$folder)) {
+            ini_set('session.save_path', static::$folder);
+            session_save_path(static::$folder);
+        }
         ini_set('session.use_only_cookies', '1');
         ini_set('session.use_trans_sid', '0');
         ini_set('session.url_rewriter.tags', '');
 
+        static::setupCookies();
+
+        return session_start();
+    }
+
+    protected static function setupCookies(): void
+    {
         $cookieParams = session_get_cookie_params();
         session_set_cookie_params(
-            $this->lifetime,
+            static::$lifetime,
             $cookieParams['path'],
             $cookieParams['domain'],
             isset($_SERVER['HTTPS']),
             true
         );
-
-        return session_start();
     }
 
-    public function regenerate(): void
+    public static function regenerate(): void
     {
-        session_name($this->name);
+        session_name(static::$name);
         session_regenerate_id(true);
     }
 
-    public function destroy(): void
+    public static function destroy(): void
     {
         session_unset();
         session_destroy();
@@ -129,39 +165,80 @@ class Session
     /**
      * @param $key
      * @param $value
+     *
+     * @throws \Exception
      */
-    public function set($key, $value): void
+    public static function set($key, $value): void
     {
+        static::startSessionIfNotHasStarted();
+
         $_SESSION[$key] = $value;
     }
 
     /**
      * @param $key
      *
+     * @throws \Exception
+     *
      * @return bool
      */
-    public function has($key): bool
+    public static function has($key): bool
     {
+        static::startSessionIfNotHasStarted();
+
         return array_key_exists($key, $_SESSION);
     }
 
     /**
      * @param $key
+     * @param $value
      *
-     * @return mixed
+     * @throws \Exception
+     *
+     * @return bool
      */
-    public function get($key): mixed
+    public static function hasKeyAndValue($key, $value): bool
     {
-        return ($this->has($key)) ? $_SESSION[$key] : null;
+        static::startSessionIfNotHasStarted();
+
+        return array_key_exists($key, $_SESSION) && $_SESSION[$key] === $value;
     }
 
     /**
      * @param $key
+     *
+     * @throws \Exception
+     *
+     * @return mixed
      */
-    public function remove($key): void
+    public static function get($key)
     {
-        if ($this->has($key)) {
+        static::startSessionIfNotHasStarted();
+
+        return (static::has($key)) ? $_SESSION[$key] : null;
+    }
+
+    /**
+     * @param $key
+     *
+     * @throws \Exception
+     */
+    public static function remove($key): void
+    {
+        static::startSessionIfNotHasStarted();
+
+        if (static::has($key)) {
             unset($_SESSION[$key]);
+        }
+    }
+
+    /**
+     * @throws \Exception
+     */
+    protected static function startSessionIfNotHasStarted(): void
+    {
+        if (static::$hasStarted === false) {
+            static::start();
         }
     }
 }
