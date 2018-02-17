@@ -133,11 +133,11 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testSetFolderWhenAlreadyStartedException()
+    public function testSetSavePathWhenAlreadyStartedException()
     {
         static::expectException(Exception::class);
         Session::start();
-        Session::setFolder('test');
+        Session::setSavePath('test');
     }
 
     /**

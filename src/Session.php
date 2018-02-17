@@ -19,7 +19,7 @@ class Session
     /** @var string */
     protected static $name = null;
     /** @var string */
-    protected static $folder = null;
+    protected static $savePath = null;
     /** @var string */
     protected static $cookieDomain = null;
     /** @var string */
@@ -105,15 +105,15 @@ class Session
     }
 
     /**
-     * @param string $folder
+     * @param string $savePath
      *
      * @throws \Exception
      */
-    public static function setFolder(string $folder): void
+    public static function setSavePath(string $savePath): void
     {
         static::throwExceptionIfHasStarted();
 
-        static::$folder = $folder;
+        static::$savePath = $savePath;
     }
 
     /**
@@ -161,9 +161,9 @@ class Session
         }
 
         ini_set('session.cookie_httponly', '1');
-        if (!empty(static::$folder)) {
-            ini_set('session.save_path', static::$folder);
-            session_save_path(static::$folder);
+        if (!empty(static::$savePath)) {
+            ini_set('session.save_path', static::$savePath);
+            session_save_path(static::$savePath);
         }
         ini_set('session.use_only_cookies', '1');
         ini_set('session.use_trans_sid', '0');

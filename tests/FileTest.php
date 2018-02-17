@@ -8,7 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Rancoud\Session\File;
 
 /**
- * Class SessionTest.
+ * Class FileTest.
  */
 class FileTest extends TestCase
 {
