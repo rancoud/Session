@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rancoud\Session;
 
+use Predis\Client as Predis;
 use SessionHandlerInterface;
 
 /**
@@ -11,11 +12,15 @@ use SessionHandlerInterface;
  */
 class Redis implements SessionHandlerInterface
 {
+    /**
+     * @var Predis
+     */
     protected $redis;
+    protected $lifetime = 1440;
 
     public function setNewRedis($configuration)
     {
-        $this->redis = new Predis\Client($configuration);
+        $this->redis = new Predis($configuration);
     }
 
     public function setCurrentRedis($redis)
@@ -23,6 +28,11 @@ class Redis implements SessionHandlerInterface
         $this->redis = $redis;
     }
 
+    public function setLifetime($lifetime)
+    {
+        $this->lifetime = $lifetime;
+    }
+    
     /**
      * @param $savePath
      * @param $sessionName
@@ -31,12 +41,6 @@ class Redis implements SessionHandlerInterface
      */
     public function open($savePath, $sessionName): bool
     {
-        $this->savePath = $savePath;
-
-        if (!is_dir($this->savePath)) {
-            mkdir($this->savePath, 0777);
-        }
-
         return true;
     }
 
@@ -55,12 +59,7 @@ class Redis implements SessionHandlerInterface
      */
     public function read($sessionId): string
     {
-        $filename = $this->savePath . '/sess_' . $sessionId;
-        if (file_exists($filename)) {
-            return (string) file_get_contents($filename);
-        }
-
-        return '';
+        return (string)$this->redis->get($sessionId);
     }
 
     /**
@@ -71,7 +70,10 @@ class Redis implements SessionHandlerInterface
      */
     public function write($sessionId, $data): bool
     {
-        return file_put_contents($this->savePath . '/sess_' . $sessionId, $data) === false ? false : true;
+        $this->redis->set($sessionId, $data);
+        $this->redis->expireat($sessionId, time() + $this->lifetime);
+
+        return true;
     }
 
     /**
@@ -81,10 +83,7 @@ class Redis implements SessionHandlerInterface
      */
     public function destroy($sessionId): bool
     {
-        $filename = $this->savePath . '/sess_' . $sessionId;
-        if (file_exists($this->savePath . '/sess_' . $sessionId)) {
-            unlink($filename);
-        }
+        $this->redis->del([$sessionId]);
 
         return true;
     }
@@ -96,12 +95,6 @@ class Redis implements SessionHandlerInterface
      */
     public function gc($lifetime): bool
     {
-        foreach (glob($this->savePath . '/sess_*') as $file) {
-            if (filemtime($file) + $lifetime < time() && file_exists($file)) {
-                unlink($file);
-            }
-        }
-
         return true;
     }
 }

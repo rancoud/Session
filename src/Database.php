@@ -15,6 +15,7 @@ class Database implements SessionHandlerInterface
 {
     /** @var \Rancoud\Database\Database */
     protected $db;
+    protected $userId = null;
 
     /**
      * @param $configuration
@@ -34,6 +35,11 @@ class Database implements SessionHandlerInterface
     public function setCurrentDatabase($database)
     {
         $this->db = $database;
+    }
+    
+    public function setUserId(int $userId): void
+    {
+        $this->userId = $userId;
     }
 
     /**
@@ -78,7 +84,10 @@ class Database implements SessionHandlerInterface
      */
     public function write($sessionId, $data): bool
     {
-        return file_put_contents($this->savePath . '/sess_' . $sessionId, $data) === false ? false : true;
+        $sql = 'REPLACE INTO sessions VALUES(:id, :id_user, NOW(), :content)';
+        $params = ['id' => $sessionId, 'id_user' => $this->userId, 'content' => $data];
+
+        return $this->db->exec($sql, $params);
     }
 
     /**

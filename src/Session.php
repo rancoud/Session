@@ -23,7 +23,7 @@ class Session
     /** @var string */
     protected static $cookieDomain = null;
     /** @var string */
-    protected static $lifetime = 0;
+    protected static $lifetime = 1440;
 
     /**
      * @throws \Exception
@@ -179,6 +179,7 @@ class Session
 
         $driver = new Redis();
         $driver->setNewRedis($configuration);
+        $driver->setLifetime(static::$lifetime);
 
         static::$driver = $driver;
     }
@@ -194,6 +195,7 @@ class Session
 
         $driver = new Redis();
         $driver->setCurrentRedis($redis);
+        $driver->setLifetime(static::$lifetime);
 
         static::$driver = $driver;
     }
@@ -213,6 +215,7 @@ class Session
         $driver->setKey($key);
         $driver->setMethod($method);
         $driver->setNewRedis($configuration);
+        $driver->setLifetime(static::$lifetime);
 
         static::$driver = $driver;
     }
@@ -232,6 +235,7 @@ class Session
         $driver->setKey($key);
         $driver->setMethod($method);
         $driver->setCurrentRedis($redis);
+        $driver->setLifetime(static::$lifetime);
 
         static::$driver = $driver;
     }
@@ -432,5 +436,13 @@ class Session
         if (static::$hasStarted === false) {
             static::start();
         }
+    }
+
+    /**
+     * @return SessionHandlerInterface
+     */
+    protected static function getDriver(): SessionHandlerInterface
+    {
+        return static::$driver;
     }
 }
