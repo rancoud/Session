@@ -73,11 +73,167 @@ class Session
     /**
      * @throws \Exception
      */
+    public static function useDefaultEncryptionDriver(): void
+    {
+        static::throwExceptionIfHasStarted();
+
+        static::$driver = new DefaultEncryption();
+    }
+
+    /**
+     * @throws \Exception
+     */
     public static function useFileDriver(): void
     {
         static::throwExceptionIfHasStarted();
 
         static::$driver = new File();
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public static function useFileEcryptionDriver(): void
+    {
+        static::throwExceptionIfHasStarted();
+
+        static::$driver = new FileEncryption();
+    }
+
+    /**
+     * @param $configuration
+     *
+     * @throws Exception
+     */
+    public static function useNewDatabaseDriver($configuration): void
+    {
+        static::throwExceptionIfHasStarted();
+
+        $driver = new Database();
+        $driver->setNewDatabase($configuration);
+
+        static::$driver = $driver;
+    }
+
+    /**
+     * @param $database
+     *
+     * @throws Exception
+     */
+    public static function useCurrentDatabaseDriver($database): void
+    {
+        static::throwExceptionIfHasStarted();
+
+        $driver = new Database();
+        $driver->setCurrentDatabase($database);
+
+        static::$driver = $driver;
+    }
+
+    /**
+     * @param string $key
+     * @param        $configuration
+     * @param string $method
+     *
+     * @throws Exception
+     */
+    public static function useNewDatabaseEcryptionDriver(string $key, $configuration, string $method): void
+    {
+        static::throwExceptionIfHasStarted();
+
+        $driver = new DatabaseEncryption();
+        $driver->setKey($key);
+        $driver->setMethod($method);
+        $driver->setNewDatabase($configuration);
+
+        static::$driver = $driver;
+    }
+
+    /**
+     * @param string $key
+     * @param        $database
+     * @param string $method
+     *
+     * @throws Exception
+     */
+    public static function useCurrentDatabaseEcryptionDriver(string $key, $database, string $method): void
+    {
+        static::throwExceptionIfHasStarted();
+
+        $driver = new DatabaseEncryption();
+        $driver->setKey($key);
+        $driver->setMethod($method);
+        $driver->setCurrentDatabase($database);
+
+        static::$driver = $driver;
+    }
+
+    /**
+     * @param $configuration
+     *
+     * @throws Exception
+     */
+    public static function useNewRedisDriver($configuration): void
+    {
+        static::throwExceptionIfHasStarted();
+
+        $driver = new Redis();
+        $driver->setNewRedis($configuration);
+
+        static::$driver = $driver;
+    }
+
+    /**
+     * @param $redis
+     *
+     * @throws Exception
+     */
+    public static function useCurrentRedisDriver($redis): void
+    {
+        static::throwExceptionIfHasStarted();
+
+        $driver = new Redis();
+        $driver->setCurrentRedis($redis);
+
+        static::$driver = $driver;
+    }
+
+    /**
+     * @param string $key
+     * @param        $configuration
+     * @param string $method
+     *
+     * @throws Exception
+     */
+    public static function useNewRedisEcryptionDriver(string $key, $configuration, string $method): void
+    {
+        static::throwExceptionIfHasStarted();
+
+        $driver = new RedisEncryption();
+        $driver->setKey($key);
+        $driver->setMethod($method);
+        $driver->setNewRedis($configuration);
+
+        static::$driver = $driver;
+    }
+
+    /**
+     * @param string $key
+     * @param        $redis
+     * @param string $method
+     *
+     * @throws Exception
+     */
+    public static function useCurrentRedisEcryptionDriver(string $key, $redis, string $method): void
+    {
+        static::throwExceptionIfHasStarted();
+
+        $driver = new RedisEncryption();
+        $driver->setKey($key);
+        $driver->setMethod($method);
+        $driver->setCurrentRedis($redis);
+
+        static::$driver = $driver;
     }
 
     /**
