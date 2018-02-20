@@ -32,7 +32,7 @@ class Redis implements SessionHandlerInterface
     {
         $this->lifetime = $lifetime;
     }
-    
+
     /**
      * @param $savePath
      * @param $sessionName
@@ -59,7 +59,7 @@ class Redis implements SessionHandlerInterface
      */
     public function read($sessionId): string
     {
-        return (string)$this->redis->get($sessionId);
+        return (string) $this->redis->get($sessionId);
     }
 
     /**

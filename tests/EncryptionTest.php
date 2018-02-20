@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rancoud\Session\Test;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -24,7 +25,7 @@ class EncryptionTest extends TestCase
         static::assertEquals($dataToEncrypt, $finalData);
     }
 
-    public function testAllEncryption()
+    public function testAllEncryptionMethods()
     {
         $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
 
@@ -39,5 +40,20 @@ class EncryptionTest extends TestCase
             $finalData = $encryptionTrait->decrypt($encryptedData);
             static::assertEquals($dataToEncrypt, $finalData);
         }
+    }
+
+    public function testExceptionMethod()
+    {
+        static::expectException(Exception::class);
+        $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
+        $encryptionTrait->setMethod('method');
+    }
+
+    public function testExceptionEmptyKey()
+    {
+        static::expectException(Exception::class);
+        $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
+        $dataToEncrypt = 'this is something to encrypt';
+        $encryptionTrait->encrypt($dataToEncrypt);
     }
 }

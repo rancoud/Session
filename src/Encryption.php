@@ -30,7 +30,7 @@ trait Encryption
     public function setMethod(string $method): void
     {
         if (!in_array($method, $this->getAvailableMethods(), true)) {
-            throw new Exception('Method unkwoned');
+            throw new Exception('Method unknowed');
         }
 
         $this->method = $method;
@@ -125,7 +125,7 @@ trait Encryption
      */
     protected function throwExceptionIfKeyEmpty()
     {
-        if (mb_strlen($this->key) === 0) {
+        if (null === $this->key || mb_strlen($this->key) === 0) {
             throw new Exception('Key is empty');
         }
     }

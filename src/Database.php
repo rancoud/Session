@@ -36,7 +36,7 @@ class Database implements SessionHandlerInterface
     {
         $this->db = $database;
     }
-    
+
     public function setUserId(int $userId): void
     {
         $this->userId = $userId;

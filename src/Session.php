@@ -73,11 +73,14 @@ class Session
     /**
      * @throws \Exception
      */
-    public static function useDefaultEncryptionDriver(): void
+    public static function useDefaultEncryptionDriver(string $key): void
     {
         static::throwExceptionIfHasStarted();
 
-        static::$driver = new DefaultEncryption();
+        $driver = new DefaultEncryption();
+        $driver->setKey($key);
+
+        static::$driver = $driver;
     }
 
     /**
@@ -91,13 +94,18 @@ class Session
     }
 
     /**
+     * @param string $key
+     *
      * @throws \Exception
      */
-    public static function useFileEcryptionDriver(): void
+    public static function useFileEncryptionDriver(string $key): void
     {
         static::throwExceptionIfHasStarted();
 
-        static::$driver = new FileEncryption();
+        $driver = new FileEncryption();
+        $driver->setKey($key);
+
+        static::$driver = $driver;
     }
 
     /**
@@ -137,14 +145,14 @@ class Session
      *
      * @throws Exception
      */
-    public static function useNewDatabaseEcryptionDriver(string $key, $configuration, string $method): void
+    public static function useNewDatabaseEncryptionDriver($configuration, string $key, string $method): void
     {
         static::throwExceptionIfHasStarted();
 
         $driver = new DatabaseEncryption();
+        $driver->setNewDatabase($configuration);
         $driver->setKey($key);
         $driver->setMethod($method);
-        $driver->setNewDatabase($configuration);
 
         static::$driver = $driver;
     }
@@ -156,14 +164,14 @@ class Session
      *
      * @throws Exception
      */
-    public static function useCurrentDatabaseEcryptionDriver(string $key, $database, string $method): void
+    public static function useCurrentDatabaseEncryptionDriver($database, string $key, string $method): void
     {
         static::throwExceptionIfHasStarted();
 
         $driver = new DatabaseEncryption();
+        $driver->setCurrentDatabase($database);
         $driver->setKey($key);
         $driver->setMethod($method);
-        $driver->setCurrentDatabase($database);
 
         static::$driver = $driver;
     }
@@ -207,14 +215,14 @@ class Session
      *
      * @throws Exception
      */
-    public static function useNewRedisEcryptionDriver(string $key, $configuration, string $method): void
+    public static function useNewRedisEncryptionDriver($configuration, string $key, string $method): void
     {
         static::throwExceptionIfHasStarted();
 
         $driver = new RedisEncryption();
+        $driver->setNewRedis($configuration);
         $driver->setKey($key);
         $driver->setMethod($method);
-        $driver->setNewRedis($configuration);
         $driver->setLifetime(static::$lifetime);
 
         static::$driver = $driver;
@@ -227,14 +235,14 @@ class Session
      *
      * @throws Exception
      */
-    public static function useCurrentRedisEcryptionDriver(string $key, $redis, string $method): void
+    public static function useCurrentRedisEncryptionDriver($redis, string $key, string $method): void
     {
         static::throwExceptionIfHasStarted();
 
         $driver = new RedisEncryption();
+        $driver->setCurrentRedis($redis);
         $driver->setKey($key);
         $driver->setMethod($method);
-        $driver->setCurrentRedis($redis);
         $driver->setLifetime(static::$lifetime);
 
         static::$driver = $driver;
@@ -316,25 +324,31 @@ class Session
      */
     protected static function startSession(): bool
     {
+        static::setupIniSession();
+
+        static::setupCookieParams();
+
+        return session_start();
+    }
+
+    protected static function setupIniSession(): void
+    {
+        if (!empty(static::$savePath)) {
+            ini_set('session.save_path', static::$savePath);
+            session_save_path(static::$savePath);
+        }
+
         if (!empty(static::$cookieDomain)) {
             ini_set('session.cookie_domain', static::$cookieDomain);
         }
 
         ini_set('session.cookie_httponly', '1');
-        if (!empty(static::$savePath)) {
-            ini_set('session.save_path', static::$savePath);
-            session_save_path(static::$savePath);
-        }
         ini_set('session.use_only_cookies', '1');
         ini_set('session.use_trans_sid', '0');
         ini_set('session.url_rewriter.tags', '');
-
-        static::setupCookies();
-
-        return session_start();
     }
 
-    protected static function setupCookies(): void
+    protected static function setupCookieParams(): void
     {
         $cookieParams = session_get_cookie_params();
         session_set_cookie_params(
@@ -441,8 +455,16 @@ class Session
     /**
      * @return SessionHandlerInterface
      */
-    protected static function getDriver(): SessionHandlerInterface
+    public static function getDriver(): SessionHandlerInterface
     {
         return static::$driver;
+    }
+
+    /**
+     * @param int $userId
+     */
+    public static function setUserIdForDatabase(int $userId): void
+    {
+        static::$driver->setUserId($userId);
     }
 }
