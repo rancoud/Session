@@ -37,6 +37,9 @@ class Database implements SessionHandlerInterface
         $this->db = $database;
     }
 
+    /**
+     * @param int $userId
+     */
     public function setUserId(int $userId): void
     {
         $this->userId = $userId;

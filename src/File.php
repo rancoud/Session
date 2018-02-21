@@ -12,6 +12,15 @@ use SessionHandlerInterface;
 class File implements SessionHandlerInterface
 {
     protected $savePath;
+    protected $prefix = 'sess_';
+
+    /**
+     * @param string $prefix
+     */
+    public function setPrefix(string $prefix): void
+    {
+        $this->prefix = $prefix;
+    }
 
     /**
      * @param $savePath
@@ -45,7 +54,7 @@ class File implements SessionHandlerInterface
      */
     public function read($sessionId): string
     {
-        $filename = $this->savePath . '/sess_' . $sessionId;
+        $filename = $this->savePath . DIRECTORY_SEPARATOR . $this->prefix . $sessionId;
         if (file_exists($filename)) {
             return (string) file_get_contents($filename);
         }
@@ -61,7 +70,9 @@ class File implements SessionHandlerInterface
      */
     public function write($sessionId, $data): bool
     {
-        return file_put_contents($this->savePath . '/sess_' . $sessionId, $data) === false ? false : true;
+        $filename = $this->savePath . DIRECTORY_SEPARATOR . $this->prefix . $sessionId;
+
+        return file_put_contents($filename, $data) === false ? false : true;
     }
 
     /**
@@ -71,8 +82,8 @@ class File implements SessionHandlerInterface
      */
     public function destroy($sessionId): bool
     {
-        $filename = $this->savePath . '/sess_' . $sessionId;
-        if (file_exists($this->savePath . '/sess_' . $sessionId)) {
+        $filename = $this->savePath . DIRECTORY_SEPARATOR . $this->prefix . $sessionId;
+        if (file_exists($filename)) {
             unlink($filename);
         }
 
@@ -86,7 +97,8 @@ class File implements SessionHandlerInterface
      */
     public function gc($lifetime): bool
     {
-        foreach (glob($this->savePath . '/sess_*') as $file) {
+        $pattern = $this->savePath . DIRECTORY_SEPARATOR . $this->prefix . '*';
+        foreach (glob($pattern) as $file) {
             if (filemtime($file) + $lifetime < time() && file_exists($file)) {
                 unlink($file);
             }

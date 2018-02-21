@@ -8,9 +8,9 @@ use PHPUnit\Framework\TestCase;
 use Rancoud\Session\File;
 
 /**
- * Class FileTest.
+ * Class FileWithNewPrefixTest.
  */
-class FileTest extends TestCase
+class FileWithNewPrefixTest extends TestCase
 {
     /**
      * @return string
@@ -39,6 +39,7 @@ class FileTest extends TestCase
     public function testOpen()
     {
         $file = new File();
+        $file->setPrefix('myprefix_');
         $savePath = $this->getPath();
         $sessionName = '';
         $success = $file->open($savePath, $sessionName);
@@ -54,6 +55,7 @@ class FileTest extends TestCase
     public function testClose()
     {
         $file = new File();
+        $file->setPrefix('myprefix_');
         $success = $file->close();
         static::assertTrue($success);
     }
@@ -61,6 +63,7 @@ class FileTest extends TestCase
     public function testWrite()
     {
         $file = new File();
+        $file->setPrefix('myprefix_');
 
         $this->openSessionForSavingSavePath($file);
 
@@ -69,13 +72,14 @@ class FileTest extends TestCase
         $success = $file->write($sessionId, $data);
         static::assertTrue($success);
 
-        $dataInFile = file_get_contents($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        $dataInFile = file_get_contents($this->getPath() . DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
         static::assertEquals($data, $dataInFile);
     }
 
     public function testRead()
     {
         $file = new File();
+        $file->setPrefix('myprefix_');
 
         $this->openSessionForSavingSavePath($file);
 
@@ -95,6 +99,7 @@ class FileTest extends TestCase
     public function testDestroy()
     {
         $file = new File();
+        $file->setPrefix('myprefix_');
 
         $this->openSessionForSavingSavePath($file);
 
@@ -103,17 +108,18 @@ class FileTest extends TestCase
         static::assertTrue($success);
 
         $sessionId = 'sessionId';
-        $isFileExist = file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        $isFileExist = file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
         static::assertTrue($isFileExist);
         $success = $file->destroy($sessionId);
         static::assertTrue($success);
-        $isFileNotExist = !file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        $isFileNotExist = !file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
         static::assertTrue($isFileNotExist);
     }
 
     public function testGc()
     {
         $file = new File();
+        $file->setPrefix('myprefix_');
 
         $this->openSessionForSavingSavePath($file);
 
@@ -122,14 +128,14 @@ class FileTest extends TestCase
         $success = $file->write($sessionId, $data);
         static::assertTrue($success);
 
-        $isFileExist = file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        $isFileExist = file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
         static::assertTrue($isFileExist);
 
         $lifetime = -1000;
         $success = $file->gc($lifetime);
         static::assertTrue($success);
 
-        $isFileNotExist = !file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        $isFileNotExist = !file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
         static::assertTrue($isFileNotExist);
     }
 }

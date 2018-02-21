@@ -471,4 +471,12 @@ class Session
     {
         static::$driver->setUserId($userId);
     }
+
+    /**
+     * @param int $userId
+     */
+    public static function setPrefixForFile(string $prefix): void
+    {
+        static::$driver->setPrefix($prefix);
+    }
 }
