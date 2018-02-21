@@ -12,32 +12,35 @@ use Rancoud\Session\FileEncryption;
  */
 class FileEncryptionTest extends TestCase
 {
-    public static function setUpBeforeClass()
+    private function getPath()
     {
-        if (file_exists(__DIR__ . '/toto')) {
-            rmdir(__DIR__ . '/toto');
+        $path = ini_get('session.save_path');
+        if (empty($path)) {
+            return DIRECTORY_SEPARATOR . 'tmp';
         }
+
+        return $path;
     }
 
-    public static function setUpAfterClass()
+    private function openSessionForSavingSavePath(FileEncryption $fileEncryption)
     {
-        if (file_exists(__DIR__ . '/toto')) {
-            rmdir(__DIR__ . '/toto');
-        }
+        $success = $fileEncryption->open($this->getPath(), '');
+        static::assertTrue($success);
     }
 
     public function testOpen()
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
-        $savePath = __DIR__;
+
+        $savePath = $this->getPath();
         $sessionName = '';
         $success = $fileEncryption->open($savePath, $sessionName);
         static::assertTrue($success);
 
-        $success = $fileEncryption->open($savePath . '/toto', $sessionName);
+        $success = $fileEncryption->open($savePath . '/tests', $sessionName);
         static::assertTrue($success);
-        $success = file_exists($savePath . '/toto');
+        $success = file_exists($savePath . '/tests');
         static::assertTrue($success);
     }
 
@@ -53,6 +56,9 @@ class FileEncryptionTest extends TestCase
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
+
+        $this->openSessionForSavingSavePath($fileEncryption);
+
         $sessionId = 'test';
         $data = 'azerty';
         $success = $fileEncryption->write($sessionId, $data);
@@ -63,6 +69,9 @@ class FileEncryptionTest extends TestCase
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
+
+        $this->openSessionForSavingSavePath($fileEncryption);
+
         $sessionId = 'test';
         $data = $fileEncryption->read($sessionId);
         static::assertTrue(!empty($data));
@@ -78,6 +87,9 @@ class FileEncryptionTest extends TestCase
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
+
+        $this->openSessionForSavingSavePath($fileEncryption);
+
         $sessionId = 'todelete';
         $data = '';
         $success = $fileEncryption->write($sessionId, $data);
@@ -85,6 +97,9 @@ class FileEncryptionTest extends TestCase
 
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
+
+        $this->openSessionForSavingSavePath($fileEncryption);
+
         $sessionId = 'todelete';
         $fileEncryption->destroy($sessionId);
         static::assertTrue(true);
@@ -94,6 +109,9 @@ class FileEncryptionTest extends TestCase
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
+
+        $this->openSessionForSavingSavePath($fileEncryption);
+
         $lifetime = -1000;
         $fileEncryption->gc($lifetime);
         static::assertTrue(true);

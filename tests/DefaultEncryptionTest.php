@@ -16,6 +16,9 @@ class DefaultEncryptionTest extends TestCase
     private function foundSessionFile()
     {
         $path = ini_get('session.save_path');
+        if (empty($path)) {
+            $path = DIRECTORY_SEPARATOR . 'tmp';
+        }
         $id = session_id();
 
         $files = scandir($path);
@@ -46,7 +49,7 @@ class DefaultEncryptionTest extends TestCase
         $encryptionTrait->setKey('randomKey');
         $endData = $encryptionTrait->decrypt($data);
         var_dump($endData);
-        static::assertEquals('b', $endData['a']);
+        static::assertEquals('a|s:1:"b";', $endData);
     }
 
     /*
@@ -58,7 +61,7 @@ class DefaultEncryptionTest extends TestCase
             $data = $defaultEncryption->read($sessionId);
             static::assertTrue(!empty($data));
             static::assertTrue(is_string($data));
-    
+
             $sessionId = '';
             $data = $defaultEncryption->read($sessionId);
             static::assertTrue(empty($data));

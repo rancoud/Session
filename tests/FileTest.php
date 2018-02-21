@@ -12,31 +12,33 @@ use Rancoud\Session\File;
  */
 class FileTest extends TestCase
 {
-    public static function setUpBeforeClass()
+    private function getPath()
     {
-        if (file_exists(__DIR__ . '/toto')) {
-            rmdir(__DIR__ . '/toto');
+        $path = ini_get('session.save_path');
+        if (empty($path)) {
+            return DIRECTORY_SEPARATOR . 'tmp';
         }
+
+        return $path;
     }
 
-    public static function setUpAfterClass()
+    private function openSessionForSavingSavePath(File $file)
     {
-        if (file_exists(__DIR__ . '/toto')) {
-            rmdir(__DIR__ . '/toto');
-        }
+        $success = $file->open($this->getPath(), '');
+        static::assertTrue($success);
     }
 
     public function testOpen()
     {
         $file = new File();
-        $savePath = __DIR__;
+        $savePath = $this->getPath();
         $sessionName = '';
         $success = $file->open($savePath, $sessionName);
         static::assertTrue($success);
 
-        $success = $file->open($savePath . '/toto', $sessionName);
+        $success = $file->open($savePath . '/tests', $sessionName);
         static::assertTrue($success);
-        $success = file_exists($savePath . '/toto');
+        $success = file_exists($savePath . '/tests');
         static::assertTrue($success);
     }
 
@@ -50,6 +52,9 @@ class FileTest extends TestCase
     public function testWrite()
     {
         $file = new File();
+
+        $this->openSessionForSavingSavePath($file);
+
         $sessionId = 'test';
         $data = 'azerty';
         $success = $file->write($sessionId, $data);
@@ -59,6 +64,9 @@ class FileTest extends TestCase
     public function testRead()
     {
         $file = new File();
+
+        $this->openSessionForSavingSavePath($file);
+
         $sessionId = 'test';
         $data = $file->read($sessionId);
         static::assertTrue(!empty($data));
@@ -73,12 +81,17 @@ class FileTest extends TestCase
     public function testDestroy()
     {
         $file = new File();
+
+        $this->openSessionForSavingSavePath($file);
+
         $sessionId = 'todelete';
         $data = '';
         $success = $file->write($sessionId, $data);
         static::assertTrue($success);
 
         $file = new File();
+        $this->openSessionForSavingSavePath($file);
+
         $sessionId = 'todelete';
         $file->destroy($sessionId);
         static::assertTrue(true);
@@ -87,6 +100,9 @@ class FileTest extends TestCase
     public function testGc()
     {
         $file = new File();
+
+        $this->openSessionForSavingSavePath($file);
+
         $lifetime = -1000;
         $file->gc($lifetime);
         static::assertTrue(true);

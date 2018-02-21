@@ -86,9 +86,9 @@ trait Encryption
         $methods = array_merge($ciphers, $cipherAliases);
 
         $methods = array_filter($methods, function ($c) {
-            return $c !== 'AES-128-CBC-HMAC-SHA1';
+            return !in_array($c, ['AES-128-CBC-HMAC-SHA1', 'AES-256-CBC-HMAC-SHA1'], true);
         });
-        
+
         return $methods;
     }
 
