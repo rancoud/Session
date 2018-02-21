@@ -336,6 +336,10 @@ class Session
         if (!empty(static::$savePath)) {
             ini_set('session.save_path', static::$savePath);
             session_save_path(static::$savePath);
+        } elseif (empty(ini_get('session.save_path'))) {
+            static::$savePath = '/tmp';
+            ini_set('session.save_path', static::$savePath);
+            session_save_path(static::$savePath);
         }
 
         if (!empty(static::$cookieDomain)) {
