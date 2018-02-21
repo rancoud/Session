@@ -21,7 +21,6 @@ class File implements SessionHandlerInterface
      */
     public function open($savePath, $sessionName): bool
     {
-        var_dump('savePath ' . $savePath);
         $this->savePath = $savePath;
 
         if (!is_dir($this->savePath)) {
