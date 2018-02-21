@@ -19,9 +19,9 @@ class DefaultEncryptionTest extends TestCase
         $id = session_id();
 
         $files = scandir($path);
-        foreach ($files as $file){
-            if(strpos($file, $id) !== false){
-                return file_get_contents($path . DIRECTORY_SEPARATOR . 'sess_'.$id);
+        foreach ($files as $file) {
+            if (mb_strpos($file, $id) !== false) {
+                return file_get_contents($path . DIRECTORY_SEPARATOR . 'sess_' . $id);
             }
         }
 
@@ -35,7 +35,7 @@ class DefaultEncryptionTest extends TestCase
     {
         Session::useDefaultEncryptionDriver('randomKey');
 
-        Session::set("a", "b");
+        Session::set('a', 'b');
 
         session_commit();
         $data = $this->foundSessionFile();
@@ -48,19 +48,20 @@ class DefaultEncryptionTest extends TestCase
         var_dump($endData);
         static::assertEquals('b', $endData['a']);
     }
-/*
-    public function testRead()
-    {
-        $defaultEncryption = new DefaultEncryption();
-        $defaultEncryption->setKey('randomKey');
-        $sessionId = 'test';
-        $data = $defaultEncryption->read($sessionId);
-        static::assertTrue(!empty($data));
-        static::assertTrue(is_string($data));
 
-        $sessionId = '';
-        $data = $defaultEncryption->read($sessionId);
-        static::assertTrue(empty($data));
-        static::assertTrue(is_string($data));
-    }*/
+    /*
+        public function testRead()
+        {
+            $defaultEncryption = new DefaultEncryption();
+            $defaultEncryption->setKey('randomKey');
+            $sessionId = 'test';
+            $data = $defaultEncryption->read($sessionId);
+            static::assertTrue(!empty($data));
+            static::assertTrue(is_string($data));
+    
+            $sessionId = '';
+            $data = $defaultEncryption->read($sessionId);
+            static::assertTrue(empty($data));
+            static::assertTrue(is_string($data));
+        }*/
 }

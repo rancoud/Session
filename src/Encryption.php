@@ -83,7 +83,13 @@ trait Encryption
             return mb_stripos($c, '-wrap') === false;
         });
 
-        return array_merge($ciphers, $cipherAliases);
+        $methods = array_merge($ciphers, $cipherAliases);
+
+        $methods = array_filter($methods, function ($c) {
+            return $c !== 'AES-128-CBC-HMAC-SHA1';
+        });
+        
+        return $methods;
     }
 
     /**
@@ -97,7 +103,7 @@ trait Encryption
     {
         $this->throwExceptionIfKeyEmpty();
 
-        if(mb_strlen($data) === 0){
+        if (mb_strlen($data) === 0) {
             return '';
         }
 
