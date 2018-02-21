@@ -91,11 +91,15 @@ trait Encryption
      *
      * @throws \Exception
      *
-     * @return string
+     * @return string|bool
      */
-    public function decrypt(string $data): string
+    public function decrypt(string $data)
     {
         $this->throwExceptionIfKeyEmpty();
+
+        if(mb_strlen($data) === 0){
+            return '';
+        }
 
         list($encrypted_data, $iv) = explode('::', base64_decode($data, true), 2);
 

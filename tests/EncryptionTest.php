@@ -38,7 +38,7 @@ class EncryptionTest extends TestCase
             $encryptedData = $encryptionTrait->encrypt($dataToEncrypt);
 
             $finalData = $encryptionTrait->decrypt($encryptedData);
-            static::assertEquals($dataToEncrypt, $finalData);
+            static::assertEquals($dataToEncrypt, $finalData, $method . ' fail!');
         }
     }
 
