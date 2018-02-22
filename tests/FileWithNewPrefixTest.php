@@ -12,6 +12,21 @@ use Rancoud\Session\File;
  */
 class FileWithNewPrefixTest extends TestCase
 {
+    protected function setUp()
+    {
+        $path = ini_get('session.save_path');
+        if (empty($path)) {
+            $path = DIRECTORY_SEPARATOR . 'tmp';
+        }
+
+        $pattern = $path . DIRECTORY_SEPARATOR . 'myprefix_*';
+        foreach (glob($pattern) as $file) {
+            if (file_exists($file)) {
+                unlink($file);
+            }
+        }
+    }
+
     /**
      * @return string
      */

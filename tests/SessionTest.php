@@ -14,6 +14,21 @@ use Rancoud\Session\Session;
  */
 class SessionTest extends TestCase
 {
+    protected function setUp()
+    {
+        $path = ini_get('session.save_path');
+        if (empty($path)) {
+            $path = DIRECTORY_SEPARATOR . 'tmp';
+        }
+
+        $pattern = $path . DIRECTORY_SEPARATOR . 'sess_*';
+        foreach (glob($pattern) as $file) {
+            if (file_exists($file)) {
+                unlink($file);
+            }
+        }
+    }
+
     /**
      * @runInSeparateProcess
      */

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rancoud\Session\Test;
 
 use PHPUnit\Framework\TestCase;
-use Rancoud\Session\DefaultEncryption;
 use Rancoud\Session\Session;
 
 /**
@@ -13,6 +12,21 @@ use Rancoud\Session\Session;
  */
 class DefaultEncryptionTest extends TestCase
 {
+    protected function setUp()
+    {
+        $path = ini_get('session.save_path');
+        if (empty($path)) {
+            $path = DIRECTORY_SEPARATOR . 'tmp';
+        }
+
+        $pattern = $path . DIRECTORY_SEPARATOR . 'sess_*';
+        foreach (glob($pattern) as $file) {
+            if (file_exists($file)) {
+                unlink($file);
+            }
+        }
+    }
+
     private function foundSessionFile()
     {
         $path = ini_get('session.save_path');
@@ -34,7 +48,7 @@ class DefaultEncryptionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testWrite()
+    public function testReadAndWrite()
     {
         Session::useDefaultEncryptionDriver('randomKey');
 
@@ -46,23 +60,7 @@ class DefaultEncryptionTest extends TestCase
 
         $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
         $encryptionTrait->setKey('randomKey');
-        $endData = $encryptionTrait->decrypt($data);
-        static::assertEquals('a|s:1:"b";', $endData);
+        $dataDecrypted = $encryptionTrait->decrypt($data);
+        static::assertEquals('a|s:1:"b";', $dataDecrypted);
     }
-
-    /*
-        public function testRead()
-        {
-            $defaultEncryption = new DefaultEncryption();
-            $defaultEncryption->setKey('randomKey');
-            $sessionId = 'test';
-            $data = $defaultEncryption->read($sessionId);
-            static::assertTrue(!empty($data));
-            static::assertTrue(is_string($data));
-
-            $sessionId = '';
-            $data = $defaultEncryption->read($sessionId);
-            static::assertTrue(empty($data));
-            static::assertTrue(is_string($data));
-        }*/
 }

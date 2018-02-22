@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Rancoud\Session\Test;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
 use Rancoud\Session\Database;
 
@@ -38,7 +39,18 @@ class DatabaseTest extends TestCase
         try {
             static::$db->exec($sql);
             static::$db->truncateTable('sessions');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
+            var_dump(static::$db->getErrors());
+
+            return;
+        }
+    }
+
+    protected function setUp()
+    {
+        try {
+            static::$db->truncateTable('sessions');
+        } catch (Exception $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -74,7 +86,7 @@ class DatabaseTest extends TestCase
         $data = 'azerty';
         try {
             $success = $database->write($sessionId, $data);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -98,7 +110,7 @@ class DatabaseTest extends TestCase
         try {
             $database->write($sessionId, $data);
             $dataOutput = $database->read($sessionId);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -110,7 +122,7 @@ class DatabaseTest extends TestCase
         $sessionId = '';
         try {
             $dataOutput = $database->read($sessionId);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -127,7 +139,7 @@ class DatabaseTest extends TestCase
         $sessionId = 'todelete';
         try {
             $success = $database->destroy($sessionId);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -135,6 +147,15 @@ class DatabaseTest extends TestCase
         static::assertTrue($success);
 
         $sessionId = 'sessionId';
+        $data = 'azerty';
+        try {
+            $database->write($sessionId, $data);
+        } catch (Exception $e) {
+            var_dump(static::$db->getErrors());
+
+            return;
+        }
+
         $sql = 'SELECT COUNT(id) FROM sessions WHERE id = :id';
         $params = ['id' => $sessionId];
         $isRowExist = (static::$db->count($sql, $params) === 1);
@@ -142,7 +163,7 @@ class DatabaseTest extends TestCase
         static::assertTrue($isRowExist);
         try {
             $success = $database->destroy($sessionId);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -164,7 +185,7 @@ class DatabaseTest extends TestCase
 
         try {
             $success = $database->write($sessionId, $data);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -177,7 +198,7 @@ class DatabaseTest extends TestCase
         $lifetime = -1000;
         try {
             $success = $database->gc($lifetime);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -186,5 +207,61 @@ class DatabaseTest extends TestCase
 
         $isRowNotExist = (static::$db->count($sql, $params) === 0);
         static::assertTrue($isRowNotExist);
+    }
+
+    public function testSetUserId()
+    {
+        $database = new Database();
+        $database->setCurrentDatabase(static::$db);
+
+        $sessionId = 'sessionId';
+        $data = 'azerty';
+        $userId = 5;
+        $database->setUserId($userId);
+
+        try {
+            $success = $database->write($sessionId, $data);
+        } catch (Exception $e) {
+            var_dump(static::$db->getErrors());
+
+            return;
+        }
+        static::assertTrue($success);
+
+        $sql = 'SELECT id_user FROM sessions WHERE id = :id';
+        $params = ['id' => $sessionId];
+        try {
+            $userIdInDatabase = static::$db->selectVar($sql, $params);
+        } catch (Exception $e) {
+            var_dump(static::$db->getErrors());
+
+            return;
+        }
+        static::assertNotNull($userIdInDatabase);
+        static::assertEquals($userId, $userIdInDatabase);
+
+        $userId = null;
+        $database->setUserId($userId);
+
+        try {
+            $success = $database->write($sessionId, $data);
+        } catch (Exception $e) {
+            var_dump(static::$db->getErrors());
+
+            return;
+        }
+        static::assertTrue($success);
+
+        $sql = 'SELECT id_user FROM sessions WHERE id = :id';
+        $params = ['id' => $sessionId];
+        try {
+            $userIdInDatabase = static::$db->selectVar($sql, $params);
+        } catch (Exception $e) {
+            var_dump(static::$db->getErrors());
+
+            return;
+        }
+        static::assertNull($userIdInDatabase);
+        static::assertEquals($userId, $userIdInDatabase);
     }
 }

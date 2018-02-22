@@ -12,6 +12,21 @@ use Rancoud\Session\FileEncryption;
  */
 class FileEncryptionTest extends TestCase
 {
+    protected function setUp()
+    {
+        $path = ini_get('session.save_path');
+        if (empty($path)) {
+            $path = DIRECTORY_SEPARATOR . 'tmp';
+        }
+
+        $pattern = $path . DIRECTORY_SEPARATOR . 'sess_*';
+        foreach (glob($pattern) as $file) {
+            if (file_exists($file)) {
+                unlink($file);
+            }
+        }
+    }
+
     private function getPath()
     {
         $path = ini_get('session.save_path');
@@ -71,7 +86,7 @@ class FileEncryptionTest extends TestCase
         $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
         $encryptionTrait->setKey('randomKey');
         $dataInFileDecrypted = $encryptionTrait->decrypt($dataInFile);
-        static::assertEquals('azerty', $dataInFileDecrypted);
+        static::assertEquals($data, $dataInFileDecrypted);
     }
 
     public function testRead()
