@@ -25,6 +25,10 @@ class FileEncryptionTest extends TestCase
                 unlink($file);
             }
         }
+
+        if (is_dir($path . DIRECTORY_SEPARATOR . 'tests')) {
+            rmdir($path . DIRECTORY_SEPARATOR . 'tests');
+        }
     }
 
     private function getPath()
