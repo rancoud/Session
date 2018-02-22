@@ -6,6 +6,7 @@ namespace Rancoud\Session\Test;
 
 use Exception;
 use PHPUnit\Framework\TestCase;
+use Rancoud\Database\Configurator;
 use Rancoud\Session\Database;
 
 /**
@@ -263,5 +264,56 @@ class DatabaseTest extends TestCase
         }
         static::assertNull($userIdInDatabase);
         static::assertEquals($userId, $userIdInDatabase);
+    }
+
+    public function testSetNewDatabaseWithArray()
+    {
+        $database = new Database();
+        $params = [
+            'engine'   => 'mysql',
+            'host'     => '127.0.0.1',
+            'user'     => 'root',
+            'password' => '',
+            'database' => 'test_database'
+        ];
+        $database->setNewDatabase($params);
+
+        $sessionId = 'sessionId';
+        $data = 'azerty';
+
+        try {
+            $success = $database->write($sessionId, $data);
+        } catch (Exception $e) {
+            var_dump(static::$db->getErrors());
+
+            return;
+        }
+        static::assertTrue($success);
+    }
+
+    public function testSetNewDatabaseWithConfigurator()
+    {
+        $database = new Database();
+        $params = [
+            'engine'   => 'mysql',
+            'host'     => '127.0.0.1',
+            'user'     => 'root',
+            'password' => '',
+            'database' => 'test_database'
+        ];
+        $conf = new Configurator($params);
+        $database->setNewDatabase($conf);
+
+        $sessionId = 'sessionId';
+        $data = 'azerty';
+
+        try {
+            $success = $database->write($sessionId, $data);
+        } catch (Exception $e) {
+            var_dump(static::$db->getErrors());
+
+            return;
+        }
+        static::assertTrue($success);
     }
 }
