@@ -122,7 +122,7 @@ class Database implements SessionHandlerInterface
      */
     public function gc($lifetime): bool
     {
-        $sql = 'DELETE FROM sessions WHERE DATE_ADD(expire_at, INTERVAL :seconds second) < NOW()';
+        $sql = 'DELETE FROM sessions WHERE DATE_ADD(last_access, INTERVAL :seconds second) < NOW()';
         $params = ['seconds' => $lifetime];
         $this->db->delete($sql, $params);
 

@@ -12,6 +12,7 @@ use Rancoud\Session\Database;
  */
 class DatabaseTest extends TestCase
 {
+    /** @var \Rancoud\Database\Database */
     private static $db;
 
     public static function setUpBeforeClass()
@@ -24,6 +25,23 @@ class DatabaseTest extends TestCase
             'database' => 'test_database'
         ]);
         static::$db = new \Rancoud\Database\Database($conf);
+        
+        $sql = '
+            CREATE TABLE IF NOT EXISTS `sessions` (
+              `id` varchar(128) NOT NULL,
+              `id_user` int(10) unsigned DEFAULT NULL,
+              `last_access` datetime NOT NULL,
+              `content` text NOT NULL,
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        ';
+        try {
+            static::$db->execute($sql);
+            static::$db->truncateTable('sessions');
+        } catch (\Exception $e) {
+            var_dump(static::$db->getErrors());
+            return;
+        }
     }
 
     public function testOpen()
@@ -57,6 +75,7 @@ class DatabaseTest extends TestCase
             $success = $database->write($sessionId, $data);
         } catch (\Exception $e) {
             var_dump(static::$db->getErrors());
+            return;
         }
         static::assertTrue($success);
 
@@ -79,6 +98,7 @@ class DatabaseTest extends TestCase
             $dataOutput = $database->read($sessionId);
         } catch (\Exception $e) {
             var_dump(static::$db->getErrors());
+            return;
         }
         static::assertTrue(!empty($dataOutput));
         static::assertTrue(is_string($dataOutput));
@@ -89,6 +109,7 @@ class DatabaseTest extends TestCase
             $dataOutput = $database->read($sessionId);
         } catch (\Exception $e) {
             var_dump(static::$db->getErrors());
+            return;
         }
         static::assertTrue(empty($dataOutput));
         static::assertTrue(is_string($dataOutput));
@@ -104,6 +125,7 @@ class DatabaseTest extends TestCase
             $success = $database->destroy($sessionId);
         } catch (\Exception $e) {
             var_dump(static::$db->getErrors());
+            return;
         }
         static::assertTrue($success);
 
@@ -117,6 +139,7 @@ class DatabaseTest extends TestCase
             $success = $database->destroy($sessionId);
         } catch (\Exception $e) {
             var_dump(static::$db->getErrors());
+            return;
         }
         static::assertTrue($success);
         $isRowNotExist = (static::$db->count($sql, $params) === 0);
@@ -137,6 +160,7 @@ class DatabaseTest extends TestCase
             $success = $database->write($sessionId, $data);
         } catch (\Exception $e) {
             var_dump(static::$db->getErrors());
+            return;
         }
         static::assertTrue($success);
 
@@ -148,6 +172,7 @@ class DatabaseTest extends TestCase
             $success = $database->gc($lifetime);
         } catch (\Exception $e) {
             var_dump(static::$db->getErrors());
+            return;
         }
         static::assertTrue($success);
 

@@ -40,13 +40,14 @@ You need to install
 composer require rancoud/session
 ```
 ```sql
-CREATE TABLE `sessions` (
+CREATE TABLE IF NOT EXISTS `sessions` (
   `id` varchar(128) NOT NULL,
-  `id_user` int(10) unsigned NOT NULL DEFAULT '0',
-  `expire_at` datetime NOT NULL,
+  `id_user` int(10) unsigned DEFAULT NULL,
+  `last_access` datetime NOT NULL,
   `content` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 ```
 ## Redis
 You need to install
