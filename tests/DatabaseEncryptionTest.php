@@ -7,7 +7,6 @@ namespace Rancoud\Session\Test;
 use Exception;
 use PHPUnit\Framework\TestCase;
 use Rancoud\Database\Configurator;
-use Rancoud\Session\Database;
 use Rancoud\Session\DatabaseEncryption;
 
 /**
