@@ -3,9 +3,15 @@ language: php
 php:
   - 7.2
 
+env:
+  - DB=mysql
+
 install:
   - composer selfupdate
   - composer install
+
+before_script:
+  - if [[ "$DB" == "mysql" ]]; then mysql -e "create database IF NOT EXISTS test_database;" -uroot; fi
 
 script:
   - ./vendor/bin/phpcs -s

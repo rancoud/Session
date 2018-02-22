@@ -19,6 +19,8 @@ class Database implements SessionHandlerInterface
 
     /**
      * @param $configuration
+     *
+     * @throws \Exception
      */
     public function setNewDatabase($configuration)
     {
@@ -83,6 +85,8 @@ class Database implements SessionHandlerInterface
      * @param $sessionId
      * @param $data
      *
+     * @throws \Exception
+     *
      * @return bool
      */
     public function write($sessionId, $data): bool
@@ -112,12 +116,15 @@ class Database implements SessionHandlerInterface
     /**
      * @param $lifetime
      *
+     * @throws \Exception
+     *
      * @return bool
      */
     public function gc($lifetime): bool
     {
-        $sql = 'DELETE FROM sessions WHERE expire_at < NOW()';
-        $this->db->delete($sql);
+        $sql = 'DELETE FROM sessions WHERE DATE_ADD(expire_at, INTERVAL :seconds second) < NOW()';
+        $params = ['seconds' => $lifetime];
+        $this->db->delete($sql, $params);
 
         return true;
     }

@@ -85,15 +85,18 @@ class FileWithNewPrefixTest extends TestCase
 
         $sessionId = 'sessionId';
         $data = 'azerty';
+        $success = $file->write($sessionId, $data);
+        static::assertTrue($success);
+
         $dataOutput = $file->read($sessionId);
-        static::assertTrue(!empty($data));
-        static::assertTrue(is_string($data));
+        static::assertTrue(!empty($dataOutput));
+        static::assertTrue(is_string($dataOutput));
         static::assertEquals($data, $dataOutput);
 
         $sessionId = '';
-        $data = $file->read($sessionId);
-        static::assertTrue(empty($data));
-        static::assertTrue(is_string($data));
+        $dataOutput = $file->read($sessionId);
+        static::assertTrue(empty($dataOutput));
+        static::assertTrue(is_string($dataOutput));
     }
 
     public function testDestroy()
@@ -108,6 +111,10 @@ class FileWithNewPrefixTest extends TestCase
         static::assertTrue($success);
 
         $sessionId = 'sessionId';
+        $data = 'azerty';
+        $success = $file->write($sessionId, $data);
+        static::assertTrue($success);
+
         $isFileExist = file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
         static::assertTrue($isFileExist);
         $success = $file->destroy($sessionId);

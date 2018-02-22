@@ -38,9 +38,10 @@ class FileEncryptionTest extends TestCase
         $success = $fileEncryption->open($savePath, $sessionName);
         static::assertTrue($success);
 
-        $success = $fileEncryption->open($savePath . '/tests', $sessionName);
+        $savePathNotCreated = $savePath . DIRECTORY_SEPARATOR . 'tests';
+        $success = $fileEncryption->open($savePathNotCreated, $sessionName);
         static::assertTrue($success);
-        $success = file_exists($savePath . '/tests');
+        $success = file_exists($savePathNotCreated);
         static::assertTrue($success);
     }
 
@@ -59,10 +60,18 @@ class FileEncryptionTest extends TestCase
 
         $this->openSessionForSavingSavePath($fileEncryption);
 
-        $sessionId = 'test';
+        $sessionId = 'sessionId';
         $data = 'azerty';
         $success = $fileEncryption->write($sessionId, $data);
         static::assertTrue($success);
+
+        $dataInFile = file_get_contents($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        static::assertNotEquals($data, $dataInFile);
+
+        $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
+        $encryptionTrait->setKey('randomKey');
+        $dataInFileDecrypted = $encryptionTrait->decrypt($dataInFile);
+        static::assertEquals('azerty', $dataInFileDecrypted);
     }
 
     public function testRead()
@@ -72,15 +81,20 @@ class FileEncryptionTest extends TestCase
 
         $this->openSessionForSavingSavePath($fileEncryption);
 
-        $sessionId = 'test';
-        $data = $fileEncryption->read($sessionId);
-        static::assertTrue(!empty($data));
-        static::assertTrue(is_string($data));
+        $sessionId = 'sessionId';
+        $data = 'azerty';
+        $success = $fileEncryption->write($sessionId, $data);
+        static::assertTrue($success);
+
+        $dataOutput = $fileEncryption->read($sessionId);
+        static::assertTrue(!empty($dataOutput));
+        static::assertTrue(is_string($dataOutput));
+        static::assertEquals($data, $dataOutput);
 
         $sessionId = '';
-        $data = $fileEncryption->read($sessionId);
-        static::assertTrue(empty($data));
-        static::assertTrue(is_string($data));
+        $dataOutput = $fileEncryption->read($sessionId);
+        static::assertTrue(empty($dataOutput));
+        static::assertTrue(is_string($dataOutput));
     }
 
     public function testDestroy()
@@ -91,18 +105,20 @@ class FileEncryptionTest extends TestCase
         $this->openSessionForSavingSavePath($fileEncryption);
 
         $sessionId = 'todelete';
-        $data = '';
+        $success = $fileEncryption->destroy($sessionId);
+        static::assertTrue($success);
+
+        $sessionId = 'sessionId';
+        $data = 'azerty';
         $success = $fileEncryption->write($sessionId, $data);
         static::assertTrue($success);
 
-        $fileEncryption = new FileEncryption();
-        $fileEncryption->setKey('randomKey');
-
-        $this->openSessionForSavingSavePath($fileEncryption);
-
-        $sessionId = 'todelete';
-        $fileEncryption->destroy($sessionId);
-        static::assertTrue(true);
+        $isFileExist = file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        static::assertTrue($isFileExist);
+        $success = $fileEncryption->destroy($sessionId);
+        static::assertTrue($success);
+        $isFileNotExist = !file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        static::assertTrue($isFileNotExist);
     }
 
     public function testGc()
@@ -112,8 +128,19 @@ class FileEncryptionTest extends TestCase
 
         $this->openSessionForSavingSavePath($fileEncryption);
 
+        $sessionId = 'sessionId';
+        $data = 'azerty';
+        $success = $fileEncryption->write($sessionId, $data);
+        static::assertTrue($success);
+
+        $isFileExist = file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        static::assertTrue($isFileExist);
+
         $lifetime = -1000;
-        $fileEncryption->gc($lifetime);
-        static::assertTrue(true);
+        $success = $fileEncryption->gc($lifetime);
+        static::assertTrue($success);
+
+        $isFileNotExist = !file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        static::assertTrue($isFileNotExist);
     }
 }
