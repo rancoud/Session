@@ -180,14 +180,21 @@ class SessionTest extends TestCase
      */
     public function testUseDefaultDriver()
     {
-        $anonymousClass = new class() extends Session {
-            public static $driver;
-        };
+        Session::useDefaultDriver();
+        Session::start();
 
-        $anonymousClass::useDefaultDriver();
-        $anonymousClass::start();
+        static::assertEquals('SessionHandler', get_class(Session::getDriver()));
+    }
 
-        static::assertEquals('SessionHandler', get_class($anonymousClass::$driver));
+    /**
+     * @runInSeparateProcess
+     */
+    public function testUseDefaultEncryptionDriver()
+    {
+        Session::useDefaultEncryptionDriver('randomKey');
+        Session::start();
+
+        static::assertEquals('Rancoud\Session\DefaultEncryption', get_class(Session::getDriver()));
     }
 
     /**
@@ -195,14 +202,161 @@ class SessionTest extends TestCase
      */
     public function testUseFileDriver()
     {
-        $anonymousClass = new class() extends Session {
-            public static $driver;
-        };
+        Session::useFileDriver();
+        Session::start();
 
-        $anonymousClass::useFileDriver();
-        $anonymousClass::start();
+        static::assertEquals('Rancoud\Session\File', get_class(Session::getDriver()));
+    }
 
-        static::assertEquals('Rancoud\Session\File', get_class($anonymousClass::$driver));
+    /**
+     * @runInSeparateProcess
+     */
+    public function testUseFileEncryptionDriver()
+    {
+        Session::useFileEncryptionDriver('randomKey');
+        Session::start();
+
+        static::assertEquals('Rancoud\Session\FileEncryption', get_class(Session::getDriver()));
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testUseNewDatabaseDriver()
+    {
+        $params = [
+            'engine'   => 'mysql',
+            'host'     => '127.0.0.1',
+            'user'     => 'root',
+            'password' => '',
+            'database' => 'test_database'
+        ];
+        Session::useNewDatabaseDriver($params);
+        Session::start();
+
+        static::assertEquals('Rancoud\Session\Database', get_class(Session::getDriver()));
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testUseNewDatabaseEncryptionDriver()
+    {
+        $params = [
+            'engine'   => 'mysql',
+            'host'     => '127.0.0.1',
+            'user'     => 'root',
+            'password' => '',
+            'database' => 'test_database'
+        ];
+        Session::useNewDatabaseEncryptionDriver($params, 'randomKey');
+        Session::start();
+
+        static::assertEquals('Rancoud\Session\DatabaseEncryption', get_class(Session::getDriver()));
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testUseCurrentDatabaseDriver()
+    {
+        $conf = new \Rancoud\Database\Configurator([
+            'engine'   => 'mysql',
+            'host'     => '127.0.0.1',
+            'user'     => 'root',
+            'password' => '',
+            'database' => 'test_database'
+        ]);
+        $db = new \Rancoud\Database\Database($conf);
+        Session::useCurrentDatabaseDriver($db);
+        Session::start();
+
+        static::assertEquals('Rancoud\Session\Database', get_class(Session::getDriver()));
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testUseCurrentDatabaseEncryptionDriver()
+    {
+        $conf = new \Rancoud\Database\Configurator([
+            'engine'   => 'mysql',
+            'host'     => '127.0.0.1',
+            'user'     => 'root',
+            'password' => '',
+            'database' => 'test_database'
+        ]);
+        $db = new \Rancoud\Database\Database($conf);
+        Session::useCurrentDatabaseEncryptionDriver($db, 'randomKey');
+        Session::start();
+
+        static::assertEquals('Rancoud\Session\DatabaseEncryption', get_class(Session::getDriver()));
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testUseNewRedisDriver()
+    {
+        $params = [
+            'scheme' => 'tcp',
+            'host'   => '127.0.0.1',
+            'port'   => 6379,
+        ];
+        Session::useNewRedisDriver($params);
+        Session::start();
+
+        static::assertEquals('Rancoud\Session\Redis', get_class(Session::getDriver()));
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testUseNewRedisEncryptionDriver()
+    {
+        $params = [
+            'scheme' => 'tcp',
+            'host'   => '127.0.0.1',
+            'port'   => 6379,
+        ];
+        Session::useNewRedisEncryptionDriver($params, 'randomKey');
+        Session::start();
+
+        static::assertEquals('Rancoud\Session\RedisEncryption', get_class(Session::getDriver()));
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testUseCurrentRedisDriver()
+    {
+        $params = [
+            'scheme' => 'tcp',
+            'host'   => '127.0.0.1',
+            'port'   => 6379,
+        ];
+        $redis = new \Predis\Client($params);
+        Session::useCurrentRedisDriver($redis);
+        Session::start();
+
+        static::assertEquals('Rancoud\Session\Redis', get_class(Session::getDriver()));
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testUseCurrentRedisEncryptionDriver()
+    {
+        $params = [
+            'scheme' => 'tcp',
+            'host'   => '127.0.0.1',
+            'port'   => 6379,
+        ];
+        $redis = new \Predis\Client($params);
+        Session::useCurrentRedisEncryptionDriver($redis, 'randomKey');
+        Session::start();
+
+        static::assertEquals('Rancoud\Session\RedisEncryption', get_class(Session::getDriver()));
     }
 
     /**
@@ -210,13 +364,20 @@ class SessionTest extends TestCase
      */
     public function testUseCustomDriver()
     {
-        $anonymousClass = new class() extends Session {
-            public static $driver;
-        };
+        Session::useCustomDriver(new File());
+        Session::start();
 
-        $anonymousClass::useCustomDriver(new File());
-        $anonymousClass::start();
-
-        static::assertEquals('Rancoud\Session\File', get_class($anonymousClass::$driver));
+        static::assertEquals('Rancoud\Session\File', get_class(Session::getDriver()));
     }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testUseEncryptionDriverThrowExceptionWhenMethodIncrorrect()
+    {
+        static::expectException(Exception::class);
+        Session::useFileEncryptionDriver('randomKey', 'incorrect');
+    }
+
+    //exception quand methode pas bonne dans les encryption
 }

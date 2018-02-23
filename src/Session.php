@@ -71,14 +71,17 @@ class Session
     }
 
     /**
+     * @param string      $key
+     * @param string|null $method
+     *
      * @throws \Exception
      */
-    public static function useDefaultEncryptionDriver(string $key): void
+    public static function useDefaultEncryptionDriver(string $key, string $method = null): void
     {
         static::throwExceptionIfHasStarted();
 
         $driver = new DefaultEncryption();
-        $driver->setKey($key);
+        static::setKeyAndMethod($driver, $key, $method);
 
         static::$driver = $driver;
     }
@@ -94,16 +97,17 @@ class Session
     }
 
     /**
-     * @param string $key
+     * @param string      $key
+     * @param string|null $method
      *
      * @throws \Exception
      */
-    public static function useFileEncryptionDriver(string $key): void
+    public static function useFileEncryptionDriver(string $key, string $method = null): void
     {
         static::throwExceptionIfHasStarted();
 
         $driver = new FileEncryption();
-        $driver->setKey($key);
+        static::setKeyAndMethod($driver, $key, $method);
 
         static::$driver = $driver;
     }
@@ -145,14 +149,13 @@ class Session
      *
      * @throws Exception
      */
-    public static function useNewDatabaseEncryptionDriver($configuration, string $key, string $method): void
+    public static function useNewDatabaseEncryptionDriver($configuration, string $key, string $method = null): void
     {
         static::throwExceptionIfHasStarted();
 
         $driver = new DatabaseEncryption();
         $driver->setNewDatabase($configuration);
-        $driver->setKey($key);
-        $driver->setMethod($method);
+        static::setKeyAndMethod($driver, $key, $method);
 
         static::$driver = $driver;
     }
@@ -164,14 +167,13 @@ class Session
      *
      * @throws Exception
      */
-    public static function useCurrentDatabaseEncryptionDriver($database, string $key, string $method): void
+    public static function useCurrentDatabaseEncryptionDriver($database, string $key, string $method = null): void
     {
         static::throwExceptionIfHasStarted();
 
         $driver = new DatabaseEncryption();
         $driver->setCurrentDatabase($database);
-        $driver->setKey($key);
-        $driver->setMethod($method);
+        static::setKeyAndMethod($driver, $key, $method);
 
         static::$driver = $driver;
     }
@@ -215,14 +217,13 @@ class Session
      *
      * @throws Exception
      */
-    public static function useNewRedisEncryptionDriver($configuration, string $key, string $method): void
+    public static function useNewRedisEncryptionDriver($configuration, string $key, string $method = null): void
     {
         static::throwExceptionIfHasStarted();
 
         $driver = new RedisEncryption();
         $driver->setNewRedis($configuration);
-        $driver->setKey($key);
-        $driver->setMethod($method);
+        static::setKeyAndMethod($driver, $key, $method);
         $driver->setLifetime(static::$lifetime);
 
         static::$driver = $driver;
@@ -235,17 +236,31 @@ class Session
      *
      * @throws Exception
      */
-    public static function useCurrentRedisEncryptionDriver($redis, string $key, string $method): void
+    public static function useCurrentRedisEncryptionDriver($redis, string $key, string $method = null): void
     {
         static::throwExceptionIfHasStarted();
 
         $driver = new RedisEncryption();
         $driver->setCurrentRedis($redis);
-        $driver->setKey($key);
-        $driver->setMethod($method);
+        static::setKeyAndMethod($driver, $key, $method);
         $driver->setLifetime(static::$lifetime);
 
         static::$driver = $driver;
+    }
+
+    /**
+     * @param \Rancoud\Session\Encryption $driver
+     * @param                             $key
+     * @param                             $method
+     *
+     * @throws \Exception
+     */
+    private static function setKeyAndMethod($driver, $key, $method): void
+    {
+        $driver->setKey($key);
+        if ($method !== null) {
+            $driver->setMethod($method);
+        }
     }
 
     /**
@@ -473,7 +488,7 @@ class Session
     }
 
     /**
-     * @param int $userId
+     * @param string $prefix
      */
     public static function setPrefixForFile(string $prefix): void
     {
