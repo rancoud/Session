@@ -7,7 +7,7 @@ namespace Rancoud\Session;
 use Exception;
 
 /**
- * Trait Encrypted.
+ * Trait Encryption.
  */
 trait Encryption
 {
