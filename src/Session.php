@@ -366,7 +366,6 @@ class Session
         ini_set('session.cookie_httponly', '1');
         ini_set('session.use_only_cookies', '1');
         ini_set('session.use_trans_sid', '0');
-        ini_set('session.url_rewriter.tags', '');
     }
 
     protected static function setupCookieParams(): void
