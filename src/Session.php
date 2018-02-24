@@ -45,7 +45,8 @@ class Session
      */
     protected static function throwExceptionIfHasStarted(): void
     {
-        if (static::$hasStarted) {
+        $status = static::status();
+        if ($status === PHP_SESSION_ACTIVE) {
             throw new Exception('Session already started');
         }
     }
@@ -337,35 +338,102 @@ class Session
     /**
      * @param array $options
      *
+     * @throws Exception
+     *
      * @return bool
      */
-    protected static function startSession($options = []): bool
+    protected static function startSession(array $options = []): bool
     {
-        static::setupIniSession();
+        static::validateOptions($options);
+
+        $options = static::setupIniSession($options);
 
         static::setupCookieParams();
 
         return session_start($options);
     }
 
-    protected static function setupIniSession(): void
+    /**
+     * @param array $options
+     *
+     * @throws Exception
+     */
+    protected static function validateOptions(array $options = []): void
     {
-        if (!empty(static::$savePath)) {
-            ini_set('session.save_path', static::$savePath);
+        if (empty($options)) {
+            return;
+        }
+
+        $validOptions = [
+            'save_path',
+            'name',
+            'save_handler',
+            'auto_start',
+            'gc_probability',
+            'gc_divisor',
+            'gc_maxlifetime',
+            'serialize_handler',
+            'cookie_lifetime',
+            'cookie_path',
+            'cookie_domain',
+            'cookie_secure',
+            'cookie_httponly',
+            'use_strict_mode',
+            'use_cookies',
+            'use_only_cookies',
+            'referer_check',
+            'cache_limiter',
+            'cache_expire',
+            'use_trans_sid',
+            'trans_sid_tags',
+            'trans_sid_hosts',
+            'sid_length',
+            'sid_bits_per_character',
+            'upload_progress.enabled',
+            'upload_progress.cleanup',
+            'upload_progress.prefix',
+            'upload_progress.name',
+            'upload_progress.freq',
+            'upload_progress.min_freq',
+            'lazy_write',
+            'read_and_close'
+        ];
+
+        $keys = array_keys($options);
+        foreach ($keys as $key) {
+            if (!in_array($key, $validOptions, true)) {
+                throw new Exception('Incorrect option: ' . $key);
+            }
+        }
+    }
+
+    /**
+     * @param array $options
+     *
+     * @return array
+     */
+    protected static function setupIniSession(array $options = []): array
+    {
+        if (array_key_exists('save_path', $options)) {
+            static::$savePath = $options['save_path'];
+        } elseif (!empty(static::$savePath)) {
+            $options['save_path'] = static::$savePath;
             session_save_path(static::$savePath);
         } elseif (empty(ini_get('session.save_path'))) {
             static::$savePath = '/tmp';
-            ini_set('session.save_path', static::$savePath);
+            $options['save_path'] = static::$savePath;
             session_save_path(static::$savePath);
         }
 
         if (!empty(static::$cookieDomain)) {
-            ini_set('session.cookie_domain', static::$cookieDomain);
+            $options['cookie_domain'] = $options['cookie_domain'] ?? static::$cookieDomain;
         }
 
-        ini_set('session.cookie_httponly', '1');
-        ini_set('session.use_only_cookies', '1');
-        ini_set('session.use_trans_sid', '0');
+        $options['cookie_httponly'] = $options['cookie_httponly'] ?? '1';
+        $options['use_only_cookies'] = $options['use_only_cookies'] ?? '1';
+        $options['use_trans_sid'] = $options['use_trans_sid'] ?? '0';
+
+        return $options;
     }
 
     protected static function setupCookieParams(): void
@@ -398,6 +466,14 @@ class Session
     public static function abort(): bool
     {
         return session_abort();
+    }
+
+    /**
+     * @return int
+     */
+    public static function status(): int
+    {
+        return session_status();
     }
 
     /**
@@ -475,8 +551,11 @@ class Session
      */
     protected static function startSessionIfNotHasStarted(): void
     {
-        if (static::$hasStarted === false) {
+        $status = static::status();
+        if ($status === PHP_SESSION_NONE) {
             static::start();
+        } elseif ($status === PHP_SESSION_DISABLED) {
+            throw new Exception('Session disabled');
         }
     }
 
