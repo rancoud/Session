@@ -335,15 +335,17 @@ class Session
     }
 
     /**
+     * @param array $options
+     *
      * @return bool
      */
-    protected static function startSession(): bool
+    protected static function startSession($options = []): bool
     {
         static::setupIniSession();
 
         static::setupCookieParams();
 
-        return session_start();
+        return session_start($options);
     }
 
     protected static function setupIniSession(): void
@@ -389,6 +391,14 @@ class Session
     {
         session_unset();
         session_destroy();
+    }
+
+    /**
+     * @return bool
+     */
+    public static function abort(): bool
+    {
+        return session_abort();
     }
 
     /**
