@@ -13,6 +13,7 @@ use SessionHandlerInterface;
  */
 class Session
 {
+    /** @var bool */
     protected static $hasStarted = false;
     /** @var SessionHandlerInterface */
     protected static $driver = null;
@@ -24,20 +25,27 @@ class Session
     protected static $cookieDomain = null;
     /** @var string */
     protected static $lifetime = 1440;
+    /** @var bool */
+    protected static $readOnly = false;
+    protected static $options = [];
 
     /**
-     * @throws \Exception
+     * @param array $options
+     *
+     * @throws Exception
      */
-    public static function start(): void
+    public static function start(array $options = []): void
     {
         static::throwExceptionIfHasStarted();
 
         static::configureDriver();
         static::setupSessionParameters();
-        static::startSession();
-        static::$driver->gc(static::$lifetime);
+        static::startSession($options);
 
         static::$hasStarted = true;
+        if (array_key_exists('read_and_close', $options) && $options['read_and_close'] === true) {
+            static::$hasStarted = false;
+        }
     }
 
     /**
@@ -45,8 +53,7 @@ class Session
      */
     protected static function throwExceptionIfHasStarted(): void
     {
-        $status = static::status();
-        if ($status === PHP_SESSION_ACTIVE) {
+        if (static::hasStarted()) {
             throw new Exception('Session already started');
         }
     }
@@ -432,6 +439,7 @@ class Session
         $options['cookie_httponly'] = $options['cookie_httponly'] ?? '1';
         $options['use_only_cookies'] = $options['use_only_cookies'] ?? '1';
         $options['use_trans_sid'] = $options['use_trans_sid'] ?? '0';
+        $options['read_and_close'] = $options['read_and_close'] ?? static::$readOnly;
 
         return $options;
     }
@@ -468,12 +476,17 @@ class Session
         return session_abort();
     }
 
-    /**
-     * @return int
-     */
-    public static function status(): int
+    public static function readOnly(): void
     {
-        return session_status();
+        static::$readOnly = true;
+    }
+
+    /**
+     * @return bool
+     */
+    public static function hasStarted(): bool
+    {
+        return static::$hasStarted;
     }
 
     /**
@@ -551,11 +564,8 @@ class Session
      */
     protected static function startSessionIfNotHasStarted(): void
     {
-        $status = static::status();
-        if ($status === PHP_SESSION_NONE) {
+        if (!static::hasStarted()) {
             static::start();
-        } elseif ($status === PHP_SESSION_DISABLED) {
-            throw new Exception('Session disabled');
         }
     }
 

@@ -10,21 +10,80 @@ composer require rancoud/session
 ```
 
 ## How to use it?
+The most popular
 ```php
-
+Session::set('key', 'value');
+$value = Session::get('key');
 ```
+In read only
+```php
+Session::readOnly();
+Session::set('key', 'value');
+$value = Session::get('key');
+```
+With custom options
+```php
+Session::start(['read_and_close' => true]);
+Session::set('key', 'value');
+$value = Session::get('key');
+```
+With encryption on default php session
+```php
+Session::useDefaultEncryptionDriver('keyForEncryption');
+Session::set('key', 'value');
+$value = Session::get('key');
+```
+With File driver
+```php
+Session::useFileDriver();
+Session::set('key', 'value');
+$value = Session::get('key');
+```
+With Database driver (you have to install rancoud/database)
+```php
+$conf = new \Rancoud\Database\Configurator([
+    'engine'   => 'mysql',
+    'host'     => '127.0.0.1',
+    'user'     => 'root',
+    'password' => '',
+    'database' => 'test_database'
+]);
+$db = new \Rancoud\Database\Database($conf);
 
-## Session Constructor
-### Settings
-#### Mandatory
-| Parameter | Type | Description |
-| --- | --- | --- |
-|  |  |  |
+// for using a current connection
+Session::useCurrentDatabaseDriver($db);
 
-#### Optionnals
-| Parameter | Type | Default value | Description |
-| --- | --- | --- | --- |
-|  |  |  |  |
+// for creating a new connection
+//Session::useNewDatabaseDriver($conf);
+
+Session::set('key', 'value');
+$value = Session::get('key');
+```
+With Redis driver (you have to install predis/predis)
+```php
+$params = [
+    'scheme' => 'tcp',
+    'host'   => '127.0.0.1',
+    'port'   => 6379,
+];
+$redis = new Predis\Client($params);
+
+// for using a current connection
+Session::useCurrentRedisDriver($redis);
+
+// for creating a new connection
+//Session::useNewRedisDriver($params);
+
+Session::set('key', 'value');
+$value = Session::get('key');
+```
+With your own driver implementing SessionHandlerInterface
+```php
+$driver = new MyCustomDriver();
+Session::useCustomDriver($driver);
+Session::set('key', 'value');
+$value = Session::get('key');
+```
 
 ## Session Methods
 ### General Commands  
@@ -37,7 +96,7 @@ Extends SessionHandler
 ## Database
 You need to install
 ```php
-composer require rancoud/session
+composer require rancoud/database
 ```
 ```sql
 CREATE TABLE IF NOT EXISTS `sessions` (
