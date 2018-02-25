@@ -101,7 +101,7 @@ class SessionTest extends TestCase
     public function testStartException()
     {
         static::expectException(Exception::class);
-        Session::start();
+        Session::start(['read_and_write' => false]);
         Session::start();
     }
 
@@ -111,7 +111,7 @@ class SessionTest extends TestCase
     public function testUseDefaultDriverWhenAlreadyStartedException()
     {
         static::expectException(Exception::class);
-        Session::start();
+        Session::start(['read_and_write' => false]);
         Session::useDefaultDriver();
     }
 
@@ -121,7 +121,7 @@ class SessionTest extends TestCase
     public function testUseFileDriverWhenAlreadyStartedException()
     {
         static::expectException(Exception::class);
-        Session::start();
+        Session::start(['read_and_write' => false]);
         Session::useFileDriver();
     }
 
@@ -131,48 +131,8 @@ class SessionTest extends TestCase
     public function testUseCustomDriverWhenAlreadyStartedException()
     {
         static::expectException(Exception::class);
-        Session::start();
+        Session::start(['read_and_write' => false]);
         Session::useCustomDriver(new File());
-    }
-
-    /**
-     * @runInSeparateProcess
-     */
-    public function testSetNameWhenAlreadyStartedException()
-    {
-        static::expectException(Exception::class);
-        Session::start();
-        Session::setName('test');
-    }
-
-    /**
-     * @runInSeparateProcess
-     */
-    public function testSetSavePathWhenAlreadyStartedException()
-    {
-        static::expectException(Exception::class);
-        Session::start();
-        Session::setSavePath('test');
-    }
-
-    /**
-     * @runInSeparateProcess
-     */
-    public function testSetCookieDomainWhenAlreadyStartedException()
-    {
-        static::expectException(Exception::class);
-        Session::start();
-        Session::setCookieDomain('test');
-    }
-
-    /**
-     * @runInSeparateProcess
-     */
-    public function testSetLifetimeWhenAlreadyStartedException()
-    {
-        static::expectException(Exception::class);
-        Session::start();
-        Session::setLifetime(0);
     }
 
     /**

@@ -5,29 +5,23 @@ declare(strict_types=1);
 namespace Rancoud\Session;
 
 use Exception;
-use SessionHandler;
-use SessionHandlerInterface;
 
 /**
  * Class Session.
  */
-class Session
+class Session extends DriverManager
 {
+    use ArrayManager;
+
     /** @var bool */
     protected static $hasStarted = false;
-    /** @var SessionHandlerInterface */
-    protected static $driver = null;
-    /** @var string */
-    protected static $name = null;
-    /** @var string */
-    protected static $savePath = null;
-    /** @var string */
-    protected static $cookieDomain = null;
-    /** @var string */
-    protected static $lifetime = 1440;
     /** @var bool */
-    protected static $readOnly = false;
-    protected static $options = [];
+    protected static $options = [
+        'read_and_close'   => true,
+        'cookie_httponly'  => '1',
+        'use_only_cookies' => '1',
+        'use_trans_sid'    => '0'
+    ];
 
     /**
      * @param array $options
@@ -38,13 +32,37 @@ class Session
     {
         static::throwExceptionIfHasStarted();
 
+        static::populateOptions($options);
+
+        static::setupAndStart();
+    }
+
+    /**
+     * @param array $options
+     *
+     * @throws Exception
+     */
+    protected static function populateOptions(array $options = []): void
+    {
+        self::validateOptions($options);
+
+        static::setOptions($options);
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected static function setupAndStart()
+    {
         static::configureDriver();
         static::setupSessionParameters();
-        static::startSession($options);
+        static::startSession();
 
         static::$hasStarted = true;
-        if (array_key_exists('read_and_close', $options) && $options['read_and_close'] === true) {
+        if (static::$options['read_and_close']) {
             static::$hasStarted = false;
+        } else {
+            static::restoreFlashData();
         }
     }
 
@@ -59,285 +77,17 @@ class Session
     }
 
     /**
-     * @throws \Exception
-     */
-    protected static function configureDriver(): void
-    {
-        if (empty(static::$driver)) {
-            static::useDefaultDriver();
-        }
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public static function useDefaultDriver(): void
-    {
-        static::throwExceptionIfHasStarted();
-
-        static::$driver = new SessionHandler();
-    }
-
-    /**
-     * @param string      $key
-     * @param string|null $method
-     *
-     * @throws \Exception
-     */
-    public static function useDefaultEncryptionDriver(string $key, string $method = null): void
-    {
-        static::throwExceptionIfHasStarted();
-
-        $driver = new DefaultEncryption();
-        static::setKeyAndMethod($driver, $key, $method);
-
-        static::$driver = $driver;
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public static function useFileDriver(): void
-    {
-        static::throwExceptionIfHasStarted();
-
-        static::$driver = new File();
-    }
-
-    /**
-     * @param string      $key
-     * @param string|null $method
-     *
-     * @throws \Exception
-     */
-    public static function useFileEncryptionDriver(string $key, string $method = null): void
-    {
-        static::throwExceptionIfHasStarted();
-
-        $driver = new FileEncryption();
-        static::setKeyAndMethod($driver, $key, $method);
-
-        static::$driver = $driver;
-    }
-
-    /**
-     * @param $configuration
-     *
      * @throws Exception
      */
-    public static function useNewDatabaseDriver($configuration): void
-    {
-        static::throwExceptionIfHasStarted();
-
-        $driver = new Database();
-        $driver->setNewDatabase($configuration);
-
-        static::$driver = $driver;
-    }
-
-    /**
-     * @param $database
-     *
-     * @throws Exception
-     */
-    public static function useCurrentDatabaseDriver($database): void
-    {
-        static::throwExceptionIfHasStarted();
-
-        $driver = new Database();
-        $driver->setCurrentDatabase($database);
-
-        static::$driver = $driver;
-    }
-
-    /**
-     * @param string $key
-     * @param        $configuration
-     * @param string $method
-     *
-     * @throws Exception
-     */
-    public static function useNewDatabaseEncryptionDriver($configuration, string $key, string $method = null): void
-    {
-        static::throwExceptionIfHasStarted();
-
-        $driver = new DatabaseEncryption();
-        $driver->setNewDatabase($configuration);
-        static::setKeyAndMethod($driver, $key, $method);
-
-        static::$driver = $driver;
-    }
-
-    /**
-     * @param string $key
-     * @param        $database
-     * @param string $method
-     *
-     * @throws Exception
-     */
-    public static function useCurrentDatabaseEncryptionDriver($database, string $key, string $method = null): void
-    {
-        static::throwExceptionIfHasStarted();
-
-        $driver = new DatabaseEncryption();
-        $driver->setCurrentDatabase($database);
-        static::setKeyAndMethod($driver, $key, $method);
-
-        static::$driver = $driver;
-    }
-
-    /**
-     * @param $configuration
-     *
-     * @throws Exception
-     */
-    public static function useNewRedisDriver($configuration): void
-    {
-        static::throwExceptionIfHasStarted();
-
-        $driver = new Redis();
-        $driver->setNewRedis($configuration);
-        $driver->setLifetime(static::$lifetime);
-
-        static::$driver = $driver;
-    }
-
-    /**
-     * @param $redis
-     *
-     * @throws Exception
-     */
-    public static function useCurrentRedisDriver($redis): void
-    {
-        static::throwExceptionIfHasStarted();
-
-        $driver = new Redis();
-        $driver->setCurrentRedis($redis);
-        $driver->setLifetime(static::$lifetime);
-
-        static::$driver = $driver;
-    }
-
-    /**
-     * @param string $key
-     * @param        $configuration
-     * @param string $method
-     *
-     * @throws Exception
-     */
-    public static function useNewRedisEncryptionDriver($configuration, string $key, string $method = null): void
-    {
-        static::throwExceptionIfHasStarted();
-
-        $driver = new RedisEncryption();
-        $driver->setNewRedis($configuration);
-        static::setKeyAndMethod($driver, $key, $method);
-        $driver->setLifetime(static::$lifetime);
-
-        static::$driver = $driver;
-    }
-
-    /**
-     * @param string $key
-     * @param        $redis
-     * @param string $method
-     *
-     * @throws Exception
-     */
-    public static function useCurrentRedisEncryptionDriver($redis, string $key, string $method = null): void
-    {
-        static::throwExceptionIfHasStarted();
-
-        $driver = new RedisEncryption();
-        $driver->setCurrentRedis($redis);
-        static::setKeyAndMethod($driver, $key, $method);
-        $driver->setLifetime(static::$lifetime);
-
-        static::$driver = $driver;
-    }
-
-    /**
-     * @param \Rancoud\Session\Encryption $driver
-     * @param                             $key
-     * @param                             $method
-     *
-     * @throws \Exception
-     */
-    private static function setKeyAndMethod($driver, $key, $method): void
-    {
-        $driver->setKey($key);
-        if ($method !== null) {
-            $driver->setMethod($method);
-        }
-    }
-
-    /**
-     * @param \SessionHandlerInterface $customDriver
-     *
-     * @throws \Exception
-     */
-    public static function useCustomDriver(SessionHandlerInterface $customDriver): void
-    {
-        static::throwExceptionIfHasStarted();
-
-        static::$driver = $customDriver;
-    }
-
-    /**
-     * @param string $name
-     *
-     * @throws \Exception
-     */
-    public static function setName(string $name): void
-    {
-        static::throwExceptionIfHasStarted();
-
-        static::$name = $name;
-    }
-
-    /**
-     * @param string $savePath
-     *
-     * @throws \Exception
-     */
-    public static function setSavePath(string $savePath): void
-    {
-        static::throwExceptionIfHasStarted();
-
-        static::$savePath = $savePath;
-    }
-
-    /**
-     * @param string $cookieDomain
-     *
-     * @throws Exception
-     */
-    public static function setCookieDomain(string $cookieDomain): void
-    {
-        static::throwExceptionIfHasStarted();
-
-        static::$cookieDomain = $cookieDomain;
-    }
-
-    /**
-     * @param int $lifetime
-     *
-     * @throws \Exception
-     */
-    public static function setLifetime(int $lifetime): void
-    {
-        static::throwExceptionIfHasStarted();
-
-        static::$lifetime = $lifetime;
-    }
-
     protected static function setupSessionParameters(): void
     {
-        if (!empty(static::$name)) {
-            session_name(static::$name);
-        }
+        session_name(static::getOption('name'));
 
         session_set_save_handler(static::$driver);
+
+        session_save_path(static::getOption('save_path'));
+
+        static::setupCookieParams();
 
         register_shutdown_function('session_write_close');
     }
@@ -349,15 +99,13 @@ class Session
      *
      * @return bool
      */
-    protected static function startSession(array $options = []): bool
+    protected static function startSession(): bool
     {
-        static::validateOptions($options);
-
-        $options = static::setupIniSession($options);
+        static::validateOptions(static::$options);
 
         static::setupCookieParams();
 
-        return session_start($options);
+        return session_start(static::$options);
     }
 
     /**
@@ -415,50 +163,25 @@ class Session
     }
 
     /**
-     * @param array $options
-     *
-     * @return array
+     * @throws Exception
      */
-    protected static function setupIniSession(array $options = []): array
-    {
-        if (array_key_exists('save_path', $options)) {
-            static::$savePath = $options['save_path'];
-        } elseif (!empty(static::$savePath)) {
-            $options['save_path'] = static::$savePath;
-            session_save_path(static::$savePath);
-        } elseif (empty(ini_get('session.save_path'))) {
-            static::$savePath = '/tmp';
-            $options['save_path'] = static::$savePath;
-            session_save_path(static::$savePath);
-        }
-
-        if (!empty(static::$cookieDomain)) {
-            $options['cookie_domain'] = $options['cookie_domain'] ?? static::$cookieDomain;
-        }
-
-        $options['cookie_httponly'] = $options['cookie_httponly'] ?? '1';
-        $options['use_only_cookies'] = $options['use_only_cookies'] ?? '1';
-        $options['use_trans_sid'] = $options['use_trans_sid'] ?? '0';
-        $options['read_and_close'] = $options['read_and_close'] ?? static::$readOnly;
-
-        return $options;
-    }
-
     protected static function setupCookieParams(): void
     {
-        $cookieParams = session_get_cookie_params();
         session_set_cookie_params(
-            static::$lifetime,
-            $cookieParams['path'],
-            $cookieParams['domain'],
+            static::getOption('cookie_lifetime'),
+            static::getOption('cookie_path'),
+            static::getOption('cookie_domain'),
             isset($_SERVER['HTTPS']),
             true
         );
     }
 
+    /**
+     * @throws Exception
+     */
     public static function regenerate(): void
     {
-        session_name(static::$name);
+        session_name(static::getOption('name'));
         session_regenerate_id(true);
     }
 
@@ -476,11 +199,6 @@ class Session
         return session_abort();
     }
 
-    public static function readOnly(): void
-    {
-        static::$readOnly = true;
-    }
-
     /**
      * @return bool
      */
@@ -490,106 +208,79 @@ class Session
     }
 
     /**
-     * @param $key
-     * @param $value
-     *
-     * @throws \Exception
-     */
-    public static function set($key, $value): void
-    {
-        static::startSessionIfNotHasStarted();
-
-        $_SESSION[$key] = $value;
-    }
-
-    /**
-     * @param $key
-     *
-     * @throws \Exception
-     *
-     * @return bool
-     */
-    public static function has($key): bool
-    {
-        static::startSessionIfNotHasStarted();
-
-        return array_key_exists($key, $_SESSION);
-    }
-
-    /**
-     * @param $key
-     * @param $value
-     *
-     * @throws \Exception
-     *
-     * @return bool
-     */
-    public static function hasKeyAndValue($key, $value): bool
-    {
-        static::startSessionIfNotHasStarted();
-
-        return array_key_exists($key, $_SESSION) && $_SESSION[$key] === $value;
-    }
-
-    /**
-     * @param $key
-     *
-     * @throws \Exception
-     *
-     * @return mixed
-     */
-    public static function get($key)
-    {
-        static::startSessionIfNotHasStarted();
-
-        return (static::has($key)) ? $_SESSION[$key] : null;
-    }
-
-    /**
-     * @param $key
-     *
-     * @throws \Exception
-     */
-    public static function remove($key): void
-    {
-        static::startSessionIfNotHasStarted();
-
-        if (static::has($key)) {
-            unset($_SESSION[$key]);
-        }
-    }
-
-    /**
      * @throws \Exception
      */
     protected static function startSessionIfNotHasStarted(): void
     {
         if (!static::hasStarted()) {
-            static::start();
+            static::setupAndStart();
         }
     }
 
     /**
-     * @return SessionHandlerInterface
+     * @throws Exception
      */
-    public static function getDriver(): SessionHandlerInterface
+    protected static function startSessionIfNotHasStartedForceWrite()
     {
-        return static::$driver;
+        if (!static::hasStarted()) {
+            static::$options['read_and_close'] = false;
+            static::setupAndStart();
+        }
     }
 
     /**
-     * @param int $userId
+     * @throws Exception
+     *
+     * @return string
      */
-    public static function setUserIdForDatabase(int $userId): void
+    protected static function getLifetimeForRedis()
     {
-        static::$driver->setUserId($userId);
+        return static::getOption('cookie_lifetime');
     }
 
     /**
-     * @param string $prefix
+     * @param $key
+     * @param $value
+     *
+     * @throws Exception
      */
-    public static function setPrefixForFile(string $prefix): void
+    public static function setOption(string $key, $value)
     {
-        static::$driver->setPrefix($prefix);
+        static::validateOptions([$key => $value]);
+        static::$options[$key] = $value;
+    }
+
+    /**
+     * @param array $options
+     *
+     * @throws Exception
+     */
+    public static function setOptions(array $options)
+    {
+        static::validateOptions($options);
+        static::$options = $options + static::$options;
+    }
+
+    /**
+     * @param string $key
+     *
+     * @throws Exception
+     *
+     * @return mixed
+     */
+    public static function getOption(string $key)
+    {
+        if (array_key_exists($key, static::$options)) {
+            return static::$options[$key];
+        }
+
+        static::validateOptions([$key => '']);
+        static::$options[$key] = ini_get('session.' . $key);
+
+        if ($key === 'save_path' && empty(static::$options[$key])) {
+            static::$options[$key] = '/tmp';
+        }
+
+        return static::$options[$key];
     }
 }

@@ -10,6 +10,8 @@ composer require rancoud/session
 ```
 
 ## How to use it?
+By default Session is in read only.  
+If you want to write in $_SESSION you can use `set, remove, getAndRemove, keepFlash`
 The most popular
 ```php
 Session::set('key', 'value');
@@ -17,13 +19,11 @@ $value = Session::get('key');
 ```
 In read only
 ```php
-Session::readOnly();
-Session::set('key', 'value');
 $value = Session::get('key');
 ```
 With custom options
 ```php
-Session::start(['read_and_close' => true]);
+Session::start(['cookie_lifetime' => 1440]);
 Session::set('key', 'value');
 $value = Session::get('key');
 ```
