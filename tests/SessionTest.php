@@ -101,7 +101,8 @@ class SessionTest extends TestCase
     public function testStartException()
     {
         static::expectException(Exception::class);
-        Session::start(['read_and_write' => false]);
+        Session::setReadWrite();
+        Session::start();
         Session::start();
     }
 
@@ -111,7 +112,8 @@ class SessionTest extends TestCase
     public function testUseDefaultDriverWhenAlreadyStartedException()
     {
         static::expectException(Exception::class);
-        Session::start(['read_and_write' => false]);
+        Session::setReadWrite();
+        Session::start();
         Session::useDefaultDriver();
     }
 
@@ -121,7 +123,8 @@ class SessionTest extends TestCase
     public function testUseFileDriverWhenAlreadyStartedException()
     {
         static::expectException(Exception::class);
-        Session::start(['read_and_write' => false]);
+        Session::setReadWrite();
+        Session::start();
         Session::useFileDriver();
     }
 
@@ -131,7 +134,8 @@ class SessionTest extends TestCase
     public function testUseCustomDriverWhenAlreadyStartedException()
     {
         static::expectException(Exception::class);
-        Session::start(['read_and_write' => false]);
+        Session::setReadWrite();
+        Session::start();
         Session::useCustomDriver(new File());
     }
 
@@ -340,4 +344,62 @@ class SessionTest extends TestCase
     }
 
     //exception quand methode pas bonne dans les encryption
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testSetOption()
+    {
+        $defaultOption = Session::getOption('name');
+        static::assertEquals($defaultOption, ini_get('session.name'));
+
+        Session::setOption('name', 'my_custom_name');
+        $customOption = Session::getOption('name');
+
+        static::assertEquals('my_custom_name', $customOption);
+
+        Session::start(['name' => 'my_other_name']);
+
+        $customOption = Session::getOption('name');
+        static::assertEquals('my_other_name', $customOption);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testSetOptionThrowException()
+    {
+        static::expectException(Exception::class);
+        Session::getOption('azerty');
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testGetAll()
+    {
+        $sessionValues = Session::getAll();
+        static::assertTrue(empty($sessionValues));
+
+        Session::set('a', 'b');
+
+        $sessionValues = Session::getAll();
+        static::assertEquals(['a' => 'b'], $sessionValues);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testFlash()
+    {
+        Session::setFlash('a', 'b');
+        Session::setFlash('y', 'u');
+        static::assertTrue(Session::hasFlash('a'));
+        static::assertEquals('b', Session::getFlash('a'));
+        Session::start(['lazy_write' => '0']);
+        Session::keepFlash(['y']);
+        static::assertEquals(['flash_data' => 'u'], $_SESSION);
+        Session::commit();
+        session_start();
+    }
 }

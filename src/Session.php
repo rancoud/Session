@@ -194,7 +194,15 @@ class Session extends DriverManager
     /**
      * @return bool
      */
-    public static function abort(): bool
+    public static function commit(): void
+    {
+        session_commit();
+    }
+
+    /**
+     * @return bool
+     */
+    public static function rollback(): bool
     {
         return session_abort();
     }
@@ -226,6 +234,16 @@ class Session extends DriverManager
             static::$options['read_and_close'] = false;
             static::setupAndStart();
         }
+    }
+
+    public static function setReadOnly()
+    {
+        static::$options['read_and_close'] = true;
+    }
+
+    public static function setReadWrite()
+    {
+        static::$options['read_and_close'] = false;
     }
 
     /**
