@@ -175,6 +175,24 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
+    public function testUseFileDriverWithPrefix()
+    {
+        $prefix = 'youhou_';
+        Session::useFileDriver();
+        Session::setPrefixForFile($prefix);
+        Session::setReadWrite();
+        Session::start(['lazy_write' => '0']);
+        $sessionId = Session::getId();
+        $path = Session::getOption('save_path');
+        Session::commit();
+
+        static::assertEquals('Rancoud\Session\File', get_class(Session::getDriver()));
+        static::assertTrue(file_exists($path . DIRECTORY_SEPARATOR . $prefix . $sessionId));
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
     public function testUseFileEncryptionDriver()
     {
         Session::useFileEncryptionDriver('randomKey');
@@ -243,6 +261,7 @@ class SessionTest extends TestCase
      */
     public function testUseCurrentDatabaseEncryptionDriver()
     {
+        $userId = 50;
         $conf = new \Rancoud\Database\Configurator([
             'engine'   => 'mysql',
             'host'     => '127.0.0.1',
@@ -252,9 +271,16 @@ class SessionTest extends TestCase
         ]);
         $db = new \Rancoud\Database\Database($conf);
         Session::useCurrentDatabaseEncryptionDriver($db, 'randomKey');
-        Session::start();
-
         static::assertEquals('Rancoud\Session\DatabaseEncryption', get_class(Session::getDriver()));
+
+        Session::setUserIdForDatabase($userId);
+        Session::setOption('lazy_write', '0');
+        Session::set('a', 'b');
+        $sessionId = Session::getId();
+        Session::commit();
+
+        $userIdInTable = $db->selectVar('SELECT id_user FROM sessions WHERE id = :id', ['id' => $sessionId]);
+        static::assertEquals($userId, $userIdInTable);
     }
 
     /**
@@ -392,14 +418,147 @@ class SessionTest extends TestCase
      */
     public function testFlash()
     {
-        Session::setFlash('a', 'b');
-        Session::setFlash('y', 'u');
-        static::assertTrue(Session::hasFlash('a'));
-        static::assertEquals('b', Session::getFlash('a'));
+        $flaKey1 = 'a';
+        $flaValue1 = 'b';
+        $flaKey2 = 'y';
+        $flaValue2 = 'u';
+        $flaKey3 = 'my_key';
+        $flaValue3 = null;
+        $flaKey4 = '10';
+        $flaValue4 = 55;
+
+        Session::setFlash($flaKey1, $flaValue1);
+        Session::setFlash($flaKey2, $flaValue2);
+
+        static::assertTrue(Session::hasFlash($flaKey1));
+        static::assertEquals($flaValue1, Session::getFlash($flaKey1));
+
         Session::start(['lazy_write' => '0']);
-        Session::keepFlash(['y']);
-        static::assertEquals(['flash_data' => 'u'], $_SESSION);
+        Session::keepFlash([$flaKey2]);
+
+        static::assertEquals(['flash_data' => [$flaKey2 => $flaValue2]], $_SESSION);
+        $sessionId = Session::getId();
         Session::commit();
-        session_start();
+
+        Session::setId($sessionId);
+        Session::setReadWrite();
+        Session::start();
+
+        static::assertEmpty($_SESSION);
+        static::assertTrue(Session::hasFlash($flaKey2));
+        static::assertEquals($flaValue2, Session::getFlash($flaKey2));
+        static::assertTrue(Session::hasFlashKeyAndValue($flaKey2, $flaValue2));
+
+        Session::setFlash($flaKey3, $flaValue3);
+        Session::setFlash($flaKey4, $flaValue4);
+
+        Session::keepFlash();
+
+        Session::commit();
+        Session::start();
+
+        $expectedFlashValues = [$flaKey2 => $flaValue2, $flaKey3 => $flaValue3, $flaKey4 => $flaValue4];
+        static::assertEquals($expectedFlashValues, Session::getAllFlash());
+        static::assertEmpty($_SESSION);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testRollback()
+    {
+        Session::set('a', 'b');
+        Session::commit();
+
+        static::assertTrue(Session::has('a'));
+        Session::set('azerty', 'b');
+        static::assertTrue(Session::has('azerty'));
+        Session::rollback();
+        static::assertFalse(Session::has('azerty'));
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testUnsaved()
+    {
+        Session::set('a', 'b');
+        Session::commit();
+
+        static::assertTrue(Session::has('a'));
+        Session::set('azerty', 'b');
+        static::assertTrue(Session::has('azerty'));
+        Session::unsaved();
+        Session::start();
+        static::assertEquals(['a' => 'b'], $_SESSION);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testRegenerate()
+    {
+        Session::set('a', 'v');
+        $sessionId = Session::getId();
+        $success = Session::regenerate();
+        static::assertTrue($success);
+        static::assertNotEquals($sessionId, Session::getId());
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testDestroy()
+    {
+        Session::set('a', 'v');
+        $sessionId = Session::getId();
+        $success = Session::destroy();
+        static::assertTrue($success);
+        static::assertNotEquals($sessionId, Session::getId());
+        static::assertEmpty($_SESSION);
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testSetReadOnly()
+    {
+        Session::setReadOnly();
+        Session::start();
+        static::assertFalse(Session::hasStarted());
+    }
+
+    /**
+     * @runInSeparateProcess
+     */
+    public function testGc()
+    {
+        $conf = new \Rancoud\Database\Configurator([
+            'engine'   => 'mysql',
+            'host'     => '127.0.0.1',
+            'user'     => 'root',
+            'password' => '',
+            'database' => 'test_database'
+        ]);
+        $db = new \Rancoud\Database\Database($conf);
+        $db->truncateTable('sessions');
+
+        Session::useCurrentDatabaseDriver($db);
+        Session::setOption('lazy_write', '0');
+        Session::setId('aaa');
+        Session::set('a', 'b');
+        Session::commit();
+
+        Session::setId('bbb');
+        Session::set('b', 'a');
+        Session::commit();
+
+        $db->update('update sessions set last_access = DATE_ADD(NOW(), INTERVAL 5000 SECOND) WHERE id = "bbb"');
+
+        Session::setOption('gc_maxlifetime', '-100');
+        Session::gc();
+
+        $count = $db->count('SELECT COUNT(*) FROM sessions');
+        static::assertEquals(1, $count);
     }
 }

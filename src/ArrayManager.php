@@ -136,6 +136,17 @@ trait ArrayManager
     }
 
     /**
+     * @param string $key
+     * @param        $value
+     *
+     * @return bool
+     */
+    public static function hasFlashKeyAndValue(string $key, $value): bool
+    {
+        return array_key_exists($key, static::$flashData) && static::$flashData[$key] === $value;
+    }
+
+    /**
      * @param $key
      *
      * @throws \Exception
@@ -157,9 +168,11 @@ trait ArrayManager
         if (empty($keys)) {
             $_SESSION['flash_data'] = static::$flashData;
         } else {
+            $_SESSION['flash_data'] = [];
+
             foreach ($keys as $key) {
                 if (static::hasFlash($key)) {
-                    $_SESSION['flash_data'] = static::$flashData[$key];
+                    $_SESSION['flash_data'][$key] = static::$flashData[$key];
                 }
             }
         }
@@ -174,5 +187,13 @@ trait ArrayManager
         if (null !== $data) {
             static::$flashData = $data;
         }
+    }
+
+    /**
+     * @return array
+     */
+    public static function getAllFlash(): array
+    {
+        return static::$flashData;
     }
 }

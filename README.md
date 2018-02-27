@@ -140,3 +140,9 @@ composer require predis/predis
 "vendor/bin/phpunit.bat" --colors --coverage-html ./coverage
 ##### Coveralls.io
 "vendor/bin/phpunit.bat" --colors --coverage-text --coverage-clover build/logs/clover.xml  
+
+# TODO
+Add check on driver for $session_id  
+Add SessionIdInterface  
+Add SessionUpdateTimestampHandlerInterface  
+Add Unit Test on it

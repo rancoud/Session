@@ -20,7 +20,8 @@ class Session extends DriverManager
         'read_and_close'   => true,
         'cookie_httponly'  => '1',
         'use_only_cookies' => '1',
-        'use_trans_sid'    => '0'
+        'use_trans_sid'    => '0',
+        'use_strict_mode'  => '1'
     ];
 
     /**
@@ -179,16 +180,21 @@ class Session extends DriverManager
     /**
      * @throws Exception
      */
-    public static function regenerate(): void
+    public static function regenerate(): bool
     {
-        session_name(static::getOption('name'));
-        session_regenerate_id(true);
+        static::startSessionIfNotHasStartedForceWrite();
+
+        return session_regenerate_id(true);
     }
 
-    public static function destroy(): void
+    /**
+     * @return bool
+     */
+    public static function destroy(): bool
     {
         session_unset();
-        session_destroy();
+
+        return session_destroy();
     }
 
     /**
@@ -196,6 +202,7 @@ class Session extends DriverManager
      */
     public static function commit(): void
     {
+        static::$hasStarted = false;
         session_commit();
     }
 
@@ -204,6 +211,16 @@ class Session extends DriverManager
      */
     public static function rollback(): bool
     {
+        return session_reset();
+    }
+
+    /**
+     * @return bool
+     */
+    public static function unsaved(): bool
+    {
+        static::$hasStarted = false;
+
         return session_abort();
     }
 
@@ -213,6 +230,34 @@ class Session extends DriverManager
     public static function hasStarted(): bool
     {
         return static::$hasStarted;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getId(): string
+    {
+        return session_id();
+    }
+
+    /**
+     * @param string $id
+     *
+     * @return string
+     */
+    public static function setId(string $id): string
+    {
+        return session_id($id);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function gc(): void
+    {
+        static::startSessionIfNotHasStartedForceWrite();
+
+        session_gc();
     }
 
     /**
@@ -228,7 +273,7 @@ class Session extends DriverManager
     /**
      * @throws Exception
      */
-    protected static function startSessionIfNotHasStartedForceWrite()
+    protected static function startSessionIfNotHasStartedForceWrite(): void
     {
         if (!static::hasStarted()) {
             static::$options['read_and_close'] = false;
@@ -236,20 +281,18 @@ class Session extends DriverManager
         }
     }
 
-    public static function setReadOnly()
+    public static function setReadOnly(): void
     {
         static::$options['read_and_close'] = true;
     }
 
-    public static function setReadWrite()
+    public static function setReadWrite(): void
     {
         static::$options['read_and_close'] = false;
     }
 
     /**
      * @throws Exception
-     *
-     * @return string
      */
     protected static function getLifetimeForRedis()
     {
@@ -262,7 +305,7 @@ class Session extends DriverManager
      *
      * @throws Exception
      */
-    public static function setOption(string $key, $value)
+    public static function setOption(string $key, $value): void
     {
         static::validateOptions([$key => $value]);
         static::$options[$key] = $value;
@@ -273,7 +316,7 @@ class Session extends DriverManager
      *
      * @throws Exception
      */
-    public static function setOptions(array $options)
+    public static function setOptions(array $options): void
     {
         static::validateOptions($options);
         static::$options = $options + static::$options;
