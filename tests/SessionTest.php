@@ -188,6 +188,13 @@ class SessionTest extends TestCase
 
         static::assertEquals('Rancoud\Session\File', get_class(Session::getDriver()));
         static::assertTrue(file_exists($path . DIRECTORY_SEPARATOR . $prefix . $sessionId));
+
+        $pattern = $path . DIRECTORY_SEPARATOR . 'youhou_*';
+        foreach (glob($pattern) as $file) {
+            if (file_exists($file)) {
+                unlink($file);
+            }
+        }
     }
 
     /**
@@ -544,18 +551,29 @@ class SessionTest extends TestCase
         $db->truncateTable('sessions');
 
         Session::useCurrentDatabaseDriver($db);
+        Session::setReadWrite();
         Session::setOption('lazy_write', '0');
-        Session::setId('aaa');
+        $baseId = 'siqKrZDUGp5ubt3klF0oorIlFiADXC9jxig9e8leUcCYuZ9w0mXh0b1foEGIBs7SSsdOuLor58vU5liBRVPsTobnvt';
+        $endId1 = 'Qj8hh65DlR3tTFI1SGX3mFciDA9rMOa4LlnMr';
+        $endId2 = 'jklezfoipvfk0lferijkoefzjklgrvefLlnMr';
+        Session::setId($baseId . $endId1);
         Session::set('a', 'b');
         Session::commit();
 
-        Session::setId('bbb');
+        Session::setId($baseId . $endId2);
         Session::set('b', 'a');
         Session::commit();
 
-        $db->update('update sessions set last_access = DATE_ADD(NOW(), INTERVAL 5000 SECOND) WHERE id = "bbb"');
+        sleep(1);
 
-        Session::setOption('gc_maxlifetime', '-100');
+        $sql = 'update sessions set last_access = DATE_ADD(NOW(), INTERVAL 5000 SECOND) WHERE id = :id';
+        $params = ['id' => $baseId . $endId2];
+        $db->update($sql, $params);
+
+        Session::setOption('gc_maxlifetime', '1');
+
+        sleep(1);
+
         Session::gc();
 
         $count = $db->count('SELECT COUNT(*) FROM sessions');

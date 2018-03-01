@@ -339,4 +339,109 @@ class DatabaseEncryptionTest extends TestCase
         }
         static::assertTrue($success);
     }
+
+    public function testValidateId()
+    {
+        $database = new DatabaseEncryption();
+        $database->setKey('randomKey');
+        $database->setCurrentDatabase(static::$db);
+
+        $baseId = 'DiqKrZDUGp5ubt3klF0oorIlFiADXC9jxig9e8leUcCYuZ9w0mXh0b1foEGIBs7SSsdOuLor58vU5liBRVPsTobnvt';
+        $endId1 = 'Dj8hh65DlR3tTFI1SGX3mFciDA9rMOa4LlnMr';
+        $endId2 = 'Dklezfoipvfk0lferijkoefzjklgrvefLlnMr';
+
+        try {
+            $database->write($baseId . $endId1, 'a');
+        } catch (Exception $e) {
+            var_dump(static::$db->getErrors());
+
+            return;
+        }
+
+        static::assertTrue($database->validateId($baseId . $endId1));
+        static::assertTrue($database->validateId($baseId . $endId2));
+        static::assertFalse($database->validateId('kjlfez/fez'));
+    }
+
+    public function testUpdateTimestamp()
+    {
+        $database = new DatabaseEncryption();
+        $database->setKey('randomKey');
+        $database->setCurrentDatabase(static::$db);
+
+        $sessionId = 'sessionId';
+        $data = 'azerty';
+
+        $success = false;
+        try {
+            $success = $database->write($sessionId, $data);
+        } catch (Exception $e) {
+            var_dump(static::$db->getErrors());
+
+            return;
+        }
+        static::assertTrue($success);
+
+        $sql = 'SELECT * FROM sessions WHERE id = :id';
+        $params = ['id' => $sessionId];
+
+        try {
+            $row1 = static::$db->selectRow($sql, $params);
+        } catch (Exception $e) {
+            var_dump(static::$db->getErrors());
+
+            return;
+        }
+
+        static::assertNotEmpty($row1);
+        static::assertNotEquals($data, $row1['content']);
+
+        $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
+        $encryptionTrait->setKey('randomKey');
+        $dataInDatabaseDecrypted = $encryptionTrait->decrypt($row1['content']);
+        static::assertEquals($data, $dataInDatabaseDecrypted);
+
+        sleep(1);
+
+        try {
+            $success = $database->updateTimestamp($sessionId, $data);
+        } catch (Exception $e) {
+            var_dump(static::$db->getErrors());
+
+            return;
+        }
+
+        static::assertTrue($success);
+
+        $sql = 'SELECT * FROM sessions WHERE id = :id';
+        $params = ['id' => $sessionId];
+
+        try {
+            $row2 = static::$db->selectRow($sql, $params);
+        } catch (Exception $e) {
+            var_dump(static::$db->getErrors());
+
+            return;
+        }
+
+        static::assertNotEmpty($row2);
+        static::assertNotEquals($data, $row2['content']);
+        $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
+        $encryptionTrait->setKey('randomKey');
+        $dataInDatabaseDecrypted = $encryptionTrait->decrypt($row2['content']);
+        static::assertEquals($data, $dataInDatabaseDecrypted);
+
+        static::assertTrue($row1['last_access'] < $row2['last_access']);
+    }
+
+    public function testCreateId()
+    {
+        $database = new DatabaseEncryption();
+        $database->setKey('randomKey');
+        $database->setCurrentDatabase(static::$db);
+
+        $string = $database->create_sid();
+
+        static::assertTrue(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string) === 1);
+    }
 }

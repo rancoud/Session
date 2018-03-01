@@ -6,11 +6,13 @@ namespace Rancoud\Session;
 
 use Predis\Client as Predis;
 use SessionHandlerInterface;
+use SessionIdInterface;
+use SessionUpdateTimestampHandlerInterface;
 
 /**
  * Class Redis.
  */
-class Redis implements SessionHandlerInterface
+class Redis implements SessionHandlerInterface, SessionIdInterface, SessionUpdateTimestampHandlerInterface
 {
     /**
      * @var Predis
@@ -96,5 +98,46 @@ class Redis implements SessionHandlerInterface
     public function gc($lifetime): bool
     {
         return true;
+    }
+
+    /**
+     * Checks if a session identifier already exists or not.
+     *
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function validateId($key)
+    {
+        return preg_match('/^[a-zA-Z0-9-]{127}+$/', $key) === 1;
+    }
+
+    /**
+     * Updates the timestamp of a session when its data didn't change.
+     *
+     * @param string $sessionId
+     * @param string $sessionData
+     *
+     * @return bool
+     */
+    public function updateTimestamp($sessionId, $sessionData)
+    {
+        return $this->write($sessionId, $sessionData);
+    }
+
+    /**
+     * @return string
+     */
+    public function create_sid()
+    {
+        $string = '';
+        $caracters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';
+
+        $countCaracters = mb_strlen($caracters) - 1;
+        for ($i = 0; $i < 127; ++$i) {
+            $string .= $caracters[rand(0, $countCaracters)];
+        }
+
+        return $string;
     }
 }

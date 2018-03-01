@@ -165,13 +165,14 @@ class FileTest extends TestCase
 
         $this->openSessionForSavingSavePath($file);
 
-        $file->write('exist', 'a');
+        $baseId = 'XiqKrZDUGp5ubt3klF0oorIlFiADXC9jxig9e8leUcCYuZ9w0mXh0b1foEGIBs7SSsdOuLor58vU5liBRVPsTobnvt';
+        $endId1 = 'Xj8hh65DlR3tTFI1SGX3mFciDA9rMOa4LlnMr';
+        $endId2 = 'Xklezfoipvfk0lferijkoefzjklgrvefLlnMr';
 
-        static::assertTrue($file->validateId('exist'));
-        static::assertFalse($file->validateId('notExists'));
+        $file->write($baseId . $endId1, 'a');
 
-        static::assertTrue($file->validateId('exist'));
-        static::assertFalse($file->validateId('notExists'));
+        static::assertTrue($file->validateId($baseId . $endId1));
+        static::assertTrue($file->validateId($baseId . $endId2));
         static::assertFalse($file->validateId('kjlfez/fez'));
     }
 
@@ -210,7 +211,6 @@ class FileTest extends TestCase
 
         $string = $file->create_sid();
 
-        static::assertTrue(mb_strlen($string) === 127);
-        static::assertTrue(preg_match('/^[a-zA-Z0-9-]+$/', $string) === 1);
+        static::assertTrue(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string) === 1);
     }
 }

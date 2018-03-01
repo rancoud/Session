@@ -148,4 +148,60 @@ class RedisTest extends TestCase
         $success = $redis->write($sessionId, $data);
         static::assertTrue($success);
     }
+
+    public function testValidateId()
+    {
+        $redis = new Redis();
+        $redis->setCurrentRedis(static::$redis);
+
+        $baseId = 'DiqKrZDUGp5ubt3klF0oorIlFiADXC9jxig9e8leUcCYuZ9w0mXh0b1foEGIBs7SSsdOuLor58vU5liBRVPsTobnvt';
+        $endId1 = 'Dj8hh65DlR3tTFI1SGX3mFciDA9rMOa4LlnMr';
+        $endId2 = 'Dklezfoipvfk0lferijkoefzjklgrvefLlnMr';
+
+        $redis->write($baseId . $endId1, 'a');
+
+        static::assertTrue($redis->validateId($baseId . $endId1));
+        static::assertTrue($redis->validateId($baseId . $endId2));
+        static::assertFalse($redis->validateId('kjlfez/fez'));
+    }
+
+    public function testUpdateTimestamp()
+    {
+        $redis = new Redis();
+        $redis->setCurrentRedis(static::$redis);
+
+        $sessionId = 'sessionId';
+        $data = 'azerty';
+
+        $success = $redis->write($sessionId, $data);
+        static::assertTrue($success);
+
+        $dataInRedis = static::$redis->get($sessionId);
+        static::assertEquals($data, $dataInRedis);
+        $ttl1 = static::$redis->ttl($sessionId);
+
+        sleep(2);
+
+        $ttl2 = static::$redis->ttl($sessionId);
+
+        $success = $redis->updateTimestamp($sessionId, $data);
+        static::assertTrue($success);
+
+        $dataInRedis2 = static::$redis->get($sessionId);
+        static::assertEquals($data, $dataInRedis2);
+        $ttl3 = static::$redis->ttl($sessionId);
+
+        static::assertTrue($ttl2 < $ttl1);
+        static::assertTrue($ttl3 > $ttl2);
+    }
+
+    public function testCreateId()
+    {
+        $redis = new Redis();
+        $redis->setCurrentRedis(static::$redis);
+
+        $string = $redis->create_sid();
+
+        static::assertTrue(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string) === 1);
+    }
 }

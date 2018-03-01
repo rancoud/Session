@@ -170,13 +170,14 @@ class FileEncryptionTest extends TestCase
 
         $this->openSessionForSavingSavePath($fileEncryption);
 
-        $fileEncryption->write('exist', 'a');
+        $baseId = 'TiqKrZDUGp5ubt3klF0oorIlFiADXC9jxig9e8leUcCYuZ9w0mXh0b1foEGIBs7SSsdOuLor58vU5liBRVPsTobnvt';
+        $endId1 = 'Tj8hh65DlR3tTFI1SGX3mFciDA9rMOa4LlnMr';
+        $endId2 = 'Tklezfoipvfk0lferijkoefzjklgrvefLlnMr';
 
-        static::assertTrue($fileEncryption->validateId('exist'));
-        static::assertFalse($fileEncryption->validateId('notExists'));
+        $fileEncryption->write($baseId . $endId1, 'a');
 
-        static::assertTrue($fileEncryption->validateId('exist'));
-        static::assertFalse($fileEncryption->validateId('notExists'));
+        static::assertTrue($fileEncryption->validateId($baseId . $endId1));
+        static::assertTrue($fileEncryption->validateId($baseId . $endId2));
         static::assertFalse($fileEncryption->validateId('kjlfez/fez'));
     }
 
@@ -228,7 +229,6 @@ class FileEncryptionTest extends TestCase
 
         $string = $fileEncryption->create_sid();
 
-        static::assertTrue(mb_strlen($string) === 127);
-        static::assertTrue(preg_match('/^[a-zA-Z0-9-]+$/', $string) === 1);
+        static::assertTrue(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string) === 1);
     }
 }

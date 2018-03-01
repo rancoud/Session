@@ -118,17 +118,7 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
      */
     public function validateId($key)
     {
-        if (preg_match('/^[a-zA-Z0-9-]+$/', $key) !== 1) {
-            return false;
-        }
-
-        $path = $this->savePath . DIRECTORY_SEPARATOR . $this->prefix;
-        $files = glob($path . '*');
-        if (in_array($path . $key, $files, true)) {
-            return true;
-        }
-
-        return false;
+        return preg_match('/^[a-zA-Z0-9-]{127}+$/', $key) === 1;
     }
 
     /**

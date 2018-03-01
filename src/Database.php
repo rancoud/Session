@@ -7,11 +7,13 @@ namespace Rancoud\Session;
 use Rancoud\Database\Configurator;
 use Rancoud\Database\Database as Db;
 use SessionHandlerInterface;
+use SessionIdInterface;
+use SessionUpdateTimestampHandlerInterface;
 
 /**
  * Class Database.
  */
-class Database implements SessionHandlerInterface
+class Database implements SessionHandlerInterface, SessionIdInterface, SessionUpdateTimestampHandlerInterface
 {
     /** @var \Rancoud\Database\Database */
     protected $db;
@@ -127,5 +129,50 @@ class Database implements SessionHandlerInterface
         $this->db->delete($sql, $params);
 
         return true;
+    }
+
+    /**
+     * Checks if a session identifier already exists or not.
+     *
+     * @param string $key
+     *
+     * @throws \Exception
+     *
+     * @return bool
+     */
+    public function validateId($key)
+    {
+        return preg_match('/^[a-zA-Z0-9-]{127}+$/', $key) === 1;
+    }
+
+    /**
+     * Updates the timestamp of a session when its data didn't change.
+     *
+     * @param string $sessionId
+     * @param string $sessionData
+     *
+     * @throws \Exception
+     *
+     * @return bool
+     */
+    public function updateTimestamp($sessionId, $sessionData)
+    {
+        return $this->write($sessionId, $sessionData);
+    }
+
+    /**
+     * @return string
+     */
+    public function create_sid()
+    {
+        $string = '';
+        $caracters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';
+
+        $countCaracters = mb_strlen($caracters) - 1;
+        for ($i = 0; $i < 127; ++$i) {
+            $string .= $caracters[rand(0, $countCaracters)];
+        }
+
+        return $string;
     }
 }
