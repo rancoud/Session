@@ -6,6 +6,7 @@ namespace Rancoud\Session\Test;
 
 use PHPUnit\Framework\TestCase;
 use Rancoud\Session\File;
+use Rancoud\Session\FileEncryption;
 
 /**
  * Class FileTest.
@@ -158,4 +159,18 @@ class FileTest extends TestCase
         $isFileNotExist = !file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
         static::assertTrue($isFileNotExist);
     }
+
+    public function testValidateId()
+    {
+        $file = new File();
+
+        $this->openSessionForSavingSavePath($file);
+
+        $file->write('exist', 'a');
+
+        static::assertTrue($file->validateId('exist'));
+        static::assertFalse($file->validateId('notExists'));
+    }
+    public function updateTimestamp(){}
+    public function testCreateId(){}
 }

@@ -5,11 +5,13 @@ declare(strict_types=1);
 namespace Rancoud\Session;
 
 use SessionHandlerInterface;
+use SessionIdInterface;
+use SessionUpdateTimestampHandlerInterface;
 
 /**
  * Class File.
  */
-class File implements SessionHandlerInterface
+class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdateTimestampHandlerInterface
 {
     protected $savePath;
     protected $prefix = 'sess_';
@@ -105,5 +107,44 @@ class File implements SessionHandlerInterface
         }
 
         return true;
+    }
+
+    /**
+     * Checks if a session identifier already exists or not.
+     *
+     * @param string $key
+     *
+     * @return bool
+     */
+    public function validateId($key)
+    {
+        var_dump('validateId', $key);
+        $path = $this->savePath . DIRECTORY_SEPARATOR . $this->prefix;
+        $files = glob($path . '*');
+        if(in_array($path . $key, $files)){
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Updates the timestamp of a session when its data didn't change.
+     *
+     * @param string $key
+     * @param string $val
+     *
+     * @return bool
+     */
+    public function updateTimestamp($key, $val)
+    {
+        var_dump('updateTimestamp', $key, $val);
+        // TODO: Implement updateTimestamp() method.
+    }
+
+    public function create_sid()
+    {
+        var_dump('create_sid');
+        return 'a';
     }
 }
