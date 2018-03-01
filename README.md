@@ -9,21 +9,25 @@ Session.
 composer require rancoud/session
 ```
 
+## Informations
+By default Session is in read only (session option read_and_close).  
+Session will automatically start in read only when using `get, has, hasKeyAndValue, getAll`
+Session will automatically start in write mode when using `set, remove, getAndRemove, keepFlash, gc, regenerate`
+
 ## How to use it?
-By default Session is in read only.  
-If you want to write in $_SESSION you can use `set, remove, getAndRemove, keepFlash`
-The most popular
+Set and get value from $_SESSION
 ```php
 Session::set('key', 'value');
 $value = Session::get('key');
 ```
 In read only
 ```php
-Session::setReadWrite(); // before starting the session
+Session::setReadWrite(); // before starting session
 $value = Session::get('key');
 ```
 With custom options
 ```php
+Session::setOption('name', 'custom_session_name');
 Session::start(['cookie_lifetime' => 1440]);
 Session::set('key', 'value');
 $value = Session::get('key');
@@ -116,34 +120,5 @@ composer require predis/predis
 ```
 
 ## How to Dev
-### Linux
-#### Coding Style
-./vendor/bin/phpcbf  
-./vendor/bin/phpcs  
-./vendor/bin/php-cs-fixer fix --diff  
-#### Unit Testing
-./vendor/bin/phpunit --colors  
-#### Code Coverage
-##### Local
-./vendor/bin/phpunit --colors --coverage-html ./coverage
-##### Coveralls.io
-./vendor/bin/phpunit --colors --coverage-text --coverage-clover build/logs/clover.xml  
-
-### Windows
-#### Coding Style
-"vendor/bin/phpcbf.bat"  
-"vendor/bin/phpcs.bat"  
-"vendor/bin/php-cs-fixer.bat" fix --diff   
-#### Unit Testing
-"vendor/bin/phpunit.bat" --colors  
-#### Code Coverage
-##### Local
-"vendor/bin/phpunit.bat" --colors --coverage-html ./coverage
-##### Coveralls.io
-"vendor/bin/phpunit.bat" --colors --coverage-text --coverage-clover build/logs/clover.xml  
-
-# TODO
-Add check on driver for $session_id  
-Add SessionIdInterface  
-Add SessionUpdateTimestampHandlerInterface  
-Add Unit Test on it
+`./run_all_commands.sh` for php-cs-fixer and phpunit and coverage  
+`./run_php_unit_coverage.sh` for phpunit and coverage    
