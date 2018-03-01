@@ -164,4 +164,62 @@ class FileWithNewPrefixTest extends TestCase
         $isFileNotExist = !file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
         static::assertTrue($isFileNotExist);
     }
+
+    public function testValidateId()
+    {
+        $file = new File();
+        $file->setPrefix('myprefix_');
+
+        $this->openSessionForSavingSavePath($file);
+
+        $file->write('exist', 'a');
+
+        static::assertTrue($file->validateId('exist'));
+        static::assertFalse($file->validateId('notExists'));
+
+        static::assertTrue($file->validateId('exist'));
+        static::assertFalse($file->validateId('notExists'));
+        static::assertFalse($file->validateId('kjlfez/fez'));
+    }
+
+    public function testUpdateTimestamp()
+    {
+        $file = new File();
+        $file->setPrefix('myprefix_');
+
+        $this->openSessionForSavingSavePath($file);
+
+        $sessionId = 'sessionId';
+        $data = 'azerty';
+        $success = $file->write($sessionId, $data);
+        static::assertTrue($success);
+
+        $dataInFile = file_get_contents($this->getPath() . DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
+        $oldFileModifiedTime = filemtime($this->getPath() . DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
+        static::assertEquals($data, $dataInFile);
+
+        sleep(1);
+        $success = $file->updateTimestamp($sessionId, $data);
+        static::assertTrue($success);
+
+        clearstatcache();
+
+        $dataInFile2 = file_get_contents($this->getPath() . DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
+        static::assertEquals($data, $dataInFile2);
+        static::assertEquals($dataInFile, $dataInFile2);
+        $newFileModifiedTime = filemtime($this->getPath() . DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
+
+        static::assertTrue($oldFileModifiedTime < $newFileModifiedTime);
+    }
+
+    public function testCreateId()
+    {
+        $file = new File();
+        $file->setPrefix('myprefix_');
+
+        $string = $file->create_sid();
+
+        static::assertTrue(mb_strlen($string) === 127);
+        static::assertTrue(preg_match('/^[a-zA-Z0-9-]+$/', $string) === 1);
+    }
 }

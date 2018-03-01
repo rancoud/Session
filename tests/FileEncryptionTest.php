@@ -162,4 +162,73 @@ class FileEncryptionTest extends TestCase
         $isFileNotExist = !file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
         static::assertTrue($isFileNotExist);
     }
+
+    public function testValidateId()
+    {
+        $fileEncryption = new FileEncryption();
+        $fileEncryption->setKey('randomKey');
+
+        $this->openSessionForSavingSavePath($fileEncryption);
+
+        $fileEncryption->write('exist', 'a');
+
+        static::assertTrue($fileEncryption->validateId('exist'));
+        static::assertFalse($fileEncryption->validateId('notExists'));
+
+        static::assertTrue($fileEncryption->validateId('exist'));
+        static::assertFalse($fileEncryption->validateId('notExists'));
+        static::assertFalse($fileEncryption->validateId('kjlfez/fez'));
+    }
+
+    public function testUpdateTimestamp()
+    {
+        $fileEncryption = new FileEncryption();
+        $fileEncryption->setKey('randomKey');
+
+        $this->openSessionForSavingSavePath($fileEncryption);
+
+        $sessionId = 'sessionId';
+        $data = 'azerty';
+        $success = $fileEncryption->write($sessionId, $data);
+        static::assertTrue($success);
+
+        $dataInFile = file_get_contents($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        $oldFileModifiedTime = filemtime($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        static::assertNotEquals($data, $dataInFile);
+
+        $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
+        $encryptionTrait->setKey('randomKey');
+        $dataInFileDecrypted = $encryptionTrait->decrypt($dataInFile);
+        static::assertEquals($data, $dataInFileDecrypted);
+
+        sleep(1);
+        $success = $fileEncryption->updateTimestamp($sessionId, $data);
+        static::assertTrue($success);
+
+        clearstatcache();
+
+        $dataInFile2 = file_get_contents($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        static::assertNotEquals($data, $dataInFile2);
+
+        $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
+        $encryptionTrait->setKey('randomKey');
+        $dataInFileDecrypted = $encryptionTrait->decrypt($dataInFile2);
+        static::assertEquals($data, $dataInFileDecrypted);
+        static::assertNotEquals($dataInFile, $dataInFile2);
+
+        $newFileModifiedTime = filemtime($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+
+        static::assertTrue($oldFileModifiedTime < $newFileModifiedTime);
+    }
+
+    public function testCreateId()
+    {
+        $fileEncryption = new FileEncryption();
+        $fileEncryption->setKey('randomKey');
+
+        $string = $fileEncryption->create_sid();
+
+        static::assertTrue(mb_strlen($string) === 127);
+        static::assertTrue(preg_match('/^[a-zA-Z0-9-]+$/', $string) === 1);
+    }
 }

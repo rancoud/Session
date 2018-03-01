@@ -19,6 +19,7 @@ $value = Session::get('key');
 ```
 In read only
 ```php
+Session::setReadWrite(); // before starting the session
 $value = Session::get('key');
 ```
 With custom options

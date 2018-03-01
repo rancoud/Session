@@ -118,10 +118,13 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
      */
     public function validateId($key)
     {
-        var_dump('validateId', $key);
+        if (preg_match('/^[a-zA-Z0-9-]+$/', $key) !== 1) {
+            return false;
+        }
+
         $path = $this->savePath . DIRECTORY_SEPARATOR . $this->prefix;
         $files = glob($path . '*');
-        if(in_array($path . $key, $files)){
+        if (in_array($path . $key, $files, true)) {
             return true;
         }
 
@@ -131,20 +134,29 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
     /**
      * Updates the timestamp of a session when its data didn't change.
      *
-     * @param string $key
-     * @param string $val
+     * @param string $sessionId
+     * @param string $sessionData
      *
      * @return bool
      */
-    public function updateTimestamp($key, $val)
+    public function updateTimestamp($sessionId, $sessionData)
     {
-        var_dump('updateTimestamp', $key, $val);
-        // TODO: Implement updateTimestamp() method.
+        return $this->write($sessionId, $sessionData);
     }
 
+    /**
+     * @return string
+     */
     public function create_sid()
     {
-        var_dump('create_sid');
-        return 'a';
+        $string = '';
+        $caracters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';
+
+        $countCaracters = mb_strlen($caracters) - 1;
+        for ($i = 0; $i < 127; ++$i) {
+            $string .= $caracters[rand(0, $countCaracters)];
+        }
+
+        return $string;
     }
 }
