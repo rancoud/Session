@@ -10,9 +10,12 @@ composer require rancoud/session
 ```
 
 ## Informations
-By default Session is in read only (session option read_and_close).  
-Session will automatically start in read only when using `get, has, hasKeyAndValue, getAll`
-Session will automatically start in write mode when using `set, remove, getAndRemove, keepFlash, gc, regenerate`
+By default session is in read only (option read_and_close = 1).  
+You can specify it using `Session::setReadWrite()` or `Session::setReadOnly()`  
+
+Session::start() is not needed, but: 
+* Session will automatically start in read only when using `get, has, hasKeyAndValue, getAll`
+* Session will automatically start in write mode when using `set, remove, getAndRemove, keepFlash, gc, regenerate`
 
 ## How to use it?
 Set and get value from $_SESSION
@@ -20,15 +23,14 @@ Set and get value from $_SESSION
 Session::set('key', 'value');
 $value = Session::get('key');
 ```
-In read only
+Use custom options
 ```php
-Session::setReadWrite(); // before starting session
-$value = Session::get('key');
-```
-With custom options
-```php
+// first way
 Session::setOption('name', 'custom_session_name');
+
+// second way
 Session::start(['cookie_lifetime' => 1440]);
+
 Session::set('key', 'value');
 $value = Session::get('key');
 ```
@@ -92,13 +94,79 @@ $value = Session::get('key');
 
 ## Session Methods
 ### General Commands  
-* method(name: type, [optionnal: type = defalut]):outputType  
+* start([options: array = []]):void  
+* regenerate():bool  
+* destroy():bool  
+* commit():void  
+* rollback():bool  
+* unsaved():bool  
+* hasStarted():bool  
+* getId():string  
+* setId(id: string):string  
+* gc():void  
+* setReadOnly():void  
+* setReadWrite():void  
 
-## Default
+### Variables $_SESSION access
+* set(key: string, value):void  
+* get(key: string):mixed  
+* getAll():array  
+* getAndRemove(key: string):mixed  
+* has(key: string):bool  
+* hasKeyAndValue(key: string, value):bool  
+* remove(key: string):void  
+
+### Variables flash access
+Flash data are store in a separate variable.  
+They will dissapear at the end of the script execution.  
+You can use keepFlash for saving it in $_SESSION.  
+When flash data is restore, it will be delete in $_SESSION.  
+
+* setFlash(key, value):void    
+* getFlash(key):mixed  
+* hasFlash(key):bool  
+* hasFlashKeyAndValue(key: string, value):bool  
+* keepFlash([keys: array = []]):void  
+
+### Options  
+* setOption(key: string, value):void  
+* setOptions(options: array):void  
+* getOption(key: string):mixed  
+
+### Driver
+* getDriver():\SessionHandlerInterface  
+
+#### PHP Session Default Driver
+* useDefaultDriver():void  
+* useDefaultEncryptionDriver(key: string, [method: string = null]):void  
+
+#### File Driver
+* useFileDriver():void  
+* useFileEncryptionDriver(key: string, [method: string = null]):void  
+* setPrefixForFile(prefix: string):void  
+
+#### Database Driver
+* useNewDatabaseDriver(configuration):void  
+* useCurrentDatabaseDriver(databaseInstance):void  
+* useNewDatabaseEncryptionDriver(configuration, key: string, [method: string = null]):void  
+* useCurrentDatabaseEncryptionDriver(databaseInstance, key: string, [method: string = null]):void  
+* setUserIdForDatabase(userId: int):void  
+
+#### Redis Driver
+* useNewRedisDriver(configuration):void  
+* useCurrentRedisDriver(redisInstance):void  
+* useNewRedisEncryptionDriver(configuration, key: string, [method: string = null]):void  
+* useCurrentRedisEncryptionDriver(redisInstance, key: string, [method: string = null]):void  
+
+#### Custom Driver
+* useCustomDriver(customDriver: \SessionHandlerInterface):void  
+
+## Driver Informations
+### Default
 Use SessionHandler
-## File
+### File
 Extends SessionHandler
-## Database
+### Database
 You need to install
 ```php
 composer require rancoud/database
@@ -113,7 +181,7 @@ CREATE TABLE IF NOT EXISTS `sessions` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ```
-## Redis
+### Redis
 You need to install
 ```php
 composer require predis/predis
