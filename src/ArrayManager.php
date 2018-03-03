@@ -136,12 +136,12 @@ trait ArrayManager
     }
 
     /**
-     * @param string $key
-     * @param        $value
+     * @param $key
+     * @param $value
      *
      * @return bool
      */
-    public static function hasFlashKeyAndValue(string $key, $value): bool
+    public static function hasFlashKeyAndValue($key, $value): bool
     {
         return array_key_exists($key, static::$flashData) && static::$flashData[$key] === $value;
     }
@@ -151,7 +151,7 @@ trait ArrayManager
      *
      * @throws \Exception
      *
-     * @return array|mixed
+     * @return mixed
      */
     public static function getFlash($key)
     {

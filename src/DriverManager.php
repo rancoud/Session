@@ -44,7 +44,7 @@ abstract class DriverManager
      * @param string      $key
      * @param string|null $method
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public static function useDefaultEncryptionDriver(string $key, string $method = null): void
     {
@@ -98,16 +98,16 @@ abstract class DriverManager
     }
 
     /**
-     * @param $database
+     * @param $databaseInstance
      *
      * @throws Exception
      */
-    public static function useCurrentDatabaseDriver($database): void
+    public static function useCurrentDatabaseDriver($databaseInstance): void
     {
         static::throwExceptionIfHasStarted();
 
         $driver = new Database();
-        $driver->setCurrentDatabase($database);
+        $driver->setCurrentDatabase($databaseInstance);
 
         static::$driver = $driver;
     }
@@ -132,17 +132,17 @@ abstract class DriverManager
 
     /**
      * @param string $key
-     * @param        $database
+     * @param        $databaseInstance
      * @param string $method
      *
      * @throws Exception
      */
-    public static function useCurrentDatabaseEncryptionDriver($database, string $key, string $method = null): void
+    public static function useCurrentDatabaseEncryptionDriver($databaseInstance, string $key, string $method = null): void
     {
         static::throwExceptionIfHasStarted();
 
         $driver = new DatabaseEncryption();
-        $driver->setCurrentDatabase($database);
+        $driver->setCurrentDatabase($databaseInstance);
         static::setKeyAndMethod($driver, $key, $method);
 
         static::$driver = $driver;
@@ -165,16 +165,16 @@ abstract class DriverManager
     }
 
     /**
-     * @param $redis
+     * @param $redisInstance
      *
      * @throws Exception
      */
-    public static function useCurrentRedisDriver($redis): void
+    public static function useCurrentRedisDriver($redisInstance): void
     {
         static::throwExceptionIfHasStarted();
 
         $driver = new Redis();
-        $driver->setCurrentRedis($redis);
+        $driver->setCurrentRedis($redisInstance);
         $driver->setLifetime(static::getLifetimeForRedis());
 
         static::$driver = $driver;
@@ -201,17 +201,17 @@ abstract class DriverManager
 
     /**
      * @param string $key
-     * @param        $redis
+     * @param        $redisInstance
      * @param string $method
      *
      * @throws Exception
      */
-    public static function useCurrentRedisEncryptionDriver($redis, string $key, string $method = null): void
+    public static function useCurrentRedisEncryptionDriver($redisInstance, string $key, string $method = null): void
     {
         static::throwExceptionIfHasStarted();
 
         $driver = new RedisEncryption();
-        $driver->setCurrentRedis($redis);
+        $driver->setCurrentRedis($redisInstance);
         static::setKeyAndMethod($driver, $key, $method);
         $driver->setLifetime(static::getLifetimeForRedis());
 

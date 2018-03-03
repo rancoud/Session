@@ -94,11 +94,8 @@ class Session extends DriverManager
     }
 
     /**
-     * @param array $options
-     *
-     * @throws Exception
-     *
      * @return bool
+     * @throws Exception
      */
     protected static function startSession(): bool
     {
@@ -197,12 +194,10 @@ class Session extends DriverManager
         return session_destroy();
     }
 
-    /**
-     * @return bool
-     */
     public static function commit(): void
     {
         static::$hasStarted = false;
+
         session_commit();
     }
 
@@ -300,8 +295,8 @@ class Session extends DriverManager
     }
 
     /**
-     * @param $key
-     * @param $value
+     * @param string $key
+     * @param        $value
      *
      * @throws Exception
      */
