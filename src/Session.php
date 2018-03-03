@@ -94,8 +94,9 @@ class Session extends DriverManager
     }
 
     /**
-     * @return bool
      * @throws Exception
+     *
+     * @return bool
      */
     protected static function startSession(): bool
     {
