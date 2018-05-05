@@ -16,8 +16,9 @@ class DefaultEncryption extends SessionHandler
     /**
      * @param string $sessionId
      *
-     * @return string
      * @throws SessionException
+     *
+     * @return string
      */
     public function read($sessionId): string
     {
@@ -30,8 +31,9 @@ class DefaultEncryption extends SessionHandler
      * @param string $sessionId
      * @param string $data
      *
-     * @return bool
      * @throws SessionException
+     *
+     * @return bool
      */
     public function write($sessionId, $data): bool
     {

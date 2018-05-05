@@ -119,8 +119,9 @@ trait Encryption
     /**
      * @param string $data
      *
-     * @return string
      * @throws SessionException
+     *
+     * @return string
      */
     public function encrypt(string $data): string
     {

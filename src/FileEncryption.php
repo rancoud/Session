@@ -14,8 +14,9 @@ class FileEncryption extends File
     /**
      * @param $sessionId
      *
-     * @return string
      * @throws SessionException
+     *
+     * @return string
      */
     public function read($sessionId): string
     {
@@ -28,8 +29,9 @@ class FileEncryption extends File
      * @param $sessionId
      * @param $data
      *
-     * @return bool
      * @throws SessionException
+     *
+     * @return bool
      */
     public function write($sessionId, $data): bool
     {
