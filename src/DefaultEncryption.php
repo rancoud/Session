@@ -14,11 +14,10 @@ class DefaultEncryption extends SessionHandler
     use Encryption;
 
     /**
-     * @param $sessionId
-     *
-     * @throws \Exception
+     * @param string $sessionId
      *
      * @return string
+     * @throws SessionException
      */
     public function read($sessionId): string
     {
@@ -28,12 +27,11 @@ class DefaultEncryption extends SessionHandler
     }
 
     /**
-     * @param $sessionId
-     * @param $data
-     *
-     * @throws \Exception
+     * @param string $sessionId
+     * @param string $data
      *
      * @return bool
+     * @throws SessionException
      */
     public function write($sessionId, $data): bool
     {

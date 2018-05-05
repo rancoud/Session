@@ -15,7 +15,8 @@ class Session extends DriverManager
 
     /** @var bool */
     protected static $hasStarted = false;
-    /** @var bool */
+
+    /** @var array */
     protected static $options = [
         'read_and_close'   => true,
         'cookie_httponly'  => '1',
@@ -68,17 +69,17 @@ class Session extends DriverManager
     }
 
     /**
-     * @throws \Exception
+     * @throws SessionException
      */
     protected static function throwExceptionIfHasStarted(): void
     {
         if (static::hasStarted()) {
-            throw new Exception('Session already started');
+            throw new SessionException('Session already started');
         }
     }
 
     /**
-     * @throws Exception
+     * @throws SessionException
      */
     protected static function setupSessionParameters(): void
     {
@@ -94,7 +95,7 @@ class Session extends DriverManager
     }
 
     /**
-     * @throws Exception
+     * @throws SessionException
      *
      * @return bool
      */
@@ -110,7 +111,7 @@ class Session extends DriverManager
     /**
      * @param array $options
      *
-     * @throws Exception
+     * @throws SessionException
      */
     protected static function validateOptions(array $options = []): void
     {
@@ -156,13 +157,13 @@ class Session extends DriverManager
         $keys = array_keys($options);
         foreach ($keys as $key) {
             if (!in_array($key, $validOptions, true)) {
-                throw new Exception('Incorrect option: ' . $key);
+                throw new SessionException('Incorrect option: ' . $key);
             }
         }
     }
 
     /**
-     * @throws Exception
+     * @throws SessionException
      */
     protected static function setupCookieParams(): void
     {
@@ -257,7 +258,7 @@ class Session extends DriverManager
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     protected static function startSessionIfNotHasStarted(): void
     {
@@ -288,7 +289,9 @@ class Session extends DriverManager
     }
 
     /**
-     * @throws Exception
+     * @throws SessionException
+     *
+     * @return mixed
      */
     protected static function getLifetimeForRedis()
     {
@@ -299,7 +302,7 @@ class Session extends DriverManager
      * @param string $key
      * @param        $value
      *
-     * @throws Exception
+     * @throws SessionException
      */
     public static function setOption(string $key, $value): void
     {
@@ -310,7 +313,7 @@ class Session extends DriverManager
     /**
      * @param array $options
      *
-     * @throws Exception
+     * @throws SessionException
      */
     public static function setOptions(array $options): void
     {
@@ -321,7 +324,7 @@ class Session extends DriverManager
     /**
      * @param string $key
      *
-     * @throws Exception
+     * @throws SessionException
      *
      * @return mixed
      */

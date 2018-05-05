@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Rancoud\Session;
 
+use Exception;
+
 /**
  * Trait ArrayManager.
  */
 trait ArrayManager
 {
+    /** @var array */
     protected static $flashData = [];
 
     abstract protected static function startSessionIfNotHasStarted();
@@ -19,7 +22,7 @@ trait ArrayManager
      * @param $key
      * @param $value
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public static function set(string $key, $value): void
     {
@@ -31,7 +34,7 @@ trait ArrayManager
     /**
      * @param $key
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return bool
      */
@@ -46,7 +49,7 @@ trait ArrayManager
      * @param $key
      * @param $value
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return bool
      */
@@ -60,7 +63,7 @@ trait ArrayManager
     /**
      * @param $key
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return mixed
      */
@@ -74,7 +77,7 @@ trait ArrayManager
     /**
      * @param $key
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public static function remove(string $key): void
     {
@@ -86,7 +89,7 @@ trait ArrayManager
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      *
      * @return array
      */
@@ -100,7 +103,7 @@ trait ArrayManager
     /**
      * @param $key
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return mixed
      */
@@ -118,7 +121,7 @@ trait ArrayManager
      * @param $key
      * @param $value
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public static function setFlash($key, $value)
     {
@@ -149,7 +152,7 @@ trait ArrayManager
     /**
      * @param $key
      *
-     * @throws \Exception
+     * @throws Exception
      *
      * @return mixed
      */
@@ -179,7 +182,7 @@ trait ArrayManager
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public static function restoreFlashData()
     {

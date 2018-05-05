@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Rancoud\Session\Test;
 
-use Exception;
 use PHPUnit\Framework\TestCase;
 use Rancoud\Session\File;
 use Rancoud\Session\Session;
+use Rancoud\Session\SessionException;
 
 /**
  * Class SessionTest.
@@ -100,7 +100,9 @@ class SessionTest extends TestCase
      */
     public function testStartException()
     {
-        static::expectException(Exception::class);
+        static::expectException(SessionException::class);
+        static::expectExceptionMessage('Session already started');
+        
         Session::setReadWrite();
         Session::start();
         Session::start();
@@ -111,7 +113,9 @@ class SessionTest extends TestCase
      */
     public function testUseDefaultDriverWhenAlreadyStartedException()
     {
-        static::expectException(Exception::class);
+        static::expectException(SessionException::class);
+        static::expectExceptionMessage('Session already started');
+        
         Session::setReadWrite();
         Session::start();
         Session::useDefaultDriver();
@@ -122,7 +126,9 @@ class SessionTest extends TestCase
      */
     public function testUseFileDriverWhenAlreadyStartedException()
     {
-        static::expectException(Exception::class);
+        static::expectException(SessionException::class);
+        static::expectExceptionMessage('Session already started');
+        
         Session::setReadWrite();
         Session::start();
         Session::useFileDriver();
@@ -133,7 +139,9 @@ class SessionTest extends TestCase
      */
     public function testUseCustomDriverWhenAlreadyStartedException()
     {
-        static::expectException(Exception::class);
+        static::expectException(SessionException::class);
+        static::expectExceptionMessage('Session already started');
+        
         Session::setReadWrite();
         Session::start();
         Session::useCustomDriver(new File());
@@ -372,7 +380,9 @@ class SessionTest extends TestCase
      */
     public function testUseEncryptionDriverThrowExceptionWhenMethodIncrorrect()
     {
-        static::expectException(Exception::class);
+        static::expectException(SessionException::class);
+        static::expectExceptionMessage('Method unknowed: incorrect');
+        
         Session::useFileEncryptionDriver('randomKey', 'incorrect');
     }
 
@@ -402,7 +412,9 @@ class SessionTest extends TestCase
      */
     public function testSetOptionThrowException()
     {
-        static::expectException(Exception::class);
+        static::expectException(SessionException::class);
+        static::expectExceptionMessage('Incorrect option: azerty');
+        
         Session::getOption('azerty');
     }
 

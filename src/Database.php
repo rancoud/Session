@@ -6,6 +6,7 @@ namespace Rancoud\Session;
 
 use Rancoud\Database\Configurator;
 use Rancoud\Database\Database as Db;
+use Rancoud\Database\DatabaseException;
 use SessionHandlerInterface;
 use SessionIdInterface;
 use SessionUpdateTimestampHandlerInterface;
@@ -15,14 +16,14 @@ use SessionUpdateTimestampHandlerInterface;
  */
 class Database implements SessionHandlerInterface, SessionIdInterface, SessionUpdateTimestampHandlerInterface
 {
-    /** @var \Rancoud\Database\Database */
+    /** @var Db */
     protected $db;
+
+    /** @var int|null */
     protected $userId = null;
 
     /**
      * @param $configuration
-     *
-     * @throws \Exception
      */
     public function setNewDatabase($configuration)
     {
@@ -69,9 +70,9 @@ class Database implements SessionHandlerInterface, SessionIdInterface, SessionUp
     }
 
     /**
-     * @param $sessionId
+     * @param string $sessionId
      *
-     * @throws \Exception
+     * @throws DatabaseException
      *
      * @return string
      */
@@ -84,10 +85,10 @@ class Database implements SessionHandlerInterface, SessionIdInterface, SessionUp
     }
 
     /**
-     * @param $sessionId
-     * @param $data
+     * @param string $sessionId
+     * @param string $data
      *
-     * @throws \Exception
+     * @throws DatabaseException
      *
      * @return bool
      */
@@ -100,9 +101,9 @@ class Database implements SessionHandlerInterface, SessionIdInterface, SessionUp
     }
 
     /**
-     * @param $sessionId
+     * @param string $sessionId
      *
-     * @throws \Exception
+     * @throws DatabaseException
      *
      * @return bool
      */
@@ -116,9 +117,9 @@ class Database implements SessionHandlerInterface, SessionIdInterface, SessionUp
     }
 
     /**
-     * @param $lifetime
+     * @param int $lifetime
      *
-     * @throws \Exception
+     * @throws DatabaseException
      *
      * @return bool
      */
@@ -136,11 +137,9 @@ class Database implements SessionHandlerInterface, SessionIdInterface, SessionUp
      *
      * @param string $key
      *
-     * @throws \Exception
-     *
      * @return bool
      */
-    public function validateId($key)
+    public function validateId($key): bool
     {
         return preg_match('/^[a-zA-Z0-9-]{127}+$/', $key) === 1;
     }
@@ -151,11 +150,11 @@ class Database implements SessionHandlerInterface, SessionIdInterface, SessionUp
      * @param string $sessionId
      * @param string $sessionData
      *
-     * @throws \Exception
+     * @throws DatabaseException
      *
      * @return bool
      */
-    public function updateTimestamp($sessionId, $sessionData)
+    public function updateTimestamp($sessionId, $sessionData): bool
     {
         return $this->write($sessionId, $sessionData);
     }
@@ -163,7 +162,7 @@ class Database implements SessionHandlerInterface, SessionIdInterface, SessionUp
     /**
      * @return string
      */
-    public function create_sid()
+    public function create_sid(): string
     {
         $string = '';
         $caracters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';

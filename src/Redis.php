@@ -14,22 +14,31 @@ use SessionUpdateTimestampHandlerInterface;
  */
 class Redis implements SessionHandlerInterface, SessionIdInterface, SessionUpdateTimestampHandlerInterface
 {
-    /**
-     * @var Predis
-     */
+    /** @var Predis */
     protected $redis;
+
+    /** @var int */
     protected $lifetime = 1440;
 
+    /**
+     * @param $configuration
+     */
     public function setNewRedis($configuration)
     {
         $this->redis = new Predis($configuration);
     }
 
+    /**
+     * @param $redis
+     */
     public function setCurrentRedis($redis)
     {
         $this->redis = $redis;
     }
 
+    /**
+     * @param $lifetime
+     */
     public function setLifetime($lifetime)
     {
         $this->lifetime = $lifetime;
@@ -55,7 +64,7 @@ class Redis implements SessionHandlerInterface, SessionIdInterface, SessionUpdat
     }
 
     /**
-     * @param $sessionId
+     * @param string $sessionId
      *
      * @return string
      */
@@ -107,7 +116,7 @@ class Redis implements SessionHandlerInterface, SessionIdInterface, SessionUpdat
      *
      * @return bool
      */
-    public function validateId($key)
+    public function validateId($key): bool
     {
         return preg_match('/^[a-zA-Z0-9-]{127}+$/', $key) === 1;
     }
@@ -120,7 +129,7 @@ class Redis implements SessionHandlerInterface, SessionIdInterface, SessionUpdat
      *
      * @return bool
      */
-    public function updateTimestamp($sessionId, $sessionData)
+    public function updateTimestamp($sessionId, $sessionData): bool
     {
         return $this->write($sessionId, $sessionData);
     }
@@ -128,7 +137,7 @@ class Redis implements SessionHandlerInterface, SessionIdInterface, SessionUpdat
     /**
      * @return string
      */
-    public function create_sid()
+    public function create_sid(): string
     {
         $string = '';
         $caracters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';

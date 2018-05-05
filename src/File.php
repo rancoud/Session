@@ -13,7 +13,10 @@ use SessionUpdateTimestampHandlerInterface;
  */
 class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdateTimestampHandlerInterface
 {
+    /** @var string */
     protected $savePath;
+
+    /** @var string */
     protected $prefix = 'sess_';
 
     /**
@@ -116,7 +119,7 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
      *
      * @return bool
      */
-    public function validateId($key)
+    public function validateId($key): bool
     {
         return preg_match('/^[a-zA-Z0-9-]{127}+$/', $key) === 1;
     }
@@ -129,7 +132,7 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
      *
      * @return bool
      */
-    public function updateTimestamp($sessionId, $sessionData)
+    public function updateTimestamp($sessionId, $sessionData): bool
     {
         return $this->write($sessionId, $sessionData);
     }
@@ -137,7 +140,7 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
     /**
      * @return string
      */
-    public function create_sid()
+    public function create_sid(): string
     {
         $string = '';
         $caracters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';

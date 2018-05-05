@@ -21,7 +21,7 @@ abstract class DriverManager
     abstract protected static function getLifetimeForRedis();
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     protected static function configureDriver(): void
     {
@@ -31,7 +31,7 @@ abstract class DriverManager
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public static function useDefaultDriver(): void
     {
@@ -57,7 +57,7 @@ abstract class DriverManager
     }
 
     /**
-     * @throws \Exception
+     * @throws Exception
      */
     public static function useFileDriver(): void
     {
@@ -70,7 +70,7 @@ abstract class DriverManager
      * @param string      $key
      * @param string|null $method
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public static function useFileEncryptionDriver(string $key, string $method = null): void
     {
@@ -223,7 +223,7 @@ abstract class DriverManager
      * @param                             $key
      * @param                             $method
      *
-     * @throws \Exception
+     * @throws Exception
      */
     private static function setKeyAndMethod($driver, $key, $method): void
     {
@@ -234,9 +234,9 @@ abstract class DriverManager
     }
 
     /**
-     * @param \SessionHandlerInterface $customDriver
+     * @param SessionHandlerInterface $customDriver
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public static function useCustomDriver(SessionHandlerInterface $customDriver): void
     {

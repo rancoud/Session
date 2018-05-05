@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace Rancoud\Session;
 
-use Exception;
-
 /**
  * Trait Encryption.
  */
 trait Encryption
 {
+    /** @var string */
     protected $key;
+
+    /** @var string */
     protected $method = 'aes-256-cbc';
 
     /**
@@ -25,12 +26,12 @@ trait Encryption
     /**
      * @param string $method
      *
-     * @throws Exception
+     * @throws SessionException
      */
     public function setMethod(string $method): void
     {
         if (!in_array($method, $this->getAvailableMethods(), true)) {
-            throw new Exception('Method unknowed');
+            throw new SessionException(sprintf('Method unknowed: %s', $method));
         }
 
         $this->method = $method;
@@ -96,9 +97,9 @@ trait Encryption
     }
 
     /**
-     * @param $data
+     * @param string $data
      *
-     * @throws \Exception
+     * @throws SessionException
      *
      * @return string|bool
      */
@@ -116,11 +117,10 @@ trait Encryption
     }
 
     /**
-     * @param $data
+     * @param string $data
      *
-     * @throws \Exception
-     *
-     * @return mixed
+     * @return string
+     * @throws SessionException
      */
     public function encrypt(string $data): string
     {
@@ -134,12 +134,12 @@ trait Encryption
     }
 
     /**
-     * @throws \Exception
+     * @throws SessionException
      */
     protected function throwExceptionIfKeyEmpty()
     {
         if (null === $this->key || mb_strlen($this->key) === 0) {
-            throw new Exception('Key is empty');
+            throw new SessionException('Key has to be a non empty string');
         }
     }
 }

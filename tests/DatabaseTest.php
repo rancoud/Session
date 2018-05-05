@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Rancoud\Session\Test;
 
-use Exception;
 use PHPUnit\Framework\TestCase;
 use Rancoud\Database\Configurator;
+use Rancoud\Database\DatabaseException;
 use Rancoud\Session\Database;
 
 /**
@@ -40,7 +40,7 @@ class DatabaseTest extends TestCase
         try {
             static::$db->exec($sql);
             static::$db->truncateTable('sessions');
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -51,7 +51,7 @@ class DatabaseTest extends TestCase
     {
         try {
             static::$db->truncateTable('sessions');
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -87,7 +87,7 @@ class DatabaseTest extends TestCase
         $data = 'azerty';
         try {
             $success = $database->write($sessionId, $data);
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -111,7 +111,7 @@ class DatabaseTest extends TestCase
         try {
             $database->write($sessionId, $data);
             $dataOutput = $database->read($sessionId);
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -123,7 +123,7 @@ class DatabaseTest extends TestCase
         $sessionId = '';
         try {
             $dataOutput = $database->read($sessionId);
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -140,7 +140,7 @@ class DatabaseTest extends TestCase
         $sessionId = 'todelete';
         try {
             $success = $database->destroy($sessionId);
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -151,7 +151,7 @@ class DatabaseTest extends TestCase
         $data = 'azerty';
         try {
             $database->write($sessionId, $data);
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -164,7 +164,7 @@ class DatabaseTest extends TestCase
         static::assertTrue($isRowExist);
         try {
             $success = $database->destroy($sessionId);
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -186,7 +186,7 @@ class DatabaseTest extends TestCase
 
         try {
             $success = $database->write($sessionId, $data);
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -199,7 +199,7 @@ class DatabaseTest extends TestCase
         $lifetime = -1000;
         try {
             $success = $database->gc($lifetime);
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -222,7 +222,7 @@ class DatabaseTest extends TestCase
 
         try {
             $success = $database->write($sessionId, $data);
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -233,7 +233,7 @@ class DatabaseTest extends TestCase
         $params = ['id' => $sessionId];
         try {
             $userIdInDatabase = static::$db->selectVar($sql, $params);
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -246,7 +246,7 @@ class DatabaseTest extends TestCase
 
         try {
             $success = $database->write($sessionId, $data);
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -257,7 +257,7 @@ class DatabaseTest extends TestCase
         $params = ['id' => $sessionId];
         try {
             $userIdInDatabase = static::$db->selectVar($sql, $params);
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -283,7 +283,7 @@ class DatabaseTest extends TestCase
 
         try {
             $success = $database->write($sessionId, $data);
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -309,7 +309,7 @@ class DatabaseTest extends TestCase
 
         try {
             $success = $database->write($sessionId, $data);
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -328,7 +328,7 @@ class DatabaseTest extends TestCase
 
         try {
             $database->write($baseId . $endId1, 'a');
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -350,7 +350,7 @@ class DatabaseTest extends TestCase
         $success = false;
         try {
             $success = $database->write($sessionId, $data);
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -362,7 +362,7 @@ class DatabaseTest extends TestCase
 
         try {
             $row1 = static::$db->selectRow($sql, $params);
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -375,7 +375,7 @@ class DatabaseTest extends TestCase
 
         try {
             $success = $database->updateTimestamp($sessionId, $data);
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
             return;
@@ -388,7 +388,7 @@ class DatabaseTest extends TestCase
 
         try {
             $row2 = static::$db->selectRow($sql, $params);
-        } catch (Exception $e) {
+        } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
             return;

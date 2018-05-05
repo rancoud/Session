@@ -14,9 +14,8 @@ class RedisEncryption extends Redis
     /**
      * @param $sessionId
      *
-     * @throws \Exception
-     *
      * @return string
+     * @throws SessionException
      */
     public function read($sessionId): string
     {
@@ -29,9 +28,8 @@ class RedisEncryption extends Redis
      * @param $sessionId
      * @param $data
      *
-     * @throws \Exception
-     *
      * @return bool
+     * @throws SessionException
      */
     public function write($sessionId, $data): bool
     {
