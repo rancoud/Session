@@ -54,7 +54,7 @@ class Session extends DriverManager
     /**
      * @throws Exception
      */
-    protected static function setupAndStart()
+    protected static function setupAndStart(): void
     {
         static::configureDriver();
         static::setupSessionParameters();

@@ -123,7 +123,7 @@ trait ArrayManager
      *
      * @throws Exception
      */
-    public static function setFlash($key, $value)
+    public static function setFlash($key, $value): void
     {
         static::$flashData[$key] = $value;
     }
@@ -133,7 +133,7 @@ trait ArrayManager
      *
      * @return bool
      */
-    public static function hasFlash($key)
+    public static function hasFlash($key): bool
     {
         return array_key_exists($key, static::$flashData);
     }
@@ -184,7 +184,7 @@ trait ArrayManager
     /**
      * @throws Exception
      */
-    public static function restoreFlashData()
+    public static function restoreFlashData(): void
     {
         $data = static::getAndRemove('flash_data');
         if (null !== $data) {

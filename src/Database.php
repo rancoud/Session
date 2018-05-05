@@ -25,7 +25,7 @@ class Database implements SessionHandlerInterface, SessionIdInterface, SessionUp
     /**
      * @param $configuration
      */
-    public function setNewDatabase($configuration)
+    public function setNewDatabase($configuration): void
     {
         if ($configuration instanceof Configurator) {
             $this->db = new Db($configuration);
@@ -37,7 +37,7 @@ class Database implements SessionHandlerInterface, SessionIdInterface, SessionUp
     /**
      * @param $database
      */
-    public function setCurrentDatabase($database)
+    public function setCurrentDatabase($database): void
     {
         $this->db = $database;
     }

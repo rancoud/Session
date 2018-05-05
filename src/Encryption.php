@@ -137,7 +137,7 @@ trait Encryption
     /**
      * @throws SessionException
      */
-    protected function throwExceptionIfKeyEmpty()
+    protected function throwExceptionIfKeyEmpty(): void
     {
         if (null === $this->key || mb_strlen($this->key) === 0) {
             throw new SessionException('Key has to be a non empty string');

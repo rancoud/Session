@@ -23,7 +23,7 @@ class Redis implements SessionHandlerInterface, SessionIdInterface, SessionUpdat
     /**
      * @param $configuration
      */
-    public function setNewRedis($configuration)
+    public function setNewRedis($configuration): void
     {
         $this->redis = new Predis($configuration);
     }
@@ -31,7 +31,7 @@ class Redis implements SessionHandlerInterface, SessionIdInterface, SessionUpdat
     /**
      * @param $redis
      */
-    public function setCurrentRedis($redis)
+    public function setCurrentRedis($redis): void
     {
         $this->redis = $redis;
     }
@@ -39,7 +39,7 @@ class Redis implements SessionHandlerInterface, SessionIdInterface, SessionUpdat
     /**
      * @param $lifetime
      */
-    public function setLifetime($lifetime)
+    public function setLifetime($lifetime): void
     {
         $this->lifetime = $lifetime;
     }
