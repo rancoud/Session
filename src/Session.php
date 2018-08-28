@@ -156,7 +156,7 @@ class Session extends DriverManager
 
         $keys = array_keys($options);
         foreach ($keys as $key) {
-            if (!in_array($key, $validOptions, true)) {
+            if (!\in_array($key, $validOptions, true)) {
                 throw new SessionException('Incorrect option: ' . $key);
             }
         }

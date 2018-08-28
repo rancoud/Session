@@ -30,7 +30,7 @@ trait Encryption
      */
     public function setMethod(string $method): void
     {
-        if (!in_array($method, $this->getAvailableMethods(), true)) {
+        if (!\in_array($method, $this->getAvailableMethods(), true)) {
             throw new SessionException(sprintf('Method unknowed: %s', $method));
         }
 
@@ -90,7 +90,7 @@ trait Encryption
             $forbiddenMethods = ['AES-128-CBC-HMAC-SHA1', 'AES-256-CBC-HMAC-SHA1',
                                 'aes-128-cbc-hmac-sha1', 'aes-256-cbc-hmac-sha1'];
 
-            return !in_array($c, $forbiddenMethods, true);
+            return !\in_array($c, $forbiddenMethods, true);
         });
 
         return $methods;

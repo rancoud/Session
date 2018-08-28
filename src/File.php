@@ -59,7 +59,7 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
      */
     public function read($sessionId): string
     {
-        $filename = $this->savePath . DIRECTORY_SEPARATOR . $this->prefix . $sessionId;
+        $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $sessionId;
         if (file_exists($filename)) {
             return (string) file_get_contents($filename);
         }
@@ -75,7 +75,7 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
      */
     public function write($sessionId, $data): bool
     {
-        $filename = $this->savePath . DIRECTORY_SEPARATOR . $this->prefix . $sessionId;
+        $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $sessionId;
 
         return file_put_contents($filename, $data) === false ? false : true;
     }
@@ -87,7 +87,7 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
      */
     public function destroy($sessionId): bool
     {
-        $filename = $this->savePath . DIRECTORY_SEPARATOR . $this->prefix . $sessionId;
+        $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $sessionId;
         if (file_exists($filename)) {
             unlink($filename);
         }
@@ -102,7 +102,7 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
      */
     public function gc($lifetime): bool
     {
-        $pattern = $this->savePath . DIRECTORY_SEPARATOR . $this->prefix . '*';
+        $pattern = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . '*';
         foreach (glob($pattern) as $file) {
             if (filemtime($file) + $lifetime < time() && file_exists($file)) {
                 unlink($file);
