@@ -15,6 +15,7 @@ return PhpCsFixer\Config::create()
         'declare_strict_types' => true,
         'linebreak_after_opening_tag' => true,
         'mb_str_functions' => true,
+        'native_function_invocation' => true,
         'no_php4_constructor' => true,
         'no_unreachable_default_argument_value' => true,
         'no_useless_else' => true,

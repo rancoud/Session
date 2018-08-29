@@ -31,7 +31,7 @@ trait Encryption
     public function setMethod(string $method): void
     {
         if (!\in_array($method, $this->getAvailableMethods(), true)) {
-            throw new SessionException(sprintf('Method unknowed: %s', $method));
+            throw new SessionException(\sprintf('Method unknowed: %s', $method));
         }
 
         $this->method = $method;
@@ -42,51 +42,51 @@ trait Encryption
      */
     public function getAvailableMethods(): array
     {
-        $ciphers = openssl_get_cipher_methods();
-        $ciphersAndAliases = openssl_get_cipher_methods(true);
-        $cipherAliases = array_diff($ciphersAndAliases, $ciphers);
+        $ciphers = \openssl_get_cipher_methods();
+        $ciphersAndAliases = \openssl_get_cipher_methods(true);
+        $cipherAliases = \array_diff($ciphersAndAliases, $ciphers);
 
-        $ciphers = array_filter($ciphers, function ($n) {
-            return mb_stripos($n, 'ecb') === false;
+        $ciphers = \array_filter($ciphers, function ($n) {
+            return \mb_stripos($n, 'ecb') === false;
         });
-        $ciphers = array_filter($ciphers, function ($c) {
-            return mb_stripos($c, 'des') === false;
+        $ciphers = \array_filter($ciphers, function ($c) {
+            return \mb_stripos($c, 'des') === false;
         });
-        $ciphers = array_filter($ciphers, function ($c) {
-            return mb_stripos($c, 'rc2') === false;
+        $ciphers = \array_filter($ciphers, function ($c) {
+            return \mb_stripos($c, 'rc2') === false;
         });
-        $ciphers = array_filter($ciphers, function ($c) {
-            return mb_stripos($c, 'rc4') === false;
+        $ciphers = \array_filter($ciphers, function ($c) {
+            return \mb_stripos($c, 'rc4') === false;
         });
-        $ciphers = array_filter($ciphers, function ($c) {
-            return mb_stripos($c, 'md5') === false;
+        $ciphers = \array_filter($ciphers, function ($c) {
+            return \mb_stripos($c, 'md5') === false;
         });
-        $ciphers = array_filter($ciphers, function ($c) {
-            return mb_stripos($c, '-ocb') === false;
+        $ciphers = \array_filter($ciphers, function ($c) {
+            return \mb_stripos($c, '-ocb') === false;
         });
-        $ciphers = array_filter($ciphers, function ($c) {
-            return mb_stripos($c, '-ccm') === false;
+        $ciphers = \array_filter($ciphers, function ($c) {
+            return \mb_stripos($c, '-ccm') === false;
         });
-        $ciphers = array_filter($ciphers, function ($c) {
-            return mb_stripos($c, '-gcm') === false;
+        $ciphers = \array_filter($ciphers, function ($c) {
+            return \mb_stripos($c, '-gcm') === false;
         });
-        $ciphers = array_filter($ciphers, function ($c) {
-            return mb_stripos($c, '-wrap') === false;
-        });
-
-        $cipherAliases = array_filter($cipherAliases, function ($c) {
-            return mb_stripos($c, 'des') === false;
-        });
-        $cipherAliases = array_filter($cipherAliases, function ($c) {
-            return mb_stripos($c, 'rc2') === false;
-        });
-        $cipherAliases = array_filter($cipherAliases, function ($c) {
-            return mb_stripos($c, '-wrap') === false;
+        $ciphers = \array_filter($ciphers, function ($c) {
+            return \mb_stripos($c, '-wrap') === false;
         });
 
-        $methods = array_merge($ciphers, $cipherAliases);
+        $cipherAliases = \array_filter($cipherAliases, function ($c) {
+            return \mb_stripos($c, 'des') === false;
+        });
+        $cipherAliases = \array_filter($cipherAliases, function ($c) {
+            return \mb_stripos($c, 'rc2') === false;
+        });
+        $cipherAliases = \array_filter($cipherAliases, function ($c) {
+            return \mb_stripos($c, '-wrap') === false;
+        });
 
-        $methods = array_filter($methods, function ($c) {
+        $methods = \array_merge($ciphers, $cipherAliases);
+
+        $methods = \array_filter($methods, function ($c) {
             $forbiddenMethods = ['AES-128-CBC-HMAC-SHA1', 'AES-256-CBC-HMAC-SHA1',
                                 'aes-128-cbc-hmac-sha1', 'aes-256-cbc-hmac-sha1'];
 
@@ -107,13 +107,13 @@ trait Encryption
     {
         $this->throwExceptionIfKeyEmpty();
 
-        if (mb_strlen($data) === 0) {
+        if (\mb_strlen($data) === 0) {
             return '';
         }
 
-        list($encrypted_data, $iv) = explode('::', base64_decode($data, true), 2);
+        list($encrypted_data, $iv) = \explode('::', \base64_decode($data, true), 2);
 
-        return openssl_decrypt($encrypted_data, $this->method, $this->key, 0, $iv);
+        return \openssl_decrypt($encrypted_data, $this->method, $this->key, 0, $iv);
     }
 
     /**
@@ -127,9 +127,9 @@ trait Encryption
     {
         $this->throwExceptionIfKeyEmpty();
 
-        $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length($this->method));
-        $encrypted = openssl_encrypt($data, $this->method, $this->key, 0, $iv);
-        $data = base64_encode($encrypted . '::' . $iv);
+        $iv = \openssl_random_pseudo_bytes(\openssl_cipher_iv_length($this->method));
+        $encrypted = \openssl_encrypt($data, $this->method, $this->key, 0, $iv);
+        $data = \base64_encode($encrypted . '::' . $iv);
 
         return $data;
     }
@@ -139,7 +139,7 @@ trait Encryption
      */
     protected function throwExceptionIfKeyEmpty(): void
     {
-        if (null === $this->key || mb_strlen($this->key) === 0) {
+        if (null === $this->key || \mb_strlen($this->key) === 0) {
             throw new SessionException('Key has to be a non empty string');
         }
     }

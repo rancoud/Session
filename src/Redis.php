@@ -82,7 +82,7 @@ class Redis implements SessionHandlerInterface, SessionIdInterface, SessionUpdat
     public function write($sessionId, $data): bool
     {
         $this->redis->set($sessionId, $data);
-        $this->redis->expireat($sessionId, time() + $this->lifetime);
+        $this->redis->expireat($sessionId, \time() + $this->lifetime);
 
         return true;
     }
@@ -118,7 +118,7 @@ class Redis implements SessionHandlerInterface, SessionIdInterface, SessionUpdat
      */
     public function validateId($key): bool
     {
-        return preg_match('/^[a-zA-Z0-9-]{127}+$/', $key) === 1;
+        return \preg_match('/^[a-zA-Z0-9-]{127}+$/', $key) === 1;
     }
 
     /**
@@ -142,9 +142,9 @@ class Redis implements SessionHandlerInterface, SessionIdInterface, SessionUpdat
         $string = '';
         $caracters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';
 
-        $countCaracters = mb_strlen($caracters) - 1;
+        $countCaracters = \mb_strlen($caracters) - 1;
         for ($i = 0; $i < 127; ++$i) {
-            $string .= $caracters[rand(0, $countCaracters)];
+            $string .= $caracters[\rand(0, $countCaracters)];
         }
 
         return $string;

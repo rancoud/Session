@@ -258,7 +258,7 @@ abstract class DriverManager
      */
     public static function setUserIdForDatabase(int $userId): void
     {
-        if (method_exists(static::$driver, 'setUserId')) {
+        if (\method_exists(static::$driver, 'setUserId')) {
             static::$driver->setUserId($userId);
         }
     }
@@ -268,7 +268,7 @@ abstract class DriverManager
      */
     public static function setPrefixForFile(string $prefix): void
     {
-        if (method_exists(static::$driver, 'setPrefix')) {
+        if (\method_exists(static::$driver, 'setPrefix')) {
             static::$driver->setPrefix($prefix);
         }
     }

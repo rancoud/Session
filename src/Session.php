@@ -83,15 +83,15 @@ class Session extends DriverManager
      */
     protected static function setupSessionParameters(): void
     {
-        session_name(static::getOption('name'));
+        \session_name(static::getOption('name'));
 
-        session_set_save_handler(static::$driver);
+        \session_set_save_handler(static::$driver);
 
-        session_save_path(static::getOption('save_path'));
+        \session_save_path(static::getOption('save_path'));
 
         static::setupCookieParams();
 
-        register_shutdown_function('session_write_close');
+        \register_shutdown_function('session_write_close');
     }
 
     /**
@@ -105,7 +105,7 @@ class Session extends DriverManager
 
         static::setupCookieParams();
 
-        return session_start(static::$options);
+        return \session_start(static::$options);
     }
 
     /**
@@ -154,7 +154,7 @@ class Session extends DriverManager
             'read_and_close'
         ];
 
-        $keys = array_keys($options);
+        $keys = \array_keys($options);
         foreach ($keys as $key) {
             if (!\in_array($key, $validOptions, true)) {
                 throw new SessionException('Incorrect option: ' . $key);
@@ -167,7 +167,7 @@ class Session extends DriverManager
      */
     protected static function setupCookieParams(): void
     {
-        session_set_cookie_params(
+        \session_set_cookie_params(
             static::getOption('cookie_lifetime'),
             static::getOption('cookie_path'),
             static::getOption('cookie_domain'),
@@ -183,7 +183,7 @@ class Session extends DriverManager
     {
         static::startSessionIfNotHasStartedForceWrite();
 
-        return session_regenerate_id(true);
+        return \session_regenerate_id(true);
     }
 
     /**
@@ -191,16 +191,16 @@ class Session extends DriverManager
      */
     public static function destroy(): bool
     {
-        session_unset();
+        \session_unset();
 
-        return session_destroy();
+        return \session_destroy();
     }
 
     public static function commit(): void
     {
         static::$hasStarted = false;
 
-        session_commit();
+        \session_commit();
     }
 
     /**
@@ -208,7 +208,7 @@ class Session extends DriverManager
      */
     public static function rollback(): bool
     {
-        return session_reset();
+        return \session_reset();
     }
 
     /**
@@ -218,7 +218,7 @@ class Session extends DriverManager
     {
         static::$hasStarted = false;
 
-        return session_abort();
+        return \session_abort();
     }
 
     /**
@@ -234,7 +234,7 @@ class Session extends DriverManager
      */
     public static function getId(): string
     {
-        return session_id();
+        return \session_id();
     }
 
     /**
@@ -244,7 +244,7 @@ class Session extends DriverManager
      */
     public static function setId(string $id): string
     {
-        return session_id($id);
+        return \session_id($id);
     }
 
     /**
@@ -254,7 +254,7 @@ class Session extends DriverManager
     {
         static::startSessionIfNotHasStartedForceWrite();
 
-        session_gc();
+        \session_gc();
     }
 
     /**
@@ -330,12 +330,12 @@ class Session extends DriverManager
      */
     public static function getOption(string $key)
     {
-        if (array_key_exists($key, static::$options)) {
+        if (\array_key_exists($key, static::$options)) {
             return static::$options[$key];
         }
 
         static::validateOptions([$key => '']);
-        static::$options[$key] = ini_get('session.' . $key);
+        static::$options[$key] = \ini_get('session.' . $key);
 
         if ($key === 'save_path' && empty(static::$options[$key])) {
             static::$options[$key] = '/tmp';

@@ -42,7 +42,7 @@ trait ArrayManager
     {
         static::startSessionIfNotHasStarted();
 
-        return array_key_exists($key, $_SESSION);
+        return \array_key_exists($key, $_SESSION);
     }
 
     /**
@@ -57,7 +57,7 @@ trait ArrayManager
     {
         static::startSessionIfNotHasStarted();
 
-        return array_key_exists($key, $_SESSION) && $_SESSION[$key] === $value;
+        return \array_key_exists($key, $_SESSION) && $_SESSION[$key] === $value;
     }
 
     /**
@@ -135,7 +135,7 @@ trait ArrayManager
      */
     public static function hasFlash($key): bool
     {
-        return array_key_exists($key, static::$flashData);
+        return \array_key_exists($key, static::$flashData);
     }
 
     /**
@@ -146,7 +146,7 @@ trait ArrayManager
      */
     public static function hasFlashKeyAndValue($key, $value): bool
     {
-        return array_key_exists($key, static::$flashData) && static::$flashData[$key] === $value;
+        return \array_key_exists($key, static::$flashData) && static::$flashData[$key] === $value;
     }
 
     /**

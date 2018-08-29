@@ -37,8 +37,8 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
     {
         $this->savePath = $savePath;
 
-        if (!is_dir($this->savePath)) {
-            mkdir($this->savePath, 0777);
+        if (!\is_dir($this->savePath)) {
+            \mkdir($this->savePath, 0777);
         }
 
         return true;
@@ -60,8 +60,8 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
     public function read($sessionId): string
     {
         $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $sessionId;
-        if (file_exists($filename)) {
-            return (string) file_get_contents($filename);
+        if (\file_exists($filename)) {
+            return (string) \file_get_contents($filename);
         }
 
         return '';
@@ -77,7 +77,7 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
     {
         $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $sessionId;
 
-        return file_put_contents($filename, $data) === false ? false : true;
+        return \file_put_contents($filename, $data) === false ? false : true;
     }
 
     /**
@@ -88,8 +88,8 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
     public function destroy($sessionId): bool
     {
         $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $sessionId;
-        if (file_exists($filename)) {
-            unlink($filename);
+        if (\file_exists($filename)) {
+            \unlink($filename);
         }
 
         return true;
@@ -103,9 +103,9 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
     public function gc($lifetime): bool
     {
         $pattern = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . '*';
-        foreach (glob($pattern) as $file) {
-            if (filemtime($file) + $lifetime < time() && file_exists($file)) {
-                unlink($file);
+        foreach (\glob($pattern) as $file) {
+            if (\filemtime($file) + $lifetime < \time() && \file_exists($file)) {
+                \unlink($file);
             }
         }
 
@@ -121,7 +121,7 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
      */
     public function validateId($key): bool
     {
-        return preg_match('/^[a-zA-Z0-9-]{127}+$/', $key) === 1;
+        return \preg_match('/^[a-zA-Z0-9-]{127}+$/', $key) === 1;
     }
 
     /**
@@ -145,9 +145,9 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
         $string = '';
         $caracters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';
 
-        $countCaracters = mb_strlen($caracters) - 1;
+        $countCaracters = \mb_strlen($caracters) - 1;
         for ($i = 0; $i < 127; ++$i) {
-            $string .= $caracters[rand(0, $countCaracters)];
+            $string .= $caracters[\rand(0, $countCaracters)];
         }
 
         return $string;

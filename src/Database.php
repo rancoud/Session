@@ -141,7 +141,7 @@ class Database implements SessionHandlerInterface, SessionIdInterface, SessionUp
      */
     public function validateId($key): bool
     {
-        return preg_match('/^[a-zA-Z0-9-]{127}+$/', $key) === 1;
+        return \preg_match('/^[a-zA-Z0-9-]{127}+$/', $key) === 1;
     }
 
     /**
@@ -167,9 +167,9 @@ class Database implements SessionHandlerInterface, SessionIdInterface, SessionUp
         $string = '';
         $caracters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';
 
-        $countCaracters = mb_strlen($caracters) - 1;
+        $countCaracters = \mb_strlen($caracters) - 1;
         for ($i = 0; $i < 127; ++$i) {
-            $string .= $caracters[rand(0, $countCaracters)];
+            $string .= $caracters[\rand(0, $countCaracters)];
         }
 
         return $string;
