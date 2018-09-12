@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rancoud\Session;
 
-use Exception;
-
 /**
  * Trait ArrayManager.
  */
@@ -19,10 +17,10 @@ trait ArrayManager
     abstract protected static function startSessionIfNotHasStartedForceWrite();
 
     /**
-     * @param $key
+     * @param string $key
      * @param $value
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public static function set(string $key, $value): void
     {
@@ -32,9 +30,9 @@ trait ArrayManager
     }
 
     /**
-     * @param $key
+     * @param string $key
      *
-     * @throws Exception
+     * @throws \Exception
      *
      * @return bool
      */
@@ -46,10 +44,10 @@ trait ArrayManager
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @param $value
      *
-     * @throws Exception
+     * @throws \Exception
      *
      * @return bool
      */
@@ -61,9 +59,9 @@ trait ArrayManager
     }
 
     /**
-     * @param $key
+     * @param string $key
      *
-     * @throws Exception
+     * @throws \Exception
      *
      * @return mixed
      */
@@ -75,9 +73,9 @@ trait ArrayManager
     }
 
     /**
-     * @param $key
+     * @param string $key
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public static function remove(string $key): void
     {
@@ -89,7 +87,7 @@ trait ArrayManager
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      *
      * @return array
      */
@@ -101,9 +99,9 @@ trait ArrayManager
     }
 
     /**
-     * @param $key
+     * @param string $key
      *
-     * @throws Exception
+     * @throws \Exception
      *
      * @return mixed
      */
@@ -118,45 +116,45 @@ trait ArrayManager
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @param $value
      *
-     * @throws Exception
+     * @throws \Exception
      */
-    public static function setFlash($key, $value): void
+    public static function setFlash(string $key, $value): void
     {
         static::$flashData[$key] = $value;
     }
 
     /**
-     * @param $key
+     * @param string $key
      *
      * @return bool
      */
-    public static function hasFlash($key): bool
+    public static function hasFlash(string $key): bool
     {
         return \array_key_exists($key, static::$flashData);
     }
 
     /**
-     * @param $key
+     * @param string $key
      * @param $value
      *
      * @return bool
      */
-    public static function hasFlashKeyAndValue($key, $value): bool
+    public static function hasFlashKeyAndValue(string $key, $value): bool
     {
         return \array_key_exists($key, static::$flashData) && static::$flashData[$key] === $value;
     }
 
     /**
-     * @param $key
+     * @param string $key
      *
-     * @throws Exception
+     * @throws \Exception
      *
      * @return mixed
      */
-    public static function getFlash($key)
+    public static function getFlash(string $key)
     {
         return (static::hasFlash($key)) ? static::$flashData[$key] : null;
     }
@@ -182,7 +180,7 @@ trait ArrayManager
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public static function restoreFlashData(): void
     {
