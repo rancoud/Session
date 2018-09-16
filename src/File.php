@@ -28,8 +28,8 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
     }
 
     /**
-     * @param $savePath
-     * @param $sessionName
+     * @param string $savePath
+     * @param string $sessionName
      *
      * @return bool
      */
@@ -53,7 +53,7 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
     }
 
     /**
-     * @param $sessionId
+     * @param string $sessionId
      *
      * @return string
      */
@@ -68,8 +68,8 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
     }
 
     /**
-     * @param $sessionId
-     * @param $data
+     * @param string $sessionId
+     * @param string $data
      *
      * @return bool
      */
@@ -81,7 +81,7 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
     }
 
     /**
-     * @param $sessionId
+     * @param string $sessionId
      *
      * @return bool
      */
@@ -96,7 +96,7 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
     }
 
     /**
-     * @param $lifetime
+     * @param int $lifetime
      *
      * @return bool
      */
@@ -145,7 +145,7 @@ class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdate
         $string = '';
         $caracters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';
 
-        $countCaracters = \mb_strlen($caracters) - 1;
+        $countCaracters = 62;
         for ($i = 0; $i < 127; ++$i) {
             $string .= $caracters[\rand(0, $countCaracters)];
         }

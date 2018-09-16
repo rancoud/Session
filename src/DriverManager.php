@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Rancoud\Session;
 
-use Exception;
 use SessionHandler;
 use SessionHandlerInterface;
 
@@ -21,7 +20,7 @@ abstract class DriverManager
     abstract protected static function getLifetimeForRedis();
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     protected static function configureDriver(): void
     {
@@ -31,7 +30,7 @@ abstract class DriverManager
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public static function useDefaultDriver(): void
     {
@@ -44,7 +43,7 @@ abstract class DriverManager
      * @param string      $key
      * @param string|null $method
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public static function useDefaultEncryptionDriver(string $key, string $method = null): void
     {
@@ -57,7 +56,7 @@ abstract class DriverManager
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      */
     public static function useFileDriver(): void
     {
@@ -70,7 +69,7 @@ abstract class DriverManager
      * @param string      $key
      * @param string|null $method
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public static function useFileEncryptionDriver(string $key, string $method = null): void
     {
@@ -83,9 +82,9 @@ abstract class DriverManager
     }
 
     /**
-     * @param $configuration
+     * @param \Rancoud\Database\Configurator|array $configuration
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public static function useNewDatabaseDriver($configuration): void
     {
@@ -98,9 +97,9 @@ abstract class DriverManager
     }
 
     /**
-     * @param $databaseInstance
+     * @param \Rancoud\Database\Database $databaseInstance
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public static function useCurrentDatabaseDriver($databaseInstance): void
     {
@@ -113,11 +112,11 @@ abstract class DriverManager
     }
 
     /**
-     * @param string $key
-     * @param        $configuration
-     * @param string $method
+     * @param \Rancoud\Database\Configurator|array $configuration
+     * @param string                               $key
+     * @param string                               $method
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public static function useNewDatabaseEncryptionDriver($configuration, string $key, string $method = null): void
     {
@@ -131,11 +130,11 @@ abstract class DriverManager
     }
 
     /**
-     * @param string $key
-     * @param        $databaseInstance
-     * @param string $method
+     * @param \Rancoud\Database\Database $databaseInstance
+     * @param string                     $key
+     * @param string                     $method
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public static function useCurrentDatabaseEncryptionDriver($databaseInstance, string $key, string $method = null): void
     {
@@ -149,9 +148,9 @@ abstract class DriverManager
     }
 
     /**
-     * @param $configuration
+     * @param array|string $configuration
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public static function useNewRedisDriver($configuration): void
     {
@@ -165,9 +164,9 @@ abstract class DriverManager
     }
 
     /**
-     * @param $redisInstance
+     * @param \Predis\Client $redisInstance
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public static function useCurrentRedisDriver($redisInstance): void
     {
@@ -181,11 +180,11 @@ abstract class DriverManager
     }
 
     /**
-     * @param string $key
-     * @param        $configuration
-     * @param string $method
+     * @param array|string $configuration
+     * @param string       $key
+     * @param string       $method
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public static function useNewRedisEncryptionDriver($configuration, string $key, string $method = null): void
     {
@@ -200,11 +199,11 @@ abstract class DriverManager
     }
 
     /**
-     * @param string $key
-     * @param        $redisInstance
-     * @param string $method
+     * @param \Predis\Client $redisInstance
+     * @param string         $key
+     * @param string         $method
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public static function useCurrentRedisEncryptionDriver($redisInstance, string $key, string $method = null): void
     {
@@ -223,7 +222,7 @@ abstract class DriverManager
      * @param                             $key
      * @param                             $method
      *
-     * @throws Exception
+     * @throws \Exception
      */
     private static function setKeyAndMethod($driver, $key, $method): void
     {
@@ -236,7 +235,7 @@ abstract class DriverManager
     /**
      * @param SessionHandlerInterface $customDriver
      *
-     * @throws Exception
+     * @throws \Exception
      */
     public static function useCustomDriver(SessionHandlerInterface $customDriver): void
     {

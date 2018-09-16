@@ -16,7 +16,7 @@ trait Encryption
     protected $method = 'aes-256-cbc';
 
     /**
-     * @param $key
+     * @param string $key
      */
     public function setKey(string $key): void
     {
@@ -107,7 +107,7 @@ trait Encryption
     {
         $this->throwExceptionIfKeyEmpty();
 
-        if (\mb_strlen($data) === 0) {
+        if ($data === '') {
             return '';
         }
 
@@ -139,8 +139,8 @@ trait Encryption
      */
     protected function throwExceptionIfKeyEmpty(): void
     {
-        if (null === $this->key || \mb_strlen($this->key) === 0) {
-            throw new SessionException('Key has to be a non empty string');
+        if ($this->key === null || $this->key === '') {
+            throw new SessionException('Key has to be a non-empty string');
         }
     }
 }

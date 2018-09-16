@@ -23,7 +23,9 @@ class Database implements SessionHandlerInterface, SessionIdInterface, SessionUp
     protected $userId = null;
 
     /**
-     * @param $configuration
+     * @param Configurator|array $configuration
+     *
+     * @throws DatabaseException
      */
     public function setNewDatabase($configuration): void
     {
@@ -35,7 +37,7 @@ class Database implements SessionHandlerInterface, SessionIdInterface, SessionUp
     }
 
     /**
-     * @param $database
+     * @param Db $database
      */
     public function setCurrentDatabase($database): void
     {
@@ -51,8 +53,8 @@ class Database implements SessionHandlerInterface, SessionIdInterface, SessionUp
     }
 
     /**
-     * @param $savePath
-     * @param $sessionName
+     * @param string $savePath
+     * @param string $sessionName
      *
      * @return bool
      */
@@ -167,7 +169,7 @@ class Database implements SessionHandlerInterface, SessionIdInterface, SessionUp
         $string = '';
         $caracters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';
 
-        $countCaracters = \mb_strlen($caracters) - 1;
+        $countCaracters = 62;
         for ($i = 0; $i < 127; ++$i) {
             $string .= $caracters[\rand(0, $countCaracters)];
         }

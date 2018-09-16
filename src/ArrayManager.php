@@ -18,7 +18,7 @@ trait ArrayManager
 
     /**
      * @param string $key
-     * @param $value
+     * @param mixed  $value
      *
      * @throws \Exception
      */
@@ -45,7 +45,7 @@ trait ArrayManager
 
     /**
      * @param string $key
-     * @param $value
+     * @param mixed  $value
      *
      * @throws \Exception
      *
@@ -117,7 +117,7 @@ trait ArrayManager
 
     /**
      * @param string $key
-     * @param $value
+     * @param mixed  $value
      *
      * @throws \Exception
      */
@@ -138,7 +138,7 @@ trait ArrayManager
 
     /**
      * @param string $key
-     * @param $value
+     * @param mixed  $value
      *
      * @return bool
      */

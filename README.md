@@ -92,74 +92,76 @@ Session::set('key', 'value');
 $value = Session::get('key');
 ```
 
-## Session Methods
-### General Commands  
-* start([options: array = []]):void  
-* regenerate():bool  
-* destroy():bool  
-* commit():void  
-* rollback():bool  
-* unsaved():bool  
-* hasStarted():bool  
-* getId():string  
-* setId(id: string):string  
-* gc():void  
-* setReadOnly():void  
-* setReadWrite():void  
+## Session
+### Static General Commands  
+* start([options: array = []]): void  
+* regenerate(): bool  
+* destroy(): bool  
+* commit(): void  
+* rollback(): bool  
+* unsaved(): bool  
+* hasStarted(): bool  
+* getId(): string  
+* setId(id: string): string  
+* gc(): void  
+* setReadOnly(): void  
+* setReadWrite(): void  
 
-### Variables $_SESSION access
-* set(key: string, value):void  
-* get(key: string):mixed  
-* getAll():array  
-* getAndRemove(key: string):mixed  
-* has(key: string):bool  
-* hasKeyAndValue(key: string, value):bool  
-* remove(key: string):void  
+### Static Variables $_SESSION access
+* set(key: string, value: mixed): void  
+* get(key: string): mixed  
+* getAll(): array  
+* getAndRemove(key: string): mixed  
+* has(key: string): bool  
+* hasKeyAndValue(key: string, value: mixed): bool  
+* remove(key: string): void  
 
-### Variables flash access
+### Static Variables flash access
 Flash data are store in a separate variable.  
 They will dissapear at the end of the script execution.  
 You can use keepFlash for saving it in $_SESSION.  
 When flash data is restore, it will be delete in $_SESSION.  
 
-* setFlash(key, value):void    
-* getFlash(key):mixed  
-* hasFlash(key):bool  
-* hasFlashKeyAndValue(key: string, value):bool  
-* keepFlash([keys: array = []]):void  
+* setFlash(key: string, value: mixed): void    
+* getFlash(key: string): mixed  
+* getAllFlash(): array  
+* hasFlash(key: string): bool  
+* hasFlashKeyAndValue(key: string, value: mixed): bool  
+* keepFlash([keys: array = []]): void  
+* restoreFlashData(): void  
 
-### Options  
-* setOption(key: string, value):void  
-* setOptions(options: array):void  
-* getOption(key: string):mixed  
+### Static Options  
+* setOption(key: string, value): void  
+* setOptions(options: array): void  
+* getOption(key: string): mixed  
 
-### Driver
-* getDriver():\SessionHandlerInterface  
+### Static Driver
+* getDriver(): \SessionHandlerInterface  
 
-#### PHP Session Default Driver
-* useDefaultDriver():void  
-* useDefaultEncryptionDriver(key: string, [method: string = null]):void  
+#### Static PHP Session Default Driver
+* useDefaultDriver(): void  
+* useDefaultEncryptionDriver(key: string, [method: string|null = null]): void  
 
-#### File Driver
-* useFileDriver():void  
-* useFileEncryptionDriver(key: string, [method: string = null]):void  
-* setPrefixForFile(prefix: string):void  
+#### Static File Driver
+* useFileDriver(): void  
+* useFileEncryptionDriver(key: string, [method: string|null = null]): void  
+* setPrefixForFile(prefix: string): void  
 
-#### Database Driver
-* useNewDatabaseDriver(configuration):void  
-* useCurrentDatabaseDriver(databaseInstance):void  
-* useNewDatabaseEncryptionDriver(configuration, key: string, [method: string = null]):void  
-* useCurrentDatabaseEncryptionDriver(databaseInstance, key: string, [method: string = null]):void  
-* setUserIdForDatabase(userId: int):void  
+#### Static Database Driver
+* useNewDatabaseDriver(configuration: \Rancoud\Database\Configurator|array): void  
+* useCurrentDatabaseDriver(databaseInstance: \Rancoud\Database\Database): void  
+* useNewDatabaseEncryptionDriver(configuration: \Rancoud\Database\Configurator|array, key: string, [method: string = null]): void  
+* useCurrentDatabaseEncryptionDriver(databaseInstance, key: string, [method: string = null]): void  
+* setUserIdForDatabase(userId: int): void  
 
-#### Redis Driver
-* useNewRedisDriver(configuration):void  
-* useCurrentRedisDriver(redisInstance):void  
-* useNewRedisEncryptionDriver(configuration, key: string, [method: string = null]):void  
-* useCurrentRedisEncryptionDriver(redisInstance, key: string, [method: string = null]):void  
+#### Static Redis Driver
+* useNewRedisDriver(configuration): void  
+* useCurrentRedisDriver(redisInstance): void  
+* useNewRedisEncryptionDriver(configuration, key: string, [method: string = null]): void  
+* useCurrentRedisEncryptionDriver(redisInstance, key: string, [method: string = null]): void  
 
-#### Custom Driver
-* useCustomDriver(customDriver: \SessionHandlerInterface):void  
+#### Static Custom Driver
+* useCustomDriver(customDriver: \SessionHandlerInterface): void  
 
 ## Driver Informations
 ### Default

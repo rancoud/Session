@@ -21,7 +21,7 @@ class Redis implements SessionHandlerInterface, SessionIdInterface, SessionUpdat
     protected $lifetime = 1440;
 
     /**
-     * @param $configuration
+     * @param string|array $configuration
      */
     public function setNewRedis($configuration): void
     {
@@ -29,7 +29,7 @@ class Redis implements SessionHandlerInterface, SessionIdInterface, SessionUpdat
     }
 
     /**
-     * @param $redis
+     * @param Predis $redis
      */
     public function setCurrentRedis($redis): void
     {
@@ -37,16 +37,16 @@ class Redis implements SessionHandlerInterface, SessionIdInterface, SessionUpdat
     }
 
     /**
-     * @param $lifetime
+     * @param int $lifetime
      */
-    public function setLifetime($lifetime): void
+    public function setLifetime(int $lifetime): void
     {
         $this->lifetime = $lifetime;
     }
 
     /**
-     * @param $savePath
-     * @param $sessionName
+     * @param string $savePath
+     * @param string $sessionName
      *
      * @return bool
      */
@@ -74,8 +74,8 @@ class Redis implements SessionHandlerInterface, SessionIdInterface, SessionUpdat
     }
 
     /**
-     * @param $sessionId
-     * @param $data
+     * @param string $sessionId
+     * @param string $data
      *
      * @return bool
      */
@@ -88,7 +88,7 @@ class Redis implements SessionHandlerInterface, SessionIdInterface, SessionUpdat
     }
 
     /**
-     * @param $sessionId
+     * @param string $sessionId
      *
      * @return bool
      */
@@ -100,7 +100,7 @@ class Redis implements SessionHandlerInterface, SessionIdInterface, SessionUpdat
     }
 
     /**
-     * @param $lifetime
+     * @param int $lifetime
      *
      * @return bool
      */
@@ -142,7 +142,7 @@ class Redis implements SessionHandlerInterface, SessionIdInterface, SessionUpdat
         $string = '';
         $caracters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';
 
-        $countCaracters = \mb_strlen($caracters) - 1;
+        $countCaracters = 62;
         for ($i = 0; $i < 127; ++$i) {
             $string .= $caracters[\rand(0, $countCaracters)];
         }
