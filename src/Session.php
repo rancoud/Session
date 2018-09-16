@@ -291,11 +291,11 @@ class Session extends DriverManager
     /**
      * @throws SessionException
      *
-     * @return mixed
+     * @return int
      */
     protected static function getLifetimeForRedis()
     {
-        return static::getOption('cookie_lifetime');
+        return (int) static::getOption('cookie_lifetime');
     }
 
     /**

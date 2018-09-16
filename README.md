@@ -151,14 +151,14 @@ When flash data is restore, it will be delete in $_SESSION.
 * useNewDatabaseDriver(configuration: \Rancoud\Database\Configurator|array): void  
 * useCurrentDatabaseDriver(databaseInstance: \Rancoud\Database\Database): void  
 * useNewDatabaseEncryptionDriver(configuration: \Rancoud\Database\Configurator|array, key: string, [method: string = null]): void  
-* useCurrentDatabaseEncryptionDriver(databaseInstance, key: string, [method: string = null]): void  
+* useCurrentDatabaseEncryptionDriver(databaseInstance: \Rancoud\Database\Database, key: string, [method: string = null]): void  
 * setUserIdForDatabase(userId: int): void  
 
 #### Static Redis Driver
-* useNewRedisDriver(configuration): void  
-* useCurrentRedisDriver(redisInstance): void  
-* useNewRedisEncryptionDriver(configuration, key: string, [method: string = null]): void  
-* useCurrentRedisEncryptionDriver(redisInstance, key: string, [method: string = null]): void  
+* useNewRedisDriver(configuration: array|string): void  
+* useCurrentRedisDriver(redisInstance: \Predis\Client): void  
+* useNewRedisEncryptionDriver(configuration: array|string, key: string, [method: string = null]): void  
+* useCurrentRedisEncryptionDriver(redisInstance: \Predis\Client, key: string, [method: string = null]): void  
 
 #### Static Custom Driver
 * useCustomDriver(customDriver: \SessionHandlerInterface): void  

@@ -54,7 +54,7 @@ class EncryptionTest extends TestCase
     public function testExceptionEmptyKey()
     {
         static::expectException(SessionException::class);
-        static::expectExceptionMessage('Key has to be a non empty string');
+        static::expectExceptionMessage('Key has to be a non-empty string');
         
         $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
         $dataToEncrypt = 'this is something to encrypt';
