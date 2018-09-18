@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Rancoud\Session;
 
 use SessionHandlerInterface;
-use SessionIdInterface;
 use SessionUpdateTimestampHandlerInterface;
 
 /**
  * Class File.
  */
-class File implements SessionHandlerInterface, SessionIdInterface, SessionUpdateTimestampHandlerInterface
+class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInterface
 {
     /** @var string */
     protected $savePath;

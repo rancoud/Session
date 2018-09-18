@@ -8,13 +8,12 @@ use Rancoud\Database\Configurator;
 use Rancoud\Database\Database as Db;
 use Rancoud\Database\DatabaseException;
 use SessionHandlerInterface;
-use SessionIdInterface;
 use SessionUpdateTimestampHandlerInterface;
 
 /**
  * Class Database.
  */
-class Database implements SessionHandlerInterface, SessionIdInterface, SessionUpdateTimestampHandlerInterface
+class Database implements SessionHandlerInterface, SessionUpdateTimestampHandlerInterface
 {
     /** @var Db */
     protected $db;

@@ -6,13 +6,12 @@ namespace Rancoud\Session;
 
 use Predis\Client as Predis;
 use SessionHandlerInterface;
-use SessionIdInterface;
 use SessionUpdateTimestampHandlerInterface;
 
 /**
  * Class Redis.
  */
-class Redis implements SessionHandlerInterface, SessionIdInterface, SessionUpdateTimestampHandlerInterface
+class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInterface
 {
     /** @var Predis */
     protected $redis;
