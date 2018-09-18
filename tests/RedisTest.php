@@ -161,7 +161,7 @@ class RedisTest extends TestCase
         $redis->write($baseId . $endId1, 'a');
 
         static::assertTrue($redis->validateId($baseId . $endId1));
-        static::assertTrue($redis->validateId($baseId . $endId2));
+        static::assertFalse($redis->validateId($baseId . $endId2));
         static::assertFalse($redis->validateId('kjlfez/fez'));
     }
 

@@ -117,7 +117,13 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
      */
     public function validateId($key): bool
     {
-        return \preg_match('/^[a-zA-Z0-9-]{127}+$/', $key) === 1;
+        if (\preg_match('/^[a-zA-Z0-9-]{127}+$/', $key) !== 1) {
+            return false;
+        }
+
+        $exist = $this->redis->exists($key);
+
+        return $exist === 1;
     }
 
     /**
@@ -144,6 +150,11 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
         $countCaracters = 62;
         for ($i = 0; $i < 127; ++$i) {
             $string .= $caracters[\rand(0, $countCaracters)];
+        }
+
+        $exist = $this->redis->exists($string);
+        if ($exist !== 0) {
+            return $this->create_sid();
         }
 
         return $string;

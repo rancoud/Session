@@ -120,7 +120,16 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
      */
     public function validateId($key): bool
     {
-        return \preg_match('/^[a-zA-Z0-9-]{127}+$/', $key) === 1;
+        if (\preg_match('/^[a-zA-Z0-9-]{127}+$/', $key) !== 1) {
+            return false;
+        }
+
+        $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $key;
+        if (!\file_exists($filename)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -147,6 +156,11 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
         $countCaracters = 62;
         for ($i = 0; $i < 127; ++$i) {
             $string .= $caracters[\rand(0, $countCaracters)];
+        }
+
+        $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $string;
+        if (\file_exists($filename)) {
+            return $this->create_sid();
         }
 
         return $string;

@@ -138,11 +138,21 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
      *
      * @param string $key
      *
+     * @throws DatabaseException
+     *
      * @return bool
      */
     public function validateId($key): bool
     {
-        return \preg_match('/^[a-zA-Z0-9-]{127}+$/', $key) === 1;
+        if (\preg_match('/^[a-zA-Z0-9-]{127}+$/', $key) !== 1) {
+            return false;
+        }
+
+        $sql = 'SELECT COUNT(id) WHERE id=:id';
+        $params = ['id' => $key];
+        $count = $this->db->count($sql, $params);
+
+        return $count === 1;
     }
 
     /**
@@ -161,6 +171,8 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
     }
 
     /**
+     * @throws DatabaseException
+     *
      * @return string
      */
     public function create_sid(): string
@@ -171,6 +183,13 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
         $countCaracters = 62;
         for ($i = 0; $i < 127; ++$i) {
             $string .= $caracters[\rand(0, $countCaracters)];
+        }
+
+        $sql = 'SELECT COUNT(id) WHERE id=:id';
+        $params = ['id' => $string];
+        $count = $this->db->count($sql, $params);
+        if ($count !== 0) {
+            return $this->create_sid();
         }
 
         return $string;
