@@ -134,7 +134,7 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
     }
 
     /**
-     * Checks if a session identifier already exists or not.
+     * Checks format and free to use, if not session_id will be regenerate.
      *
      * @param string $key
      *
@@ -152,7 +152,7 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
         $params = ['id' => $key];
         $count = $this->db->count($sql, $params);
 
-        return $count === 1;
+        return $count !== 1;
     }
 
     /**

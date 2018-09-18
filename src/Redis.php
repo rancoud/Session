@@ -109,7 +109,7 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
     }
 
     /**
-     * Checks if a session identifier already exists or not.
+     * Checks format and free to use, if not session_id will be regenerate.
      *
      * @param string $key
      *
@@ -123,7 +123,7 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
 
         $exist = $this->redis->exists($key);
 
-        return $exist === 1;
+        return $exist !== 1;
     }
 
     /**

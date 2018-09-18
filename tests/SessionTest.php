@@ -578,7 +578,7 @@ class SessionTest extends TestCase
 
         sleep(1);
 
-        $sql = 'update sessions set last_access = DATE_ADD(NOW(), INTERVAL 5000 SECOND) WHERE id = :id';
+        $sql = 'update sessions set last_access = DATE_ADD(NOW(), INTERVAL 50000 SECOND) WHERE id = :id';
         $params = ['id' => $baseId . $endId2];
         $db->update($sql, $params);
 

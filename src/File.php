@@ -112,7 +112,7 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
     }
 
     /**
-     * Checks if a session identifier already exists or not.
+     * Checks format and free to use, if not session_id will be regenerate.
      *
      * @param string $key
      *
@@ -125,7 +125,7 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
         }
 
         $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $key;
-        if (!\file_exists($filename)) {
+        if (\file_exists($filename)) {
             return false;
         }
 
