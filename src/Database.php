@@ -148,7 +148,7 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
             return false;
         }
 
-        $sql = 'SELECT COUNT(id) WHERE id=:id';
+        $sql = 'SELECT COUNT(id) FROM sessions WHERE id=:id';
         $params = ['id' => $key];
         $count = $this->db->count($sql, $params);
 
@@ -185,7 +185,7 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
             $string .= $caracters[\rand(0, $countCaracters)];
         }
 
-        $sql = 'SELECT COUNT(id) WHERE id=:id';
+        $sql = 'SELECT COUNT(id) FROM sessions WHERE id=:id';
         $params = ['id' => $string];
         $count = $this->db->count($sql, $params);
         if ($count !== 0) {
