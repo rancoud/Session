@@ -177,7 +177,7 @@ class FileEncryptionTest extends TestCase
         $fileEncryption->write($baseId . $endId1, 'a');
 
         static::assertTrue($fileEncryption->validateId($baseId . $endId1));
-        static::assertTrue($fileEncryption->validateId($baseId . $endId2));
+        static::assertFalse($fileEncryption->validateId($baseId . $endId2));
         static::assertFalse($fileEncryption->validateId('kjlfez/fez'));
     }
 

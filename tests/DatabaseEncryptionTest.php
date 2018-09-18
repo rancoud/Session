@@ -359,7 +359,7 @@ class DatabaseEncryptionTest extends TestCase
         }
 
         static::assertTrue($database->validateId($baseId . $endId1));
-        static::assertTrue($database->validateId($baseId . $endId2));
+        static::assertFalse($database->validateId($baseId . $endId2));
         static::assertFalse($database->validateId('kjlfez/fez'));
     }
 
