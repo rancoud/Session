@@ -574,12 +574,13 @@ class SessionTest extends TestCase
 
         Session::setId($baseId . $endId2);
         Session::set('b', 'a');
+        $sessionId = Session::getId();
         Session::commit();
 
         sleep(1);
 
         $sql = 'update sessions set last_access = DATE_ADD(NOW(), INTERVAL 50000 SECOND) WHERE id = :id';
-        $params = ['id' => $baseId . $endId2];
+        $params = ['id' => $sessionId];
         $db->update($sql, $params);
 
         Session::setOption('gc_maxlifetime', '1');
