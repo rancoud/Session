@@ -171,8 +171,8 @@ class FileTest extends TestCase
 
         $file->write($baseId . $endId1, 'a');
 
-        static::assertFalse($file->validateId($baseId . $endId1));
-        static::assertTrue($file->validateId($baseId . $endId2));
+        static::assertTrue($file->validateId($baseId . $endId1));
+        static::assertFalse($file->validateId($baseId . $endId2));
         static::assertFalse($file->validateId('kjlfez/fez'));
     }
 
