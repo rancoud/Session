@@ -1,4 +1,5 @@
 <?php
+/** @noinspection SqlDialectInspection */
 
 declare(strict_types=1);
 
@@ -16,10 +17,10 @@ use SessionUpdateTimestampHandlerInterface;
 class Database implements SessionHandlerInterface, SessionUpdateTimestampHandlerInterface
 {
     /** @var Db */
-    protected $db;
+    protected Db $db;
 
     /** @var int|null */
-    protected $userId = null;
+    protected ?int $userId = null;
 
     /**
      * @param Configurator|array $configuration

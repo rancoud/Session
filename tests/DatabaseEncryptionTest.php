@@ -1,4 +1,5 @@
 <?php
+/** @noinspection ForgottenDebugOutputInspection */
 
 declare(strict_types=1);
 
@@ -15,9 +16,9 @@ use Rancoud\Session\DatabaseEncryption;
 class DatabaseEncryptionTest extends TestCase
 {
     /** @var \Rancoud\Database\Database */
-    private static $db;
+    private static \Rancoud\Database\Database $db;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $conf = new \Rancoud\Database\Configurator([
             'engine'   => 'mysql',
@@ -39,7 +40,7 @@ class DatabaseEncryptionTest extends TestCase
         ';
         try {
             static::$db->exec($sql);
-            static::$db->truncateTable('sessions');
+            static::$db->truncateTables('sessions');
         } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
@@ -47,10 +48,10 @@ class DatabaseEncryptionTest extends TestCase
         }
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         try {
-            static::$db->truncateTable('sessions');
+            static::$db->truncateTables('sessions');
         } catch (DatabaseException $e) {
             var_dump(static::$db->getErrors());
 
@@ -58,7 +59,7 @@ class DatabaseEncryptionTest extends TestCase
         }
     }
 
-    public function testOpen()
+    public function testOpen(): void
     {
         $database = new DatabaseEncryption();
         $database->setKey('randomKey');
@@ -71,7 +72,7 @@ class DatabaseEncryptionTest extends TestCase
         static::assertTrue($success);
     }
 
-    public function testClose()
+    public function testClose(): void
     {
         $database = new DatabaseEncryption();
         $database->setKey('randomKey');
@@ -82,7 +83,7 @@ class DatabaseEncryptionTest extends TestCase
         static::assertTrue($success);
     }
 
-    public function testWrite()
+    public function testWrite(): void
     {
         $database = new DatabaseEncryption();
         $database->setKey('randomKey');
@@ -112,7 +113,7 @@ class DatabaseEncryptionTest extends TestCase
         static::assertEquals($data, $dataInDatabaseDecrypted);
     }
 
-    public function testRead()
+    public function testRead(): void
     {
         $database = new DatabaseEncryption();
         $database->setKey('randomKey');
@@ -145,7 +146,7 @@ class DatabaseEncryptionTest extends TestCase
         static::assertTrue(is_string($dataOutput));
     }
 
-    public function testDestroy()
+    public function testDestroy(): void
     {
         $database = new DatabaseEncryption();
         $database->setKey('randomKey');
@@ -189,7 +190,7 @@ class DatabaseEncryptionTest extends TestCase
         static::assertTrue($isRowNotExist);
     }
 
-    public function testGc()
+    public function testGc(): void
     {
         $database = new DatabaseEncryption();
         $database->setKey('randomKey');
@@ -227,7 +228,7 @@ class DatabaseEncryptionTest extends TestCase
         static::assertTrue($isRowNotExist);
     }
 
-    public function testSetUserId()
+    public function testSetUserId(): void
     {
         $database = new DatabaseEncryption();
         $database->setKey('randomKey');
@@ -285,7 +286,7 @@ class DatabaseEncryptionTest extends TestCase
         static::assertEquals($userId, $userIdInDatabase);
     }
 
-    public function testSetNewDatabaseWithArray()
+    public function testSetNewDatabaseWithArray(): void
     {
         $database = new DatabaseEncryption();
         $database->setKey('randomKey');
@@ -312,7 +313,7 @@ class DatabaseEncryptionTest extends TestCase
         static::assertTrue($success);
     }
 
-    public function testSetNewDatabaseWithConfigurator()
+    public function testSetNewDatabaseWithConfigurator(): void
     {
         $database = new DatabaseEncryption();
         $database->setKey('randomKey');
@@ -340,7 +341,7 @@ class DatabaseEncryptionTest extends TestCase
         static::assertTrue($success);
     }
 
-    public function testValidateId()
+    public function testValidateId(): void
     {
         $database = new DatabaseEncryption();
         $database->setKey('randomKey');
@@ -363,7 +364,7 @@ class DatabaseEncryptionTest extends TestCase
         static::assertFalse($database->validateId('kjlfez/fez'));
     }
 
-    public function testUpdateTimestamp()
+    public function testUpdateTimestamp(): void
     {
         $database = new DatabaseEncryption();
         $database->setKey('randomKey');
@@ -434,7 +435,7 @@ class DatabaseEncryptionTest extends TestCase
         static::assertTrue($row1['last_access'] < $row2['last_access']);
     }
 
-    public function testCreateId()
+    public function testCreateId(): void
     {
         $database = new DatabaseEncryption();
         $database->setKey('randomKey');

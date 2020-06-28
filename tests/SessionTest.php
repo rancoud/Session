@@ -1,4 +1,5 @@
 <?php
+/** @noinspection ForgottenDebugOutputInspection */
 
 declare(strict_types=1);
 
@@ -14,7 +15,7 @@ use Rancoud\Session\SessionException;
  */
 class SessionTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $path = ini_get('session.save_path');
         if (empty($path)) {
@@ -32,7 +33,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testGetNull()
+    public function testGetNull(): void
     {
         $value = Session::get('emptykey');
         static::assertNull($value);
@@ -41,7 +42,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testSet()
+    public function testSet(): void
     {
         Session::set('a', 'b');
         $value = Session::get('a');
@@ -51,7 +52,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testHas()
+    public function testHas(): void
     {
         Session::set('a', 'b');
 
@@ -65,7 +66,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testHasKeyAndValue()
+    public function testHasKeyAndValue(): void
     {
         Session::set('a', 'b');
 
@@ -82,7 +83,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testRemove()
+    public function testRemove(): void
     {
         Session::set('a', 'b');
 
@@ -98,7 +99,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testStartException()
+    public function testStartException(): void
     {
         static::expectException(SessionException::class);
         static::expectExceptionMessage('Session already started');
@@ -111,7 +112,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testUseDefaultDriverWhenAlreadyStartedException()
+    public function testUseDefaultDriverWhenAlreadyStartedException(): void
     {
         static::expectException(SessionException::class);
         static::expectExceptionMessage('Session already started');
@@ -124,7 +125,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testUseFileDriverWhenAlreadyStartedException()
+    public function testUseFileDriverWhenAlreadyStartedException(): void
     {
         static::expectException(SessionException::class);
         static::expectExceptionMessage('Session already started');
@@ -137,7 +138,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testUseCustomDriverWhenAlreadyStartedException()
+    public function testUseCustomDriverWhenAlreadyStartedException(): void
     {
         static::expectException(SessionException::class);
         static::expectExceptionMessage('Session already started');
@@ -150,7 +151,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testUseDefaultDriver()
+    public function testUseDefaultDriver(): void
     {
         Session::useDefaultDriver();
         Session::start();
@@ -161,7 +162,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testUseDefaultEncryptionDriver()
+    public function testUseDefaultEncryptionDriver(): void
     {
         Session::useDefaultEncryptionDriver('randomKey');
         Session::start();
@@ -172,7 +173,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testUseFileDriver()
+    public function testUseFileDriver(): void
     {
         Session::useFileDriver();
         Session::start();
@@ -183,7 +184,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testUseFileDriverWithPrefix()
+    public function testUseFileDriverWithPrefix(): void
     {
         $prefix = 'youhou_';
         Session::useFileDriver();
@@ -208,7 +209,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testUseFileEncryptionDriver()
+    public function testUseFileEncryptionDriver(): void
     {
         Session::useFileEncryptionDriver('randomKey');
         Session::start();
@@ -219,7 +220,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testUseNewDatabaseDriver()
+    public function testUseNewDatabaseDriver(): void
     {
         $params = [
             'engine'   => 'mysql',
@@ -237,7 +238,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testUseNewDatabaseEncryptionDriver()
+    public function testUseNewDatabaseEncryptionDriver(): void
     {
         $params = [
             'engine'   => 'mysql',
@@ -255,7 +256,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testUseCurrentDatabaseDriver()
+    public function testUseCurrentDatabaseDriver(): void
     {
         $conf = new \Rancoud\Database\Configurator([
             'engine'   => 'mysql',
@@ -274,7 +275,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testUseCurrentDatabaseEncryptionDriver()
+    public function testUseCurrentDatabaseEncryptionDriver(): void
     {
         $userId = 50;
         $conf = new \Rancoud\Database\Configurator([
@@ -301,7 +302,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testUseNewRedisDriver()
+    public function testUseNewRedisDriver(): void
     {
         $params = [
             'scheme' => 'tcp',
@@ -317,7 +318,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testUseNewRedisEncryptionDriver()
+    public function testUseNewRedisEncryptionDriver(): void
     {
         $params = [
             'scheme' => 'tcp',
@@ -333,7 +334,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testUseCurrentRedisDriver()
+    public function testUseCurrentRedisDriver(): void
     {
         $params = [
             'scheme' => 'tcp',
@@ -350,7 +351,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testUseCurrentRedisEncryptionDriver()
+    public function testUseCurrentRedisEncryptionDriver(): void
     {
         $params = [
             'scheme' => 'tcp',
@@ -367,7 +368,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testUseCustomDriver()
+    public function testUseCustomDriver(): void
     {
         Session::useCustomDriver(new File());
         Session::start();
@@ -378,7 +379,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testUseEncryptionDriverThrowExceptionWhenMethodIncrorrect()
+    public function testUseEncryptionDriverThrowExceptionWhenMethodIncrorrect(): void
     {
         static::expectException(SessionException::class);
         static::expectExceptionMessage('Method unknowed: incorrect');
@@ -391,7 +392,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testSetOption()
+    public function testSetOption(): void
     {
         $defaultOption = Session::getOption('name');
         static::assertEquals($defaultOption, ini_get('session.name'));
@@ -410,7 +411,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testSetOptionThrowException()
+    public function testSetOptionThrowException(): void
     {
         static::expectException(SessionException::class);
         static::expectExceptionMessage('Incorrect option: azerty');
@@ -421,7 +422,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testGetAll()
+    public function testGetAll(): void
     {
         $sessionValues = Session::getAll();
         static::assertTrue(empty($sessionValues));
@@ -435,7 +436,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testFlash()
+    public function testFlash(): void
     {
         $flaKey1 = 'a';
         $flaValue1 = 'b';
@@ -484,7 +485,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testRollback()
+    public function testRollback(): void
     {
         Session::set('a', 'b');
         Session::commit();
@@ -499,7 +500,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testUnsaved()
+    public function testUnsaved(): void
     {
         Session::set('a', 'b');
         Session::commit();
@@ -515,7 +516,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testRegenerate()
+    public function testRegenerate(): void
     {
         Session::set('a', 'v');
         $sessionId = Session::getId();
@@ -527,7 +528,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testDestroy()
+    public function testDestroy(): void
     {
         Session::set('a', 'v');
         $sessionId = Session::getId();
@@ -540,7 +541,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testSetReadOnly()
+    public function testSetReadOnly(): void
     {
         Session::setReadOnly();
         Session::start();
@@ -550,7 +551,7 @@ class SessionTest extends TestCase
     /**
      * @runInSeparateProcess
      */
-    public function testGc()
+    public function testGc(): void
     {
         $conf = new \Rancoud\Database\Configurator([
             'engine'   => 'mysql',

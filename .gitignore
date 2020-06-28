@@ -4,15 +4,14 @@
 
 # Composer
 vendor/
-composer.lock
 
 # PHP code sniffer
 .php_cs.cache
 
 # PHP Unit
 build/
+.phpunit.result.cache
 
 # Dev / Testing
 test.php
-coverage/*
-!coverage/.gitkeep
+coverage/

@@ -1,4 +1,5 @@
 <?php
+/** @noinspection ForgottenDebugOutputInspection */
 
 declare(strict_types=1);
 
@@ -12,7 +13,7 @@ use Rancoud\Session\FileEncryption;
  */
 class FileEncryptionTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $path = ini_get('session.save_path');
         if (empty($path)) {
@@ -31,7 +32,7 @@ class FileEncryptionTest extends TestCase
         }
     }
 
-    private function getPath()
+    private function getPath(): string
     {
         $path = ini_get('session.save_path');
         if (empty($path)) {
@@ -41,13 +42,13 @@ class FileEncryptionTest extends TestCase
         return $path;
     }
 
-    private function openSessionForSavingSavePath(FileEncryption $fileEncryption)
+    private function openSessionForSavingSavePath(FileEncryption $fileEncryption): void
     {
         $success = $fileEncryption->open($this->getPath(), '');
         static::assertTrue($success);
     }
 
-    public function testOpen()
+    public function testOpen(): void
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
@@ -64,7 +65,7 @@ class FileEncryptionTest extends TestCase
         static::assertTrue($success);
     }
 
-    public function testClose()
+    public function testClose(): void
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
@@ -72,7 +73,7 @@ class FileEncryptionTest extends TestCase
         static::assertTrue($success);
     }
 
-    public function testWrite()
+    public function testWrite(): void
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
@@ -93,7 +94,7 @@ class FileEncryptionTest extends TestCase
         static::assertEquals($data, $dataInFileDecrypted);
     }
 
-    public function testRead()
+    public function testRead(): void
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
@@ -116,7 +117,7 @@ class FileEncryptionTest extends TestCase
         static::assertTrue(is_string($dataOutput));
     }
 
-    public function testDestroy()
+    public function testDestroy(): void
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
@@ -140,7 +141,7 @@ class FileEncryptionTest extends TestCase
         static::assertTrue($isFileNotExist);
     }
 
-    public function testGc()
+    public function testGc(): void
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
@@ -163,7 +164,7 @@ class FileEncryptionTest extends TestCase
         static::assertTrue($isFileNotExist);
     }
 
-    public function testValidateId()
+    public function testValidateId(): void
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
@@ -181,7 +182,7 @@ class FileEncryptionTest extends TestCase
         static::assertFalse($fileEncryption->validateId('kjlfez/fez'));
     }
 
-    public function testUpdateTimestamp()
+    public function testUpdateTimestamp(): void
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
@@ -222,7 +223,7 @@ class FileEncryptionTest extends TestCase
         static::assertTrue($oldFileModifiedTime < $newFileModifiedTime);
     }
 
-    public function testCreateId()
+    public function testCreateId(): void
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');

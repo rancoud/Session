@@ -1,4 +1,5 @@
 <?php
+/** @noinspection ForgottenDebugOutputInspection */
 
 declare(strict_types=1);
 
@@ -12,7 +13,7 @@ use Rancoud\Session\File;
  */
 class FileWithNewPrefixTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $path = ini_get('session.save_path');
         if (empty($path)) {
@@ -34,7 +35,7 @@ class FileWithNewPrefixTest extends TestCase
     /**
      * @return string
      */
-    private function getPath()
+    private function getPath(): string
     {
         $path = ini_get('session.save_path');
         if (empty($path)) {
@@ -49,13 +50,13 @@ class FileWithNewPrefixTest extends TestCase
      *
      * @throws \PHPUnit\Framework\AssertionFailedError
      */
-    private function openSessionForSavingSavePath(File $file)
+    private function openSessionForSavingSavePath(File $file): void
     {
         $success = $file->open($this->getPath(), '');
         static::assertTrue($success);
     }
 
-    public function testOpen()
+    public function testOpen(): void
     {
         $file = new File();
         $file->setPrefix('myprefix_');
@@ -71,7 +72,7 @@ class FileWithNewPrefixTest extends TestCase
         static::assertTrue($success);
     }
 
-    public function testClose()
+    public function testClose(): void
     {
         $file = new File();
         $file->setPrefix('myprefix_');
@@ -79,7 +80,7 @@ class FileWithNewPrefixTest extends TestCase
         static::assertTrue($success);
     }
 
-    public function testWrite()
+    public function testWrite(): void
     {
         $file = new File();
         $file->setPrefix('myprefix_');
@@ -95,7 +96,7 @@ class FileWithNewPrefixTest extends TestCase
         static::assertEquals($data, $dataInFile);
     }
 
-    public function testRead()
+    public function testRead(): void
     {
         $file = new File();
         $file->setPrefix('myprefix_');
@@ -118,7 +119,7 @@ class FileWithNewPrefixTest extends TestCase
         static::assertTrue(is_string($dataOutput));
     }
 
-    public function testDestroy()
+    public function testDestroy(): void
     {
         $file = new File();
         $file->setPrefix('myprefix_');
@@ -142,7 +143,7 @@ class FileWithNewPrefixTest extends TestCase
         static::assertTrue($isFileNotExist);
     }
 
-    public function testGc()
+    public function testGc(): void
     {
         $file = new File();
         $file->setPrefix('myprefix_');
@@ -165,7 +166,7 @@ class FileWithNewPrefixTest extends TestCase
         static::assertTrue($isFileNotExist);
     }
 
-    public function testValidateId()
+    public function testValidateId(): void
     {
         $file = new File();
         $file->setPrefix('myprefix_');
@@ -183,7 +184,7 @@ class FileWithNewPrefixTest extends TestCase
         static::assertFalse($file->validateId('kjlfez/fez'));
     }
 
-    public function testUpdateTimestamp()
+    public function testUpdateTimestamp(): void
     {
         $file = new File();
         $file->setPrefix('myprefix_');
@@ -213,7 +214,7 @@ class FileWithNewPrefixTest extends TestCase
         static::assertTrue($oldFileModifiedTime < $newFileModifiedTime);
     }
 
-    public function testCreateId()
+    public function testCreateId(): void
     {
         $file = new File();
         $file->setPrefix('myprefix_');

@@ -13,10 +13,10 @@ use SessionUpdateTimestampHandlerInterface;
 class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInterface
 {
     /** @var string */
-    protected $savePath;
+    protected string $savePath;
 
     /** @var string */
-    protected $prefix = 'sess_';
+    protected string $prefix = 'sess_';
 
     /**
      * @param string $prefix
@@ -144,6 +144,7 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
 
     /**
      * @return string
+     * @throws \Exception
      */
     public function create_sid(): string
     {
@@ -152,7 +153,7 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
 
         $countCaracters = 62;
         for ($i = 0; $i < 127; ++$i) {
-            $string .= $caracters[\rand(0, $countCaracters)];
+            $string .= $caracters[\random_int(0, $countCaracters)];
         }
 
         $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $string;

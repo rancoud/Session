@@ -14,10 +14,10 @@ use SessionUpdateTimestampHandlerInterface;
 class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInterface
 {
     /** @var Predis */
-    protected $redis;
+    protected Predis $redis;
 
     /** @var int */
-    protected $lifetime = 1440;
+    protected int $lifetime = 1440;
 
     /**
      * @param string|array $configuration
@@ -141,6 +141,7 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
 
     /**
      * @return string
+     * @throws \Exception
      */
     public function create_sid(): string
     {
@@ -149,7 +150,7 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
 
         $countCaracters = 62;
         for ($i = 0; $i < 127; ++$i) {
-            $string .= $caracters[\rand(0, $countCaracters)];
+            $string .= $caracters[\random_int(0, $countCaracters)];
         }
 
         $exist = $this->redis->exists($string);

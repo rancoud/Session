@@ -13,7 +13,7 @@ use SessionHandlerInterface;
 abstract class DriverManager
 {
     /** @var SessionHandlerInterface */
-    protected static $driver = null;
+    protected static ?SessionHandlerInterface $driver = null;
 
     abstract protected static function throwExceptionIfHasStarted();
 
@@ -218,9 +218,9 @@ abstract class DriverManager
     }
 
     /**
-     * @param \Rancoud\Session\Encryption $driver
-     * @param                             $key
-     * @param                             $method
+     * @param Encryption $driver
+     * @param            $key
+     * @param            $method
      *
      * @throws \Exception
      */

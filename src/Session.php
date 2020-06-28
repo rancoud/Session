@@ -14,10 +14,10 @@ class Session extends DriverManager
     use ArrayManager;
 
     /** @var bool */
-    protected static $hasStarted = false;
+    protected static bool $hasStarted = false;
 
     /** @var array */
-    protected static $options = [
+    protected static array $options = [
         'read_and_close'   => true,
         'cookie_httponly'  => '1',
         'use_only_cookies' => '1',
@@ -167,6 +167,7 @@ class Session extends DriverManager
      */
     protected static function setupCookieParams(): void
     {
+        // https://www.php.net/manual/fr/function.session-set-cookie-params.php new signature
         \session_set_cookie_params(
             static::getOption('cookie_lifetime'),
             static::getOption('cookie_path'),
@@ -293,7 +294,7 @@ class Session extends DriverManager
      *
      * @return int
      */
-    protected static function getLifetimeForRedis()
+    protected static function getLifetimeForRedis(): int
     {
         return (int) static::getOption('cookie_lifetime');
     }
