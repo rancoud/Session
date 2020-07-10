@@ -73,6 +73,9 @@ class FileEncryptionTest extends TestCase
         static::assertTrue($success);
     }
 
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
     public function testWrite(): void
     {
         $fileEncryption = new FileEncryption();
@@ -94,6 +97,9 @@ class FileEncryptionTest extends TestCase
         static::assertEquals($data, $dataInFileDecrypted);
     }
 
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
     public function testRead(): void
     {
         $fileEncryption = new FileEncryption();
@@ -107,16 +113,19 @@ class FileEncryptionTest extends TestCase
         static::assertTrue($success);
 
         $dataOutput = $fileEncryption->read($sessionId);
-        static::assertTrue(!empty($dataOutput));
-        static::assertTrue(is_string($dataOutput));
+        static::assertNotEmpty($dataOutput);
+        static::assertIsString($dataOutput);
         static::assertEquals($data, $dataOutput);
 
         $sessionId = '';
         $dataOutput = $fileEncryption->read($sessionId);
-        static::assertTrue(empty($dataOutput));
-        static::assertTrue(is_string($dataOutput));
+        static::assertEmpty($dataOutput);
+        static::assertIsString($dataOutput);
     }
 
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
     public function testDestroy(): void
     {
         $fileEncryption = new FileEncryption();
@@ -141,6 +150,9 @@ class FileEncryptionTest extends TestCase
         static::assertTrue($isFileNotExist);
     }
 
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
     public function testGc(): void
     {
         $fileEncryption = new FileEncryption();
@@ -164,6 +176,9 @@ class FileEncryptionTest extends TestCase
         static::assertTrue($isFileNotExist);
     }
 
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
     public function testValidateId(): void
     {
         $fileEncryption = new FileEncryption();
@@ -182,6 +197,9 @@ class FileEncryptionTest extends TestCase
         static::assertFalse($fileEncryption->validateId('kjlfez/fez'));
     }
 
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
     public function testUpdateTimestamp(): void
     {
         $fileEncryption = new FileEncryption();
@@ -223,6 +241,9 @@ class FileEncryptionTest extends TestCase
         static::assertTrue($oldFileModifiedTime < $newFileModifiedTime);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function testCreateId(): void
     {
         $fileEncryption = new FileEncryption();
@@ -230,6 +251,6 @@ class FileEncryptionTest extends TestCase
 
         $string = $fileEncryption->create_sid();
 
-        static::assertTrue(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string) === 1);
+        static::assertSame(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string), 1);
     }
 }

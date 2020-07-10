@@ -45,8 +45,8 @@ class EncryptionTest extends TestCase
 
     public function testExceptionMethod(): void
     {
-        static::expectException(SessionException::class);
-        static::expectExceptionMessage('Method unknowed: method');
+        $this->expectException(SessionException::class);
+        $this->expectExceptionMessage('Method unknowed: method');
         
         $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
         $encryptionTrait->setMethod('method');
@@ -54,8 +54,8 @@ class EncryptionTest extends TestCase
 
     public function testExceptionEmptyKey(): void
     {
-        static::expectException(SessionException::class);
-        static::expectExceptionMessage('Key has to be a non-empty string');
+        $this->expectException(SessionException::class);
+        $this->expectExceptionMessage('Key has to be a non-empty string');
         
         $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
         $dataToEncrypt = 'this is something to encrypt';

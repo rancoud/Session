@@ -1,4 +1,5 @@
 <?php
+
 /** @noinspection ForgottenDebugOutputInspection */
 
 declare(strict_types=1);
@@ -14,8 +15,8 @@ use Rancoud\Session\Redis;
  */
 class RedisTest extends TestCase
 {
-    /** @var \Predis\Client */
-    private static $redis;
+    /** @var Predis */
+    private static Predis $redis;
 
     public static function setUpBeforeClass(): void
     {
@@ -77,14 +78,14 @@ class RedisTest extends TestCase
         static::assertTrue($success);
 
         $dataOutput = $redis->read($sessionId);
-        static::assertTrue(!empty($dataOutput));
-        static::assertTrue(is_string($dataOutput));
+        static::assertNotEmpty($dataOutput);
+        static::assertIsString($dataOutput);
         static::assertEquals($data, $dataOutput);
 
         $sessionId = '';
         $dataOutput = $redis->read($sessionId);
-        static::assertTrue(empty($dataOutput));
-        static::assertTrue(is_string($dataOutput));
+        static::assertEmpty($dataOutput);
+        static::assertIsString($dataOutput);
     }
 
     public function testDestroy(): void
@@ -196,6 +197,9 @@ class RedisTest extends TestCase
         static::assertTrue($ttl3 > $ttl2);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function testCreateId(): void
     {
         $redis = new Redis();
@@ -203,6 +207,6 @@ class RedisTest extends TestCase
 
         $string = $redis->create_sid();
 
-        static::assertTrue(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string) === 1);
+        static::assertSame(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string), 1);
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 /** @noinspection ForgottenDebugOutputInspection */
 
 declare(strict_types=1);
@@ -109,14 +110,14 @@ class FileWithNewPrefixTest extends TestCase
         static::assertTrue($success);
 
         $dataOutput = $file->read($sessionId);
-        static::assertTrue(!empty($dataOutput));
-        static::assertTrue(is_string($dataOutput));
+        static::assertNotEmpty($dataOutput);
+        static::assertIsString($dataOutput);
         static::assertEquals($data, $dataOutput);
 
         $sessionId = '';
         $dataOutput = $file->read($sessionId);
-        static::assertTrue(empty($dataOutput));
-        static::assertTrue(is_string($dataOutput));
+        static::assertEmpty($dataOutput);
+        static::assertIsString($dataOutput);
     }
 
     public function testDestroy(): void
@@ -214,6 +215,9 @@ class FileWithNewPrefixTest extends TestCase
         static::assertTrue($oldFileModifiedTime < $newFileModifiedTime);
     }
 
+    /**
+     * @throws \Exception
+     */
     public function testCreateId(): void
     {
         $file = new File();
@@ -221,6 +225,6 @@ class FileWithNewPrefixTest extends TestCase
 
         $string = $file->create_sid();
 
-        static::assertTrue(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string) === 1);
+        static::assertSame(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string), 1);
     }
 }

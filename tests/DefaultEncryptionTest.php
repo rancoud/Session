@@ -1,4 +1,5 @@
 <?php
+
 /** @noinspection ForgottenDebugOutputInspection */
 
 declare(strict_types=1);
@@ -48,6 +49,7 @@ class DefaultEncryptionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @throws \Exception
      */
     public function testReadAndWrite(): void
     {
