@@ -140,8 +140,9 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
     }
 
     /**
-     * @return string
      * @throws \Exception
+     *
+     * @return string
      */
     public function create_sid(): string
     {

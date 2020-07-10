@@ -143,8 +143,9 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
     }
 
     /**
-     * @return string
      * @throws \Exception
+     *
+     * @return string
      */
     public function create_sid(): string
     {

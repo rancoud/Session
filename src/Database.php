@@ -1,4 +1,5 @@
 <?php
+
 /** @noinspection SqlDialectInspection */
 
 declare(strict_types=1);

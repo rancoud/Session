@@ -21,7 +21,6 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.16",
-        "php-coveralls/php-coveralls": "^2.2",
         "phpunit/phpunit": "^9.1",
         "predis/predis": "^1.1",
         "rancoud/database": "^4.0",
@@ -34,7 +33,6 @@
         ],
         "lint": [
             "phpcbf",
-            "phpcs",
             "php-cs-fixer fix"
         ],
         "test": [
