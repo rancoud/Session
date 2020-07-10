@@ -66,8 +66,6 @@ class Session extends DriverManager
         } else {
             static::restoreFlashData();
         }
-
-        //static::regenerate();
     }
 
     /**
