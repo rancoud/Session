@@ -12,8 +12,8 @@ use SessionUpdateTimestampHandlerInterface;
  */
 class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInterface
 {
-    /** @var string */
-    protected string $savePath;
+    /** @var string|null */
+    protected ?string $savePath = null;
 
     /** @var string */
     protected string $prefix = 'sess_';
