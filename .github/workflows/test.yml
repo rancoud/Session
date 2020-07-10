@@ -37,9 +37,9 @@ jobs:
 
     steps:
       - name: Set files permission
-          run: |
-            sudo chown -R www-data:www-data /var/lib/php/session/
-            sudo chmod -R 775 /var/lib/php/session/
+        run: |
+          sudo chown -R www-data:www-data /var/lib/php/session/
+          sudo chmod -R 775 /var/lib/php/session/
 
       - name: Verify MySQL connection from host
         run: |
