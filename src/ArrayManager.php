@@ -10,7 +10,7 @@ namespace Rancoud\Session;
 trait ArrayManager
 {
     /** @var array */
-    protected static $flashData = [];
+    protected static array $flashData = [];
 
     abstract protected static function startSessionIfNotHasStarted();
 

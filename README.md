@@ -1,6 +1,12 @@
 # Session Package
 
-[![Build Status](https://travis-ci.org/rancoud/Session.svg?branch=master)](https://travis-ci.org/rancoud/Session) [![Coverage Status](https://coveralls.io/repos/github/rancoud/Session/badge.svg?branch=master)](https://coveralls.io/github/rancoud/Session?branch=master)
+![Packagist PHP Version Support](https://img.shields.io/packagist/php-v/rancoud/session)
+[![Packagist Version](https://img.shields.io/packagist/v/rancoud/session)](https://packagist.org/packages/rancoud/session)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/rancoud/session)](https://packagist.org/packages/rancoud/session)
+[![Composer dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)](https://github.com/rancoud/session/blob/master/composer.json)
+[![Test workflow](https://img.shields.io/github/workflow/status/rancoud/session/test?label=test&logo=github)](https://github.com/rancoud/session/actions?workflow=test)
+[![Codecov](https://img.shields.io/codecov/c/github/rancoud/session?logo=codecov)](https://codecov.io/gh/rancoud/session)
+[![composer.lock](https://poser.pugx.org/rancoud/session/composerlock)](https://packagist.org/packages/rancoud/session)
 
 Session.  
 
@@ -190,5 +196,6 @@ composer require predis/predis
 ```
 
 ## How to Dev
-`./run_all_commands.sh` for php-cs-fixer and phpunit and coverage  
-`./run_php_unit_coverage.sh` for phpunit and coverage    
+`composer ci` for php-cs-fixer and phpunit and coverage  
+`composer lint` for php-cs-fixer  
+`composer test` for phpunit and coverage  

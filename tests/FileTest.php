@@ -1,4 +1,5 @@
 <?php
+/** @noinspection ForgottenDebugOutputInspection */
 
 declare(strict_types=1);
 
@@ -12,7 +13,7 @@ use Rancoud\Session\File;
  */
 class FileTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $path = ini_get('session.save_path');
         if (empty($path)) {
@@ -34,7 +35,7 @@ class FileTest extends TestCase
     /**
      * @return string
      */
-    private function getPath()
+    private function getPath(): string
     {
         $path = ini_get('session.save_path');
         if (empty($path)) {
@@ -49,13 +50,13 @@ class FileTest extends TestCase
      *
      * @throws \PHPUnit\Framework\AssertionFailedError
      */
-    private function openSessionForSavingSavePath(File $file)
+    private function openSessionForSavingSavePath(File $file): void
     {
         $success = $file->open($this->getPath(), '');
         static::assertTrue($success);
     }
 
-    public function testOpen()
+    public function testOpen(): void
     {
         $file = new File();
         $savePath = $this->getPath();
@@ -70,14 +71,14 @@ class FileTest extends TestCase
         static::assertTrue($success);
     }
 
-    public function testClose()
+    public function testClose(): void
     {
         $file = new File();
         $success = $file->close();
         static::assertTrue($success);
     }
 
-    public function testWrite()
+    public function testWrite(): void
     {
         $file = new File();
 
@@ -92,7 +93,7 @@ class FileTest extends TestCase
         static::assertEquals($data, $dataInFile);
     }
 
-    public function testRead()
+    public function testRead(): void
     {
         $file = new File();
 
@@ -104,17 +105,17 @@ class FileTest extends TestCase
         static::assertTrue($success);
 
         $dataOutput = $file->read($sessionId);
-        static::assertTrue(!empty($dataOutput));
-        static::assertTrue(is_string($dataOutput));
+        static::assertNotEmpty($dataOutput);
+        static::assertIsString($dataOutput);
         static::assertEquals($data, $dataOutput);
 
         $sessionId = '';
         $dataOutput = $file->read($sessionId);
-        static::assertTrue(empty($dataOutput));
-        static::assertTrue(is_string($dataOutput));
+        static::assertEmpty($dataOutput);
+        static::assertIsString($dataOutput);
     }
 
-    public function testDestroy()
+    public function testDestroy(): void
     {
         $file = new File();
 
@@ -137,7 +138,7 @@ class FileTest extends TestCase
         static::assertTrue($isFileNotExist);
     }
 
-    public function testGc()
+    public function testGc(): void
     {
         $file = new File();
 
@@ -159,7 +160,7 @@ class FileTest extends TestCase
         static::assertTrue($isFileNotExist);
     }
 
-    public function testValidateId()
+    public function testValidateId(): void
     {
         $file = new File();
 
@@ -176,7 +177,7 @@ class FileTest extends TestCase
         static::assertFalse($file->validateId('kjlfez/fez'));
     }
 
-    public function testUpdateTimestamp()
+    public function testUpdateTimestamp(): void
     {
         $file = new File();
 
@@ -205,12 +206,15 @@ class FileTest extends TestCase
         static::assertTrue($oldFileModifiedTime < $newFileModifiedTime);
     }
 
-    public function testCreateId()
+    /**
+     * @throws \Exception
+     */
+    public function testCreateId(): void
     {
         $file = new File();
 
         $string = $file->create_sid();
 
-        static::assertTrue(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string) === 1);
+        static::assertSame(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string), 1);
     }
 }

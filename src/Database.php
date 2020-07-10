@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection SqlDialectInspection */
+
 declare(strict_types=1);
 
 namespace Rancoud\Session;
@@ -16,10 +18,10 @@ use SessionUpdateTimestampHandlerInterface;
 class Database implements SessionHandlerInterface, SessionUpdateTimestampHandlerInterface
 {
     /** @var Db */
-    protected $db;
+    protected Db $db;
 
     /** @var int|null */
-    protected $userId = null;
+    protected ?int $userId = null;
 
     /**
      * @param Configurator|array $configuration
@@ -98,7 +100,9 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
         $sql = 'REPLACE INTO sessions VALUES(:id, :id_user, NOW(), :content)';
         $params = ['id' => $sessionId, 'id_user' => $this->userId, 'content' => $data];
 
-        return $this->db->exec($sql, $params);
+        $this->db->exec($sql, $params);
+
+        return true;
     }
 
     /**
@@ -171,6 +175,7 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
     }
 
     /**
+     * @throws \Exception
      * @throws DatabaseException
      *
      * @return string
@@ -182,7 +187,7 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
 
         $countCaracters = 62;
         for ($i = 0; $i < 127; ++$i) {
-            $string .= $caracters[\rand(0, $countCaracters)];
+            $string .= $caracters[\random_int(0, $countCaracters)];
         }
 
         $sql = 'SELECT COUNT(id) FROM sessions WHERE id=:id';

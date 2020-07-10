@@ -1,4 +1,5 @@
 <?php
+/** @noinspection ForgottenDebugOutputInspection */
 
 declare(strict_types=1);
 
@@ -12,7 +13,7 @@ use Rancoud\Session\FileEncryption;
  */
 class FileEncryptionTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $path = ini_get('session.save_path');
         if (empty($path)) {
@@ -31,7 +32,7 @@ class FileEncryptionTest extends TestCase
         }
     }
 
-    private function getPath()
+    private function getPath(): string
     {
         $path = ini_get('session.save_path');
         if (empty($path)) {
@@ -41,13 +42,13 @@ class FileEncryptionTest extends TestCase
         return $path;
     }
 
-    private function openSessionForSavingSavePath(FileEncryption $fileEncryption)
+    private function openSessionForSavingSavePath(FileEncryption $fileEncryption): void
     {
         $success = $fileEncryption->open($this->getPath(), '');
         static::assertTrue($success);
     }
 
-    public function testOpen()
+    public function testOpen(): void
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
@@ -64,7 +65,7 @@ class FileEncryptionTest extends TestCase
         static::assertTrue($success);
     }
 
-    public function testClose()
+    public function testClose(): void
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
@@ -72,7 +73,10 @@ class FileEncryptionTest extends TestCase
         static::assertTrue($success);
     }
 
-    public function testWrite()
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
+    public function testWrite(): void
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
@@ -93,7 +97,10 @@ class FileEncryptionTest extends TestCase
         static::assertEquals($data, $dataInFileDecrypted);
     }
 
-    public function testRead()
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
+    public function testRead(): void
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
@@ -106,17 +113,20 @@ class FileEncryptionTest extends TestCase
         static::assertTrue($success);
 
         $dataOutput = $fileEncryption->read($sessionId);
-        static::assertTrue(!empty($dataOutput));
-        static::assertTrue(is_string($dataOutput));
+        static::assertNotEmpty($dataOutput);
+        static::assertIsString($dataOutput);
         static::assertEquals($data, $dataOutput);
 
         $sessionId = '';
         $dataOutput = $fileEncryption->read($sessionId);
-        static::assertTrue(empty($dataOutput));
-        static::assertTrue(is_string($dataOutput));
+        static::assertEmpty($dataOutput);
+        static::assertIsString($dataOutput);
     }
 
-    public function testDestroy()
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
+    public function testDestroy(): void
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
@@ -140,7 +150,10 @@ class FileEncryptionTest extends TestCase
         static::assertTrue($isFileNotExist);
     }
 
-    public function testGc()
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
+    public function testGc(): void
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
@@ -163,7 +176,10 @@ class FileEncryptionTest extends TestCase
         static::assertTrue($isFileNotExist);
     }
 
-    public function testValidateId()
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
+    public function testValidateId(): void
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
@@ -181,7 +197,10 @@ class FileEncryptionTest extends TestCase
         static::assertFalse($fileEncryption->validateId('kjlfez/fez'));
     }
 
-    public function testUpdateTimestamp()
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
+    public function testUpdateTimestamp(): void
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
@@ -222,13 +241,16 @@ class FileEncryptionTest extends TestCase
         static::assertTrue($oldFileModifiedTime < $newFileModifiedTime);
     }
 
-    public function testCreateId()
+    /**
+     * @throws \Exception
+     */
+    public function testCreateId(): void
     {
         $fileEncryption = new FileEncryption();
         $fileEncryption->setKey('randomKey');
 
         $string = $fileEncryption->create_sid();
 
-        static::assertTrue(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string) === 1);
+        static::assertSame(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string), 1);
     }
 }

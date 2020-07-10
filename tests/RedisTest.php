@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection ForgottenDebugOutputInspection */
+
 declare(strict_types=1);
 
 namespace Rancoud\Session\Test;
@@ -13,10 +15,10 @@ use Rancoud\Session\Redis;
  */
 class RedisTest extends TestCase
 {
-    /** @var \Predis\Client */
-    private static $redis;
+    /** @var Predis */
+    private static Predis $redis;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $params = [
             'scheme' => 'tcp',
@@ -27,12 +29,12 @@ class RedisTest extends TestCase
         static::$redis->flushdb();
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         static::$redis->flushdb();
     }
 
-    public function testOpen()
+    public function testOpen(): void
     {
         $redis = new Redis();
         $redis->setCurrentRedis(static::$redis);
@@ -43,7 +45,7 @@ class RedisTest extends TestCase
         static::assertTrue($success);
     }
 
-    public function testClose()
+    public function testClose(): void
     {
         $redis = new Redis();
         $redis->setCurrentRedis(static::$redis);
@@ -51,7 +53,7 @@ class RedisTest extends TestCase
         static::assertTrue($success);
     }
 
-    public function testWrite()
+    public function testWrite(): void
     {
         $redis = new Redis();
         $redis->setCurrentRedis(static::$redis);
@@ -65,7 +67,7 @@ class RedisTest extends TestCase
         static::assertEquals($data, $dataInRedis);
     }
 
-    public function testRead()
+    public function testRead(): void
     {
         $redis = new Redis();
         $redis->setCurrentRedis(static::$redis);
@@ -76,17 +78,17 @@ class RedisTest extends TestCase
         static::assertTrue($success);
 
         $dataOutput = $redis->read($sessionId);
-        static::assertTrue(!empty($dataOutput));
-        static::assertTrue(is_string($dataOutput));
+        static::assertNotEmpty($dataOutput);
+        static::assertIsString($dataOutput);
         static::assertEquals($data, $dataOutput);
 
         $sessionId = '';
         $dataOutput = $redis->read($sessionId);
-        static::assertTrue(empty($dataOutput));
-        static::assertTrue(is_string($dataOutput));
+        static::assertEmpty($dataOutput);
+        static::assertIsString($dataOutput);
     }
 
-    public function testDestroy()
+    public function testDestroy(): void
     {
         $redis = new Redis();
         $redis->setCurrentRedis(static::$redis);
@@ -108,7 +110,7 @@ class RedisTest extends TestCase
         static::assertTrue($isKeyNotExist);
     }
 
-    public function testGc()
+    public function testGc(): void
     {
         $redis = new Redis();
         $redis->setCurrentRedis(static::$redis);
@@ -132,7 +134,7 @@ class RedisTest extends TestCase
         static::assertTrue($isKeyNotExist);
     }
 
-    public function testSetNewRedis()
+    public function testSetNewRedis(): void
     {
         $redis = new Redis();
         $params = [
@@ -149,7 +151,7 @@ class RedisTest extends TestCase
         static::assertTrue($success);
     }
 
-    public function testValidateId()
+    public function testValidateId(): void
     {
         $redis = new Redis();
         $redis->setCurrentRedis(static::$redis);
@@ -165,7 +167,7 @@ class RedisTest extends TestCase
         static::assertFalse($redis->validateId('kjlfez/fez'));
     }
 
-    public function testUpdateTimestamp()
+    public function testUpdateTimestamp(): void
     {
         $redis = new Redis();
         $redis->setCurrentRedis(static::$redis);
@@ -195,13 +197,16 @@ class RedisTest extends TestCase
         static::assertTrue($ttl3 > $ttl2);
     }
 
-    public function testCreateId()
+    /**
+     * @throws \Exception
+     */
+    public function testCreateId(): void
     {
         $redis = new Redis();
         $redis->setCurrentRedis(static::$redis);
 
         $string = $redis->create_sid();
 
-        static::assertTrue(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string) === 1);
+        static::assertSame(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string), 1);
     }
 }

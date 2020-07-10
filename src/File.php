@@ -12,11 +12,11 @@ use SessionUpdateTimestampHandlerInterface;
  */
 class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInterface
 {
-    /** @var string */
-    protected $savePath;
+    /** @var string|null */
+    protected ?string $savePath = null;
 
     /** @var string */
-    protected $prefix = 'sess_';
+    protected string $prefix = 'sess_';
 
     /**
      * @param string $prefix
@@ -36,8 +36,8 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
     {
         $this->savePath = $savePath;
 
-        if (!\is_dir($this->savePath)) {
-            \mkdir($this->savePath, 0777);
+        if (!\is_dir($this->savePath) && !\mkdir($this->savePath, 0750) && !\is_dir($this->savePath)) {
+            throw new \RuntimeException(\sprintf('Directory "%s" was not created', $this->savePath));
         }
 
         return true;
@@ -143,6 +143,8 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
     }
 
     /**
+     * @throws \Exception
+     *
      * @return string
      */
     public function create_sid(): string
@@ -152,7 +154,7 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
 
         $countCaracters = 62;
         for ($i = 0; $i < 127; ++$i) {
-            $string .= $caracters[\rand(0, $countCaracters)];
+            $string .= $caracters[\random_int(0, $countCaracters)];
         }
 
         $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $string;

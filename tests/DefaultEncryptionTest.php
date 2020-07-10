@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection ForgottenDebugOutputInspection */
+
 declare(strict_types=1);
 
 namespace Rancoud\Session\Test;
@@ -12,7 +14,7 @@ use Rancoud\Session\Session;
  */
 class DefaultEncryptionTest extends TestCase
 {
-    protected function setUp()
+    protected function setUp(): void
     {
         $path = ini_get('session.save_path');
         if (empty($path)) {
@@ -47,14 +49,15 @@ class DefaultEncryptionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @throws \Exception
      */
-    public function testReadAndWrite()
+    public function testReadAndWrite(): void
     {
         Session::useDefaultEncryptionDriver('randomKey');
 
         Session::set('a', 'b');
 
-        session_commit();
+        session_write_close();
         $data = $this->foundSessionFile();
         static::assertNotFalse($data);
 

@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection ForgottenDebugOutputInspection */
+
 declare(strict_types=1);
 
 namespace Rancoud\Session\Test;
@@ -13,10 +15,10 @@ use Rancoud\Session\RedisEncryption;
  */
 class RedisEncryptionTest extends TestCase
 {
-    /** @var \Predis\Client */
-    private static $redis;
+    /** @var Predis */
+    private static Predis $redis;
 
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         $params = [
             'scheme' => 'tcp',
@@ -27,12 +29,12 @@ class RedisEncryptionTest extends TestCase
         static::$redis->flushdb();
     }
 
-    protected function setUp()
+    protected function setUp(): void
     {
         static::$redis->flushdb();
     }
 
-    public function testOpen()
+    public function testOpen(): void
     {
         $redis = new RedisEncryption();
         $redis->setKey('randomKey');
@@ -45,7 +47,7 @@ class RedisEncryptionTest extends TestCase
         static::assertTrue($success);
     }
 
-    public function testClose()
+    public function testClose(): void
     {
         $redis = new RedisEncryption();
         $redis->setKey('randomKey');
@@ -55,7 +57,10 @@ class RedisEncryptionTest extends TestCase
         static::assertTrue($success);
     }
 
-    public function testWrite()
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
+    public function testWrite(): void
     {
         $redis = new RedisEncryption();
         $redis->setKey('randomKey');
@@ -76,7 +81,10 @@ class RedisEncryptionTest extends TestCase
         static::assertEquals($data, $dataInRedisDecrypted);
     }
 
-    public function testRead()
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
+    public function testRead(): void
     {
         $redis = new RedisEncryption();
         $redis->setKey('randomKey');
@@ -89,17 +97,20 @@ class RedisEncryptionTest extends TestCase
         static::assertTrue($success);
 
         $dataOutput = $redis->read($sessionId);
-        static::assertTrue(!empty($dataOutput));
-        static::assertTrue(is_string($dataOutput));
+        static::assertNotEmpty($dataOutput);
+        static::assertIsString($dataOutput);
         static::assertEquals($data, $dataOutput);
 
         $sessionId = '';
         $dataOutput = $redis->read($sessionId);
-        static::assertTrue(empty($dataOutput));
-        static::assertTrue(is_string($dataOutput));
+        static::assertEmpty($dataOutput);
+        static::assertIsString($dataOutput);
     }
 
-    public function testDestroy()
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
+    public function testDestroy(): void
     {
         $redis = new RedisEncryption();
         $redis->setKey('randomKey');
@@ -123,7 +134,10 @@ class RedisEncryptionTest extends TestCase
         static::assertTrue($isKeyNotExist);
     }
 
-    public function testGc()
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
+    public function testGc(): void
     {
         $redis = new RedisEncryption();
         $redis->setKey('randomKey');
@@ -149,7 +163,10 @@ class RedisEncryptionTest extends TestCase
         static::assertTrue($isKeyNotExist);
     }
 
-    public function testSetNewRedis()
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
+    public function testSetNewRedis(): void
     {
         $redis = new RedisEncryption();
         $redis->setKey('randomKey');
@@ -168,7 +185,10 @@ class RedisEncryptionTest extends TestCase
         static::assertTrue($success);
     }
 
-    public function testValidateId()
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
+    public function testValidateId(): void
     {
         $redis = new RedisEncryption();
         $redis->setKey('randomKey');
@@ -186,7 +206,10 @@ class RedisEncryptionTest extends TestCase
         static::assertFalse($redis->validateId('kjlfez/fez'));
     }
 
-    public function testUpdateTimestamp()
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
+    public function testUpdateTimestamp(): void
     {
         $redis = new RedisEncryption();
         $redis->setKey('randomKey');
@@ -228,7 +251,10 @@ class RedisEncryptionTest extends TestCase
         static::assertTrue($ttl3 > $ttl2);
     }
 
-    public function testCreateId()
+    /**
+     * @throws \Exception
+     */
+    public function testCreateId(): void
     {
         $redis = new RedisEncryption();
         $redis->setKey('randomKey');
@@ -237,6 +263,6 @@ class RedisEncryptionTest extends TestCase
 
         $string = $redis->create_sid();
 
-        static::assertTrue(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string) === 1);
+        static::assertSame(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string), 1);
     }
 }
