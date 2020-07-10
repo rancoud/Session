@@ -36,11 +36,6 @@ jobs:
           - 6379:6379
 
     steps:
-      - name: Set files permission
-        run: |
-          sudo chown -R www-data:www-data /var/lib/php/session/
-          sudo chmod -R 775 /var/lib/php/session/
-
       - name: Verify MySQL connection from host
         run: |
           sudo apt-get install -y mysql-client
@@ -52,6 +47,11 @@ jobs:
         with:
           php-version: '7.4'
           coverage: xdebug
+
+      - name: Set files permission
+        run: |
+          sudo chown -R www-data:www-data /var/lib/php/session/
+          sudo chmod -R 775 /var/lib/php/session/
 
       - name: Validate composer.json and composer.lock
         run: composer validate
