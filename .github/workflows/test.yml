@@ -51,7 +51,7 @@ jobs:
       - name: Set files permission
         run: |
           sudo chown -R www-data:www-data /var/lib/php/sessions/
-          sudo chmod -R 775 /var/lib/php/sessions/
+          sudo chmod -R 777 /var/lib/php/sessions/
 
       - name: Validate composer.json and composer.lock
         run: composer validate
