@@ -175,6 +175,7 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
     }
 
     /**
+     * @throws \Exception
      * @throws DatabaseException
      *
      * @return string
@@ -186,7 +187,7 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
 
         $countCaracters = 62;
         for ($i = 0; $i < 127; ++$i) {
-            $string .= $caracters[\rand(0, $countCaracters)];
+            $string .= $caracters[\random_int(0, $countCaracters)];
         }
 
         $sql = 'SELECT COUNT(id) FROM sessions WHERE id=:id';

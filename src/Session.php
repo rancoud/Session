@@ -67,7 +67,7 @@ class Session extends DriverManager
             static::restoreFlashData();
         }
 
-        static::regenerate();
+        //static::regenerate();
     }
 
     /**
@@ -203,7 +203,7 @@ class Session extends DriverManager
     {
         static::$hasStarted = false;
 
-        \session_commit();
+        \session_write_close();
     }
 
     /**

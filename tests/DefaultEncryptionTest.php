@@ -57,7 +57,7 @@ class DefaultEncryptionTest extends TestCase
 
         Session::set('a', 'b');
 
-        session_commit();
+        session_write_close();
         $data = $this->foundSessionFile();
         static::assertNotFalse($data);
 

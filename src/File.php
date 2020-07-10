@@ -36,8 +36,8 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
     {
         $this->savePath = $savePath;
 
-        if (!\is_dir($this->savePath)) {
-            \mkdir($this->savePath, 0777);
+        if (!\is_dir($this->savePath) && !\mkdir($this->savePath, 0750) && !\is_dir($this->savePath)) {
+            throw new \RuntimeException(\sprintf('Directory "%s" was not created', $this->savePath));
         }
 
         return true;
