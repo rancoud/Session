@@ -32,7 +32,6 @@
             "@test"
         ],
         "lint": [
-            "phpcbf",
             "php-cs-fixer fix"
         ],
         "test": [
