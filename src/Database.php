@@ -100,7 +100,9 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
         $sql = 'REPLACE INTO sessions VALUES(:id, :id_user, NOW(), :content)';
         $params = ['id' => $sessionId, 'id_user' => $this->userId, 'content' => $data];
 
-        return $this->db->exec($sql, $params);
+        $this->db->exec($sql, $params);
+
+        return true;
     }
 
     /**
