@@ -239,7 +239,7 @@ class SessionTest extends TestCase
     public function testUseNewDatabaseDriver(): void
     {
         $params = [
-            'engine'   => 'mysql',
+            'driver'   => 'mysql',
             'host'     => '127.0.0.1',
             'user'     => 'root',
             'password' => '',
@@ -258,7 +258,7 @@ class SessionTest extends TestCase
     public function testUseNewDatabaseEncryptionDriver(): void
     {
         $params = [
-            'engine'   => 'mysql',
+            'driver'   => 'mysql',
             'host'     => '127.0.0.1',
             'user'     => 'root',
             'password' => '',
@@ -278,7 +278,7 @@ class SessionTest extends TestCase
     public function testUseCurrentDatabaseDriver(): void
     {
         $conf = new \Rancoud\Database\Configurator([
-            'engine'   => 'mysql',
+            'driver'   => 'mysql',
             'host'     => '127.0.0.1',
             'user'     => 'root',
             'password' => '',
@@ -300,7 +300,7 @@ class SessionTest extends TestCase
     {
         $userId = 50;
         $conf = new \Rancoud\Database\Configurator([
-            'engine'   => 'mysql',
+            'driver'   => 'mysql',
             'host'     => '127.0.0.1',
             'user'     => 'root',
             'password' => '',
@@ -592,7 +592,7 @@ class SessionTest extends TestCase
     public function testGc(): void
     {
         $conf = new \Rancoud\Database\Configurator([
-            'engine'   => 'mysql',
+            'driver'   => 'mysql',
             'host'     => '127.0.0.1',
             'user'     => 'root',
             'password' => '',

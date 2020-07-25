@@ -25,7 +25,7 @@ class DatabaseTest extends TestCase
     public static function setUpBeforeClass(): void
     {
         $conf = new Configurator([
-            'engine'   => 'mysql',
+            'driver'   => 'mysql',
             'host'     => '127.0.0.1',
             'user'     => 'root',
             'password' => '',
@@ -287,7 +287,7 @@ class DatabaseTest extends TestCase
     {
         $database = new Database();
         $params = [
-            'engine'   => 'mysql',
+            'driver'   => 'mysql',
             'host'     => '127.0.0.1',
             'user'     => 'root',
             'password' => '',
@@ -315,7 +315,7 @@ class DatabaseTest extends TestCase
     {
         $database = new Database();
         $params = [
-            'engine'   => 'mysql',
+            'driver'   => 'mysql',
             'host'     => '127.0.0.1',
             'user'     => 'root',
             'password' => '',
