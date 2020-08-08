@@ -133,6 +133,7 @@ class Session extends DriverManager
             'cookie_domain',
             'cookie_secure',
             'cookie_httponly',
+            'cookie_samesite',
             'use_strict_mode',
             'use_cookies',
             'use_only_cookies',
@@ -169,11 +170,14 @@ class Session extends DriverManager
     {
         // https://www.php.net/manual/fr/function.session-set-cookie-params.php new signature
         \session_set_cookie_params(
-            static::getOption('cookie_lifetime'),
-            static::getOption('cookie_path'),
-            static::getOption('cookie_domain'),
-            isset($_SERVER['HTTPS']),
-            true
+            [
+                'lifetime' => static::getOption('cookie_lifetime'),
+                'path'     => static::getOption('cookie_path'),
+                'domain'   => static::getOption('cookie_domain'),
+                'secure'   => isset($_SERVER['HTTPS']),
+                'httponly' => true,
+                'samesite' => static::getOption('cookie_samesite')
+            ]
         );
     }
 
