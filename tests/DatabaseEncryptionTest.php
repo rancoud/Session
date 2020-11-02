@@ -26,11 +26,15 @@ class DatabaseEncryptionTest extends TestCase
     {
         $conf = new Configurator([
             'driver'   => 'mysql',
-            'host'     => '127.0.0.1',
+            'host'     => 'mariadb',
             'user'     => 'root',
             'password' => '',
             'database' => 'test_database'
         ]);
+
+        $mysqlHost = getenv('MYSQL_HOST', true);
+        $conf->setHost(($mysqlHost !== false) ?  $mysqlHost : '127.0.0.1');
+
         static::$db = new \Rancoud\Database\Database($conf);
 
         $sql = '
@@ -319,11 +323,15 @@ class DatabaseEncryptionTest extends TestCase
 
         $params = [
             'driver'   => 'mysql',
-            'host'     => '127.0.0.1',
+            'host'     => 'mariadb',
             'user'     => 'root',
             'password' => '',
             'database' => 'test_database'
         ];
+
+        $mysqlHost = getenv('MYSQL_HOST', true);
+        $params['host'] = ($mysqlHost !== false) ?  $mysqlHost : '127.0.0.1';
+
         $database->setNewDatabase($params);
 
         $sessionId = 'sessionId';
@@ -348,14 +356,17 @@ class DatabaseEncryptionTest extends TestCase
         $database = new DatabaseEncryption();
         $database->setKey('randomKey');
 
-        $params = [
+        $conf = new Configurator([
             'driver'   => 'mysql',
-            'host'     => '127.0.0.1',
+            'host'     => 'mariadb',
             'user'     => 'root',
             'password' => '',
             'database' => 'test_database'
-        ];
-        $conf = new Configurator($params);
+        ]);
+
+        $mysqlHost = getenv('MYSQL_HOST', true);
+        $conf->setHost(($mysqlHost !== false) ?  $mysqlHost : '127.0.0.1');
+
         $database->setNewDatabase($conf);
 
         $sessionId = 'sessionId';

@@ -1,0 +1,25 @@
+version: "3.8"
+
+services:
+  mariadb:
+    image: mariadb:10.4
+    environment:
+      - "MYSQL_ALLOW_EMPTY_PASSWORD=yes"
+      - "MYSQL_DATABASE=test_database"
+    restart: "on-failure"
+
+  redis:
+    image: redis:6
+    restart: "on-failure"
+
+  lib:
+    build: ./
+    depends_on:
+      - mariadb
+      - redis
+    environment:
+      - "MYSQL_HOST=mariadb"
+      - "REDIS_HOST=redis"
+    volumes:
+      - "./coverage:/app/coverage"
+    restart: "no"

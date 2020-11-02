@@ -22,9 +22,13 @@ class RedisTest extends TestCase
     {
         $params = [
             'scheme' => 'tcp',
-            'host'   => '127.0.0.1',
+            'host'   => 'redis',
             'port'   => 6379,
         ];
+
+        $redisHost = getenv('REDIS_HOST', true);
+        $params['host'] = ($redisHost !== false) ?  $redisHost : '127.0.0.1';
+
         static::$redis = new Predis($params);
         static::$redis->flushdb();
     }
@@ -139,9 +143,13 @@ class RedisTest extends TestCase
         $redis = new Redis();
         $params = [
             'scheme' => 'tcp',
-            'host'   => '127.0.0.1',
+            'host'   => 'redis',
             'port'   => 6379,
         ];
+
+        $redisHost = getenv('REDIS_HOST', true);
+        $params['host'] = ($redisHost !== false) ?  $redisHost : '127.0.0.1';
+
         $redis->setNewRedis($params);
 
         $sessionId = 'sessionId';

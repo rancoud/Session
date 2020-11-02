@@ -110,7 +110,7 @@ class SessionTest extends TestCase
     {
         $this->expectException(SessionException::class);
         $this->expectExceptionMessage('Session already started');
-        
+
         Session::setReadWrite();
         Session::start();
         Session::start();
@@ -124,7 +124,7 @@ class SessionTest extends TestCase
     {
         $this->expectException(SessionException::class);
         $this->expectExceptionMessage('Session already started');
-        
+
         Session::setReadWrite();
         Session::start();
         Session::useDefaultDriver();
@@ -138,7 +138,7 @@ class SessionTest extends TestCase
     {
         $this->expectException(SessionException::class);
         $this->expectExceptionMessage('Session already started');
-        
+
         Session::setReadWrite();
         Session::start();
         Session::useFileDriver();
@@ -152,7 +152,7 @@ class SessionTest extends TestCase
     {
         $this->expectException(SessionException::class);
         $this->expectExceptionMessage('Session already started');
-        
+
         Session::setReadWrite();
         Session::start();
         Session::useCustomDriver(new File());
@@ -240,11 +240,15 @@ class SessionTest extends TestCase
     {
         $params = [
             'driver'   => 'mysql',
-            'host'     => '127.0.0.1',
+            'host'     => 'mysql',
             'user'     => 'root',
             'password' => '',
             'database' => 'test_database'
         ];
+
+        $mysqlHost = getenv('MYSQL_HOST', true);
+        $params['host'] = ($mysqlHost !== false) ?  $mysqlHost : '127.0.0.1';
+
         Session::useNewDatabaseDriver($params);
         Session::start();
 
@@ -259,11 +263,15 @@ class SessionTest extends TestCase
     {
         $params = [
             'driver'   => 'mysql',
-            'host'     => '127.0.0.1',
+            'host'     => 'mysql',
             'user'     => 'root',
             'password' => '',
             'database' => 'test_database'
         ];
+
+        $mysqlHost = getenv('MYSQL_HOST', true);
+        $params['host'] = ($mysqlHost !== false) ?  $mysqlHost : '127.0.0.1';
+
         Session::useNewDatabaseEncryptionDriver($params, 'randomKey');
         Session::start();
 
@@ -279,11 +287,15 @@ class SessionTest extends TestCase
     {
         $conf = new \Rancoud\Database\Configurator([
             'driver'   => 'mysql',
-            'host'     => '127.0.0.1',
+            'host'     => 'mysql',
             'user'     => 'root',
             'password' => '',
             'database' => 'test_database'
         ]);
+
+        $mysqlHost = getenv('MYSQL_HOST', true);
+        $conf->setHost(($mysqlHost !== false) ?  $mysqlHost : '127.0.0.1');
+
         $db = new \Rancoud\Database\Database($conf);
         Session::useCurrentDatabaseDriver($db);
         Session::start();
@@ -301,11 +313,15 @@ class SessionTest extends TestCase
         $userId = 50;
         $conf = new \Rancoud\Database\Configurator([
             'driver'   => 'mysql',
-            'host'     => '127.0.0.1',
+            'host'     => 'mysql',
             'user'     => 'root',
             'password' => '',
             'database' => 'test_database'
         ]);
+
+        $mysqlHost = getenv('MYSQL_HOST', true);
+        $conf->setHost(($mysqlHost !== false) ?  $mysqlHost : '127.0.0.1');
+
         $db = new \Rancoud\Database\Database($conf);
         Session::useCurrentDatabaseEncryptionDriver($db, 'randomKey');
         static::assertInstanceOf(\Rancoud\Session\DatabaseEncryption::class, Session::getDriver());
@@ -328,9 +344,13 @@ class SessionTest extends TestCase
     {
         $params = [
             'scheme' => 'tcp',
-            'host'   => '127.0.0.1',
+            'host'   => 'redis',
             'port'   => 6379,
         ];
+
+        $redisHost = getenv('REDIS_HOST', true);
+        $params['host'] = ($redisHost !== false) ?  $redisHost : '127.0.0.1';
+
         Session::useNewRedisDriver($params);
         Session::start();
 
@@ -345,9 +365,13 @@ class SessionTest extends TestCase
     {
         $params = [
             'scheme' => 'tcp',
-            'host'   => '127.0.0.1',
+            'host'   => 'redis',
             'port'   => 6379,
         ];
+
+        $redisHost = getenv('REDIS_HOST', true);
+        $params['host'] = ($redisHost !== false) ?  $redisHost : '127.0.0.1';
+
         Session::useNewRedisEncryptionDriver($params, 'randomKey');
         Session::start();
 
@@ -362,9 +386,13 @@ class SessionTest extends TestCase
     {
         $params = [
             'scheme' => 'tcp',
-            'host'   => '127.0.0.1',
+            'host'   => 'redis',
             'port'   => 6379,
         ];
+
+        $redisHost = getenv('REDIS_HOST', true);
+        $params['host'] = ($redisHost !== false) ?  $redisHost : '127.0.0.1';
+
         $redis = new \Predis\Client($params);
         Session::useCurrentRedisDriver($redis);
         Session::start();
@@ -380,9 +408,13 @@ class SessionTest extends TestCase
     {
         $params = [
             'scheme' => 'tcp',
-            'host'   => '127.0.0.1',
+            'host'   => 'redis',
             'port'   => 6379,
         ];
+
+        $redisHost = getenv('REDIS_HOST', true);
+        $params['host'] = ($redisHost !== false) ?  $redisHost : '127.0.0.1';
+
         $redis = new \Predis\Client($params);
         Session::useCurrentRedisEncryptionDriver($redis, 'randomKey');
         Session::start();
@@ -410,7 +442,7 @@ class SessionTest extends TestCase
     {
         $this->expectException(SessionException::class);
         $this->expectExceptionMessage('Method unknowed: incorrect');
-        
+
         Session::useFileEncryptionDriver('randomKey', 'incorrect');
     }
 
@@ -444,7 +476,7 @@ class SessionTest extends TestCase
     {
         $this->expectException(SessionException::class);
         $this->expectExceptionMessage('Incorrect option: azerty');
-        
+
         Session::getOption('azerty');
     }
 
@@ -593,11 +625,15 @@ class SessionTest extends TestCase
     {
         $conf = new \Rancoud\Database\Configurator([
             'driver'   => 'mysql',
-            'host'     => '127.0.0.1',
+            'host'     => 'mysql',
             'user'     => 'root',
             'password' => '',
             'database' => 'test_database'
         ]);
+
+        $mysqlHost = getenv('MYSQL_HOST', true);
+        $conf->setHost(($mysqlHost !== false) ?  $mysqlHost : '127.0.0.1');
+
         $db = new \Rancoud\Database\Database($conf);
         $db->truncateTables('sessions');
 
