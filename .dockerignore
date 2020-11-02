@@ -1,18 +1,20 @@
+# Git
+.git
+
 # IntelliJ
 .idea
 *.iml
 
 # Composer
-vendor/
+vendor
 
 # PHP code sniffer
 .php_cs.cache
 
 # PHP Unit
-build/
+build
 .phpunit.result.cache
 
 # Dev / Testing
 test.php
 coverage/*
-!coverage/.gitkeep

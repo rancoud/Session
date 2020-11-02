@@ -26,11 +26,15 @@ class DatabaseTest extends TestCase
     {
         $conf = new Configurator([
             'driver'   => 'mysql',
-            'host'     => '127.0.0.1',
+            'host'     => 'mariadb',
             'user'     => 'root',
             'password' => '',
             'database' => 'test_database'
         ]);
+
+        $mysqlHost = getenv('MYSQL_HOST', true);
+        $conf->setHost(($mysqlHost !== false) ?  $mysqlHost : '127.0.0.1');
+
         static::$db = new \Rancoud\Database\Database($conf);
 
         $sql = '
@@ -288,11 +292,15 @@ class DatabaseTest extends TestCase
         $database = new Database();
         $params = [
             'driver'   => 'mysql',
-            'host'     => '127.0.0.1',
+            'host'     => 'mariadb',
             'user'     => 'root',
             'password' => '',
             'database' => 'test_database'
         ];
+
+        $mysqlHost = getenv('MYSQL_HOST', true);
+        $params['host'] = ($mysqlHost !== false) ?  $mysqlHost : '127.0.0.1';
+
         $database->setNewDatabase($params);
 
         $sessionId = 'sessionId';
@@ -314,14 +322,17 @@ class DatabaseTest extends TestCase
     public function testSetNewDatabaseWithConfigurator(): void
     {
         $database = new Database();
-        $params = [
+        $conf = new Configurator([
             'driver'   => 'mysql',
-            'host'     => '127.0.0.1',
+            'host'     => 'mariadb',
             'user'     => 'root',
             'password' => '',
             'database' => 'test_database'
-        ];
-        $conf = new Configurator($params);
+        ]);
+
+        $mysqlHost = getenv('MYSQL_HOST', true);
+        $conf->setHost(($mysqlHost !== false) ?  $mysqlHost : '127.0.0.1');
+
         $database->setNewDatabase($conf);
 
         $sessionId = 'sessionId';

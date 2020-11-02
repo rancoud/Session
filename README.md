@@ -196,6 +196,4 @@ composer require predis/predis
 ```
 
 ## How to Dev
-`composer ci` for php-cs-fixer and phpunit and coverage  
-`composer lint` for php-cs-fixer  
-`composer test` for phpunit and coverage  
+`docker-compose run lib composer ci` for launching tests
