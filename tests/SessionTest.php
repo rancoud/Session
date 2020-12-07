@@ -106,6 +106,21 @@ class SessionTest extends TestCase
      * @runInSeparateProcess
      * @throws \Exception
      */
+    public function testGetAndRemove(): void
+    {
+        Session::set('a', 'b');
+
+        $value = Session::getAndRemove('a');
+        static::assertEquals('b', $value);
+
+        $value = Session::getAndRemove('empty');
+        static::assertNull($value);
+    }
+
+    /**
+     * @runInSeparateProcess
+     * @throws \Exception
+     */
     public function testStartException(): void
     {
         $this->expectException(SessionException::class);
@@ -503,10 +518,13 @@ class SessionTest extends TestCase
     {
         $flaKey1 = 'a';
         $flaValue1 = 'b';
+
         $flaKey2 = 'y';
         $flaValue2 = 'u';
+
         $flaKey3 = 'my_key';
         $flaValue3 = null;
+
         $flaKey4 = '10';
         $flaValue4 = 55;
 
@@ -515,13 +533,17 @@ class SessionTest extends TestCase
 
         static::assertTrue(Session::hasFlash($flaKey1));
         static::assertEquals($flaValue1, Session::getFlash($flaKey1));
+        static::assertEquals([$flaKey1 => $flaValue1, $flaKey2 => $flaValue2], Session::getAllFlash());
 
         Session::start(['lazy_write' => '0']);
-        Session::keepFlash([$flaKey2]);
 
+        Session::keepFlash([$flaKey2]);
         static::assertEquals(['flash_data' => [$flaKey2 => $flaValue2]], $_SESSION);
+
         $sessionId = Session::getId();
         Session::commit();
+
+        static::assertEquals([], Session::getAllFlash());
 
         Session::setId($sessionId);
         Session::setReadWrite();
@@ -538,11 +560,18 @@ class SessionTest extends TestCase
         Session::keepFlash();
 
         Session::commit();
+
+        static::assertEquals([], Session::getAllFlash());
+
         Session::start();
 
         $expectedFlashValues = [$flaKey2 => $flaValue2, $flaKey3 => $flaValue3, $flaKey4 => $flaValue4];
         static::assertEquals($expectedFlashValues, Session::getAllFlash());
         static::assertEmpty($_SESSION);
+
+        Session::removeFlash($flaKey2);
+        Session::removeFlash($flaKey3);
+        static::assertEquals([$flaKey4 => $flaValue4], Session::getAllFlash());
     }
 
     /**
@@ -654,7 +683,7 @@ class SessionTest extends TestCase
 
         sleep(1);
 
-        $sql = 'update sessions set last_access = DATE_ADD(NOW(), INTERVAL 50000 SECOND) WHERE id = :id';
+        $sql = 'UPDATE sessions SET last_access = DATE_ADD(NOW(), INTERVAL 50000 SECOND) WHERE id = :id';
         $params = ['id' => $sessionId];
         $db->update($sql, $params);
 

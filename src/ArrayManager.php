@@ -160,6 +160,18 @@ trait ArrayManager
     }
 
     /**
+     * @param string $key
+     *
+     * @throws \Exception
+     */
+    public static function removeFlash(string $key): void
+    {
+        if (static::hasFlash($key)) {
+            unset(static::$flashData[$key]);
+        }
+    }
+
+    /**
      * @param array $keys
      */
     public static function keepFlash(array $keys = []): void
@@ -176,17 +188,6 @@ trait ArrayManager
                     $_SESSION['flash_data'][$key] = static::$flashData[$key];
                 }
             }
-        }
-    }
-
-    /**
-     * @throws \Exception
-     */
-    public static function restoreFlashData(): void
-    {
-        $data = static::getAndRemove('flash_data');
-        if (null !== $data) {
-            static::$flashData = $data;
         }
     }
 
