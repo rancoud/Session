@@ -16,6 +16,9 @@ class Session extends DriverManager
     /** @var bool */
     protected static bool $hasStarted = false;
 
+    /** @var bool */
+    protected static bool $hasChanged = true;
+
     /** @var array */
     protected static array $options = [
         'read_and_close'   => true,
@@ -46,7 +49,7 @@ class Session extends DriverManager
      */
     protected static function populateOptions(array $options = []): void
     {
-        self::validateOptions($options);
+        static::validateOptions($options);
 
         static::setOptions($options);
     }
@@ -56,6 +59,12 @@ class Session extends DriverManager
      */
     protected static function setupAndStart(): void
     {
+        if (static::$hasChanged === false) {
+            return;
+        }
+
+        static::$hasChanged = false;
+
         static::configureDriver();
         static::setupSessionParameters();
         static::startSession();
@@ -67,7 +76,6 @@ class Session extends DriverManager
 
         if (static::$hasStarted === false && !empty(static::$flashData) && static::isReadOnly()) {
             static::setReadWrite();
-            static::setupSessionParameters();
             static::startSession();
         }
         unset($_SESSION['flash_data']);
@@ -203,6 +211,7 @@ class Session extends DriverManager
      */
     public static function destroy(): bool
     {
+        static::$hasChanged = true;
         \session_unset();
 
         return \session_destroy();
@@ -212,6 +221,7 @@ class Session extends DriverManager
     {
         static::$hasStarted = false;
         static::$flashData = [];
+        static::$hasChanged = true;
 
         \session_write_close();
     }
@@ -231,6 +241,7 @@ class Session extends DriverManager
     {
         static::$hasStarted = false;
         static::$flashData = [];
+        static::$hasChanged = true;
 
         return \session_abort();
     }
@@ -258,6 +269,7 @@ class Session extends DriverManager
      */
     public static function setId(string $id): string
     {
+        static::$hasChanged = true;
         return \session_id($id);
     }
 
@@ -294,11 +306,13 @@ class Session extends DriverManager
 
     public static function setReadOnly(): void
     {
+        static::$hasChanged = true;
         static::$options['read_and_close'] = true;
     }
 
     public static function setReadWrite(): void
     {
+        static::$hasChanged = true;
         static::$options['read_and_close'] = false;
     }
 
@@ -325,6 +339,7 @@ class Session extends DriverManager
      */
     public static function setOption(string $key, $value): void
     {
+        static::$hasChanged = true;
         static::validateOptions([$key => $value]);
         static::$options[$key] = $value;
     }
@@ -336,6 +351,7 @@ class Session extends DriverManager
      */
     public static function setOptions(array $options): void
     {
+        static::$hasChanged = true;
         static::validateOptions($options);
         static::$options = $options + static::$options;
     }
