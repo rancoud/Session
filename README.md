@@ -112,6 +112,7 @@ $value = Session::get('key');
 * gc(): void  
 * setReadOnly(): void  
 * setReadWrite(): void  
+* isReadOnly(): bool
 
 ### Static Variables $_SESSION access
 * set(key: string, value: mixed): void  
@@ -124,17 +125,16 @@ $value = Session::get('key');
 
 ### Static Variables flash access
 Flash data are store in a separate variable.  
-They will dissapear at the end of the script execution.  
+They will dissapear at the end of the script execution or after `commit()` `unsaved()`.  
 You can use keepFlash for saving it in $_SESSION.  
 When flash data is restore, it will be delete in $_SESSION.  
 
-* setFlash(key: string, value: mixed): void    
+* setFlash(key: string, value: mixed): void  
 * getFlash(key: string): mixed  
 * getAllFlash(): array  
 * hasFlash(key: string): bool  
 * hasFlashKeyAndValue(key: string, value: mixed): bool  
 * keepFlash([keys: array = []]): void  
-* restoreFlashData(): void  
 
 ### Static Options  
 * setOption(key: string, value): void  
@@ -172,13 +172,16 @@ When flash data is restore, it will be delete in $_SESSION.
 ## Driver Informations
 ### Default
 Use SessionHandler
+
 ### File
 Extends SessionHandler
+
 ### Database
 You need to install
 ```php
 composer require rancoud/database
 ```
+
 ```sql
 CREATE TABLE IF NOT EXISTS `sessions` (
   `id` varchar(128) NOT NULL,
@@ -187,8 +190,8 @@ CREATE TABLE IF NOT EXISTS `sessions` (
   `content` text NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 ```
+
 ### Redis
 You need to install
 ```php
@@ -196,4 +199,4 @@ composer require predis/predis
 ```
 
 ## How to Dev
-`docker-compose run lib composer ci` for launching tests
+`docker-compose build && docker-compose run lib composer ci` for launching tests

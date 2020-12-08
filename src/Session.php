@@ -60,12 +60,19 @@ class Session extends DriverManager
         static::setupSessionParameters();
         static::startSession();
 
-        static::$hasStarted = true;
-        if (static::$options['read_and_close']) {
-            static::$hasStarted = false;
-        } else {
-            static::restoreFlashData();
+        $sessionFlashData = $_SESSION['flash_data'] ?? [];
+        foreach ($sessionFlashData as $key => $value) {
+            static::$flashData[$key] = $value;
         }
+
+        if (static::$hasStarted === false && !empty(static::$flashData) && static::isReadOnly()) {
+            static::setReadWrite();
+            static::setupSessionParameters();
+            static::startSession();
+        }
+        unset($_SESSION['flash_data']);
+
+        static::$hasStarted = (static::$options['read_and_close'] === false);
     }
 
     /**
@@ -204,6 +211,7 @@ class Session extends DriverManager
     public static function commit(): void
     {
         static::$hasStarted = false;
+        static::$flashData = [];
 
         \session_write_close();
     }
@@ -222,6 +230,7 @@ class Session extends DriverManager
     public static function unsaved(): bool
     {
         static::$hasStarted = false;
+        static::$flashData = [];
 
         return \session_abort();
     }
@@ -278,7 +287,7 @@ class Session extends DriverManager
     protected static function startSessionIfNotHasStartedForceWrite(): void
     {
         if (!static::hasStarted()) {
-            static::$options['read_and_close'] = false;
+            static::setReadWrite();
             static::setupAndStart();
         }
     }
@@ -291,6 +300,11 @@ class Session extends DriverManager
     public static function setReadWrite(): void
     {
         static::$options['read_and_close'] = false;
+    }
+
+    public static function isReadOnly(): bool
+    {
+        return static::$options['read_and_close'] === true;
     }
 
     /**
