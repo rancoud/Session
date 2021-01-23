@@ -1,1 +1,3 @@
 * text eol=lf
+entrypoint.sh linguist-detectable=false
+Dockerfile linguist-detectable=false
