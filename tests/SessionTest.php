@@ -4,7 +4,7 @@
 
 declare(strict_types=1);
 
-namespace Rancoud\Session\Test;
+namespace tests;
 
 use PHPUnit\Framework\TestCase;
 use Rancoud\Session\File;
@@ -18,21 +18,22 @@ class SessionTest extends TestCase
 {
     protected function setUp(): void
     {
-        $path = ini_get('session.save_path');
+        $path = \ini_get('session.save_path');
         if (empty($path)) {
-            $path = DIRECTORY_SEPARATOR . 'tmp';
+            $path = \DIRECTORY_SEPARATOR . 'tmp';
         }
 
-        $pattern = $path . DIRECTORY_SEPARATOR . 'sess_*';
-        foreach (glob($pattern) as $file) {
-            if (file_exists($file)) {
-                unlink($file);
+        $pattern = $path . \DIRECTORY_SEPARATOR . 'sess_*';
+        foreach (\glob($pattern) as $file) {
+            if (\file_exists($file)) {
+                \unlink($file);
             }
         }
     }
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testGetNull(): void
@@ -43,17 +44,19 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testSet(): void
     {
         Session::set('a', 'b');
         $value = Session::get('a');
-        static::assertEquals('b', $value);
+        static::assertSame('b', $value);
     }
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testHas(): void
@@ -69,6 +72,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testHasKeyAndValue(): void
@@ -87,6 +91,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testRemove(): void
@@ -104,6 +109,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testGetAndRemove(): void
@@ -111,7 +117,7 @@ class SessionTest extends TestCase
         Session::set('a', 'b');
 
         $value = Session::getAndRemove('a');
-        static::assertEquals('b', $value);
+        static::assertSame('b', $value);
 
         $value = Session::getAndRemove('empty');
         static::assertNull($value);
@@ -119,6 +125,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testStartException(): void
@@ -133,6 +140,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testUseDefaultDriverWhenAlreadyStartedException(): void
@@ -147,6 +155,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testUseFileDriverWhenAlreadyStartedException(): void
@@ -161,6 +170,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testUseCustomDriverWhenAlreadyStartedException(): void
@@ -175,6 +185,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testUseDefaultDriver(): void
@@ -187,6 +198,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testUseDefaultEncryptionDriver(): void
@@ -199,6 +211,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testUseFileDriver(): void
@@ -211,6 +224,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testUseFileDriverWithPrefix(): void
@@ -225,18 +239,19 @@ class SessionTest extends TestCase
         Session::commit();
 
         static::assertInstanceOf(File::class, Session::getDriver());
-        static::assertFileExists($path . DIRECTORY_SEPARATOR . $prefix . $sessionId);
+        static::assertFileExists($path . \DIRECTORY_SEPARATOR . $prefix . $sessionId);
 
-        $pattern = $path . DIRECTORY_SEPARATOR . 'youhou_*';
-        foreach (glob($pattern) as $file) {
-            if (file_exists($file)) {
-                unlink($file);
+        $pattern = $path . \DIRECTORY_SEPARATOR . 'youhou_*';
+        foreach (\glob($pattern) as $file) {
+            if (\file_exists($file)) {
+                \unlink($file);
             }
         }
     }
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testUseFileEncryptionDriver(): void
@@ -249,6 +264,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testUseNewDatabaseDriver(): void
@@ -261,8 +277,8 @@ class SessionTest extends TestCase
             'database' => 'test_database'
         ];
 
-        $mysqlHost = getenv('MYSQL_HOST', true);
-        $params['host'] = ($mysqlHost !== false) ?  $mysqlHost : '127.0.0.1';
+        $mysqlHost = \getenv('MYSQL_HOST', true);
+        $params['host'] = ($mysqlHost !== false) ? $mysqlHost : '127.0.0.1';
 
         Session::useNewDatabaseDriver($params);
         Session::start();
@@ -272,6 +288,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testUseNewDatabaseEncryptionDriver(): void
@@ -284,8 +301,8 @@ class SessionTest extends TestCase
             'database' => 'test_database'
         ];
 
-        $mysqlHost = getenv('MYSQL_HOST', true);
-        $params['host'] = ($mysqlHost !== false) ?  $mysqlHost : '127.0.0.1';
+        $mysqlHost = \getenv('MYSQL_HOST', true);
+        $params['host'] = ($mysqlHost !== false) ? $mysqlHost : '127.0.0.1';
 
         Session::useNewDatabaseEncryptionDriver($params, 'randomKey');
         Session::start();
@@ -295,6 +312,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Rancoud\Database\DatabaseException
      * @throws \Exception
      */
@@ -308,8 +326,8 @@ class SessionTest extends TestCase
             'database' => 'test_database'
         ]);
 
-        $mysqlHost = getenv('MYSQL_HOST', true);
-        $conf->setHost(($mysqlHost !== false) ?  $mysqlHost : '127.0.0.1');
+        $mysqlHost = \getenv('MYSQL_HOST', true);
+        $conf->setHost(($mysqlHost !== false) ? $mysqlHost : '127.0.0.1');
 
         $db = new \Rancoud\Database\Database($conf);
         Session::useCurrentDatabaseDriver($db);
@@ -320,6 +338,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Rancoud\Database\DatabaseException
      * @throws \Exception
      */
@@ -334,8 +353,8 @@ class SessionTest extends TestCase
             'database' => 'test_database'
         ]);
 
-        $mysqlHost = getenv('MYSQL_HOST', true);
-        $conf->setHost(($mysqlHost !== false) ?  $mysqlHost : '127.0.0.1');
+        $mysqlHost = \getenv('MYSQL_HOST', true);
+        $conf->setHost(($mysqlHost !== false) ? $mysqlHost : '127.0.0.1');
 
         $db = new \Rancoud\Database\Database($conf);
         Session::useCurrentDatabaseEncryptionDriver($db, 'randomKey');
@@ -347,12 +366,13 @@ class SessionTest extends TestCase
         $sessionId = Session::getId();
         Session::commit();
 
-        $userIdInTable = $db->selectVar('SELECT id_user FROM sessions WHERE id = :id', ['id' => $sessionId]);
-        static::assertEquals($userId, $userIdInTable);
+        $userIdInTable = (int) $db->selectVar('SELECT id_user FROM sessions WHERE id = :id', ['id' => $sessionId]);
+        static::assertSame($userId, $userIdInTable);
     }
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testUseNewRedisDriver(): void
@@ -363,8 +383,8 @@ class SessionTest extends TestCase
             'port'   => 6379,
         ];
 
-        $redisHost = getenv('REDIS_HOST', true);
-        $params['host'] = ($redisHost !== false) ?  $redisHost : '127.0.0.1';
+        $redisHost = \getenv('REDIS_HOST', true);
+        $params['host'] = ($redisHost !== false) ? $redisHost : '127.0.0.1';
 
         Session::useNewRedisDriver($params);
         Session::start();
@@ -374,6 +394,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testUseNewRedisEncryptionDriver(): void
@@ -384,8 +405,8 @@ class SessionTest extends TestCase
             'port'   => 6379,
         ];
 
-        $redisHost = getenv('REDIS_HOST', true);
-        $params['host'] = ($redisHost !== false) ?  $redisHost : '127.0.0.1';
+        $redisHost = \getenv('REDIS_HOST', true);
+        $params['host'] = ($redisHost !== false) ? $redisHost : '127.0.0.1';
 
         Session::useNewRedisEncryptionDriver($params, 'randomKey');
         Session::start();
@@ -395,6 +416,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testUseCurrentRedisDriver(): void
@@ -405,8 +427,8 @@ class SessionTest extends TestCase
             'port'   => 6379,
         ];
 
-        $redisHost = getenv('REDIS_HOST', true);
-        $params['host'] = ($redisHost !== false) ?  $redisHost : '127.0.0.1';
+        $redisHost = \getenv('REDIS_HOST', true);
+        $params['host'] = ($redisHost !== false) ? $redisHost : '127.0.0.1';
 
         $redis = new \Predis\Client($params);
         Session::useCurrentRedisDriver($redis);
@@ -417,6 +439,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testUseCurrentRedisEncryptionDriver(): void
@@ -427,8 +450,8 @@ class SessionTest extends TestCase
             'port'   => 6379,
         ];
 
-        $redisHost = getenv('REDIS_HOST', true);
-        $params['host'] = ($redisHost !== false) ?  $redisHost : '127.0.0.1';
+        $redisHost = \getenv('REDIS_HOST', true);
+        $params['host'] = ($redisHost !== false) ? $redisHost : '127.0.0.1';
 
         $redis = new \Predis\Client($params);
         Session::useCurrentRedisEncryptionDriver($redis, 'randomKey');
@@ -439,6 +462,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testUseCustomDriver(): void
@@ -451,12 +475,13 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testUseEncryptionDriverThrowExceptionWhenMethodIncrorrect(): void
     {
         $this->expectException(SessionException::class);
-        $this->expectExceptionMessage('Method unknowed: incorrect');
+        $this->expectExceptionMessage('Unknown method: incorrect');
 
         Session::useFileEncryptionDriver('randomKey', 'incorrect');
     }
@@ -465,23 +490,24 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws SessionException
      * @throws \Exception
      */
     public function testSetOption(): void
     {
         $defaultOption = Session::getOption('name');
-        static::assertEquals($defaultOption, ini_get('session.name'));
+        static::assertSame($defaultOption, \ini_get('session.name'));
 
         Session::setOption('name', 'my_custom_name');
         $customOption = Session::getOption('name');
 
-        static::assertEquals('my_custom_name', $customOption);
+        static::assertSame('my_custom_name', $customOption);
 
         Session::start(['name' => 'my_other_name']);
 
         $customOption = Session::getOption('name');
-        static::assertEquals('my_other_name', $customOption);
+        static::assertSame('my_other_name', $customOption);
     }
 
     /**
@@ -497,6 +523,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testGetAll(): void
@@ -507,11 +534,12 @@ class SessionTest extends TestCase
         Session::set('a', 'b');
 
         $sessionValues = Session::getAll();
-        static::assertEquals(['a' => 'b'], $sessionValues);
+        static::assertSame(['a' => 'b'], $sessionValues);
     }
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testFlash(): void
@@ -532,18 +560,18 @@ class SessionTest extends TestCase
         Session::setFlash($flaKey2, $flaValue2);
 
         static::assertTrue(Session::hasFlash($flaKey1));
-        static::assertEquals($flaValue1, Session::getFlash($flaKey1));
-        static::assertEquals([$flaKey1 => $flaValue1, $flaKey2 => $flaValue2], Session::getAllFlash());
+        static::assertSame($flaValue1, Session::getFlash($flaKey1));
+        static::assertSame([$flaKey1 => $flaValue1, $flaKey2 => $flaValue2], Session::getAllFlash());
 
         Session::start(['lazy_write' => '0']);
 
         Session::keepFlash([$flaKey2]);
-        static::assertEquals(['flash_data' => [$flaKey2 => $flaValue2]], $_SESSION);
+        static::assertSame(['flash_data' => [$flaKey2 => $flaValue2]], $_SESSION);
 
         $sessionId = Session::getId();
         Session::commit();
 
-        static::assertEquals([], Session::getAllFlash());
+        static::assertSame([], Session::getAllFlash());
 
         Session::setId($sessionId);
         Session::setReadWrite();
@@ -551,7 +579,7 @@ class SessionTest extends TestCase
 
         static::assertEmpty($_SESSION);
         static::assertTrue(Session::hasFlash($flaKey2));
-        static::assertEquals($flaValue2, Session::getFlash($flaKey2));
+        static::assertSame($flaValue2, Session::getFlash($flaKey2));
         static::assertTrue(Session::hasFlashKeyAndValue($flaKey2, $flaValue2));
 
         Session::setFlash($flaKey3, $flaValue3);
@@ -561,21 +589,22 @@ class SessionTest extends TestCase
 
         Session::commit();
 
-        static::assertEquals([], Session::getAllFlash());
+        static::assertSame([], Session::getAllFlash());
 
         Session::start();
 
         $expectedFlashValues = [$flaKey2 => $flaValue2, $flaKey3 => $flaValue3, $flaKey4 => $flaValue4];
-        static::assertEquals($expectedFlashValues, Session::getAllFlash());
+        static::assertSame($expectedFlashValues, Session::getAllFlash());
         static::assertEmpty($_SESSION);
 
         Session::removeFlash($flaKey2);
         Session::removeFlash($flaKey3);
-        static::assertEquals([$flaKey4 => $flaValue4], Session::getAllFlash());
+        static::assertSame([$flaKey4 => $flaValue4], Session::getAllFlash());
     }
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testRollback(): void
@@ -592,6 +621,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testUnsaved(): void
@@ -604,11 +634,12 @@ class SessionTest extends TestCase
         static::assertTrue(Session::has('azerty'));
         Session::unsaved();
         Session::start();
-        static::assertEquals(['a' => 'b'], $_SESSION);
+        static::assertSame(['a' => 'b'], $_SESSION);
     }
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testRegenerate(): void
@@ -617,11 +648,12 @@ class SessionTest extends TestCase
         $sessionId = Session::getId();
         $success = Session::regenerate();
         static::assertTrue($success);
-        static::assertNotEquals($sessionId, Session::getId());
+        static::assertNotSame($sessionId, Session::getId());
     }
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testDestroy(): void
@@ -630,12 +662,13 @@ class SessionTest extends TestCase
         $sessionId = Session::getId();
         $success = Session::destroy();
         static::assertTrue($success);
-        static::assertNotEquals($sessionId, Session::getId());
+        static::assertNotSame($sessionId, Session::getId());
         static::assertEmpty($_SESSION);
     }
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Exception
      */
     public function testSetReadOnly(): void
@@ -647,6 +680,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     *
      * @throws \Rancoud\Database\DatabaseException
      * @throws \Exception
      */
@@ -660,8 +694,8 @@ class SessionTest extends TestCase
             'database' => 'test_database'
         ]);
 
-        $mysqlHost = getenv('MYSQL_HOST', true);
-        $conf->setHost(($mysqlHost !== false) ?  $mysqlHost : '127.0.0.1');
+        $mysqlHost = \getenv('MYSQL_HOST', true);
+        $conf->setHost(($mysqlHost !== false) ? $mysqlHost : '127.0.0.1');
 
         $db = new \Rancoud\Database\Database($conf);
         $db->truncateTables('sessions');
@@ -681,7 +715,7 @@ class SessionTest extends TestCase
         $sessionId = Session::getId();
         Session::commit();
 
-        sleep(1);
+        \sleep(1);
 
         $sql = 'UPDATE sessions SET last_access = DATE_ADD(NOW(), INTERVAL 50000 SECOND) WHERE id = :id';
         $params = ['id' => $sessionId];
@@ -689,11 +723,11 @@ class SessionTest extends TestCase
 
         Session::setOption('gc_maxlifetime', '1');
 
-        sleep(1);
+        \sleep(1);
 
         Session::gc();
 
         $count = $db->count('SELECT COUNT(*) FROM sessions');
-        static::assertEquals(1, $count);
+        static::assertSame(1, $count);
     }
 }

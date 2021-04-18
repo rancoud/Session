@@ -12,11 +12,11 @@ use SessionUpdateTimestampHandlerInterface;
  */
 class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInterface
 {
-    /** @var string|null */
     protected ?string $savePath = null;
 
-    /** @var string */
     protected string $prefix = 'sess_';
+
+    protected int $lengthSessionID = 127;
 
     /**
      * @param string $prefix
@@ -27,17 +27,42 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
     }
 
     /**
-     * @param string $savePath
-     * @param string $sessionName
+     * @param int $length
+     *
+     * @throws SessionException
+     */
+    public function setLengthSessionID(int $length): void
+    {
+        if ($length < 32) {
+            throw new SessionException('could not set length session ID below 32');
+        }
+
+        $this->lengthSessionID = $length;
+    }
+
+    public function getLengthSessionID(): int
+    {
+        return $this->lengthSessionID;
+    }
+
+    /**
+     * @param string $path
+     * @param string $name
+     *
+     * @throws SessionException
      *
      * @return bool
      */
-    public function open($savePath, $sessionName): bool
+    public function open($path, $name): bool
     {
-        $this->savePath = $savePath;
+        $this->savePath = $path;
 
         if (!\is_dir($this->savePath) && !\mkdir($this->savePath, 0750) && !\is_dir($this->savePath)) {
-            throw new \RuntimeException(\sprintf('Directory "%s" was not created', $this->savePath));
+            // @codeCoverageIgnoreStart
+            /* Could not reach this statement without mocking the filesystem
+             */
+            throw new SessionException(\sprintf('Directory "%s" was not created', $this->savePath));
+            // @codeCoverageIgnoreEnd
         }
 
         return true;
@@ -52,14 +77,14 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
     }
 
     /**
-     * @param string $sessionId
+     * @param string $id
      *
      * @return string
      */
-    public function read($sessionId): string
+    public function read($id): string
     {
-        $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $sessionId;
-        if (\file_exists($filename)) {
+        $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $id;
+        if (\file_exists($filename) && \is_file($filename)) {
             return (string) \file_get_contents($filename);
         }
 
@@ -67,27 +92,27 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
     }
 
     /**
-     * @param string $sessionId
+     * @param string $id
      * @param string $data
      *
      * @return bool
      */
-    public function write($sessionId, $data): bool
+    public function write($id, $data): bool
     {
-        $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $sessionId;
+        $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $id;
 
-        return \file_put_contents($filename, $data) === false ? false : true;
+        return !(\file_put_contents($filename, $data) === false);
     }
 
     /**
-     * @param string $sessionId
+     * @param string $id
      *
      * @return bool
      */
-    public function destroy($sessionId): bool
+    public function destroy($id): bool
     {
-        $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $sessionId;
-        if (\file_exists($filename)) {
+        $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $id;
+        if (\file_exists($filename) && \is_file($filename)) {
             \unlink($filename);
         }
 
@@ -95,15 +120,15 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
     }
 
     /**
-     * @param int $lifetime
+     * @param int $max_lifetime
      *
      * @return bool
      */
-    public function gc($lifetime): bool
+    public function gc($max_lifetime): bool
     {
         $pattern = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . '*';
         foreach (\glob($pattern) as $file) {
-            if (\filemtime($file) + $lifetime < \time() && \file_exists($file)) {
+            if (\file_exists($file) && \is_file($file) && \filemtime($file) + $max_lifetime < \time()) {
                 \unlink($file);
             }
         }
@@ -114,17 +139,17 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
     /**
      * Checks format and id exists, if not session_id will be regenerate.
      *
-     * @param string $key
+     * @param string $id
      *
      * @return bool
      */
-    public function validateId($key): bool
+    public function validateId($id): bool
     {
-        if (\preg_match('/^[a-zA-Z0-9-]{127}+$/', $key) !== 1) {
+        if (\preg_match('/^[a-zA-Z0-9-]{' . $this->lengthSessionID . '}+$/', $id) !== 1) {
             return false;
         }
 
-        $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $key;
+        $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $id;
 
         return \file_exists($filename);
     }
@@ -132,34 +157,48 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
     /**
      * Updates the timestamp of a session when its data didn't change.
      *
-     * @param string $sessionId
-     * @param string $sessionData
+     * @param string $id
+     * @param string $data
      *
      * @return bool
      */
-    public function updateTimestamp($sessionId, $sessionData): bool
+    public function updateTimestamp($id, $data): bool
     {
-        return $this->write($sessionId, $sessionData);
+        return $this->write($id, $data);
     }
 
     /**
-     * @throws \Exception
+     * @throws SessionException
      *
      * @return string
+     * @noinspection PhpMethodNamingConventionInspection
      */
     public function create_sid(): string
     {
         $string = '';
-        $caracters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';
+        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';
 
-        $countCaracters = 62;
-        for ($i = 0; $i < 127; ++$i) {
-            $string .= $caracters[\random_int(0, $countCaracters)];
+        try {
+            $countCharacters = 62;
+            for ($i = 0; $i < $this->lengthSessionID; ++$i) {
+                $string .= $characters[\random_int(0, $countCharacters)];
+            }
+            // @codeCoverageIgnoreStart
+        } catch (\Exception $e) {
+            /* If an appropriate source of randomness cannot be found, an Exception will be thrown.
+             * The list of randomness: https://www.php.net/manual/en/function.random-int.php
+             */
+            throw new SessionException('could not create sid: ' . $e->getMessage(), $e->getCode(), $e->getPrevious());
+            // @codeCoverageIgnoreEnd
         }
 
         $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $string;
         if (\file_exists($filename)) {
+            // @codeCoverageIgnoreStart
+            /* Could not reach this statement without mocking the filesystem
+             */
             return $this->create_sid();
+            // @codeCoverageIgnoreEnd
         }
 
         return $string;

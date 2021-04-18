@@ -7,7 +7,7 @@ declare(strict_types=1);
 namespace Rancoud\Session;
 
 use Rancoud\Database\Configurator;
-use Rancoud\Database\Database as Db;
+use Rancoud\Database\Database as DB;
 use Rancoud\Database\DatabaseException;
 use SessionHandlerInterface;
 use SessionUpdateTimestampHandlerInterface;
@@ -17,36 +17,40 @@ use SessionUpdateTimestampHandlerInterface;
  */
 class Database implements SessionHandlerInterface, SessionUpdateTimestampHandlerInterface
 {
-    /** @var Db */
-    protected Db $db;
+    protected DB $db;
 
-    /** @var int|null */
     protected ?int $userId = null;
+
+    protected int $lengthSessionID = 127;
 
     /**
      * @param Configurator|array $configuration
      *
-     * @throws DatabaseException
+     * @throws SessionException
      */
     public function setNewDatabase($configuration): void
     {
-        if ($configuration instanceof Configurator) {
-            $this->db = new Db($configuration);
-        } else {
-            $this->db = new Db(new Configurator($configuration));
+        try {
+            if ($configuration instanceof Configurator) {
+                $this->db = new DB($configuration);
+            } else {
+                $this->db = new DB(new Configurator($configuration));
+            }
+        } catch (DatabaseException $e) {
+            throw new SessionException('could not set database: ' . $e->getMessage(), $e->getCode(), $e->getPrevious());
         }
     }
 
     /**
-     * @param Db $database
+     * @param DB $database
      */
-    public function setCurrentDatabase($database): void
+    public function setCurrentDatabase(DB $database): void
     {
         $this->db = $database;
     }
 
     /**
-     * @param int $userId
+     * @param int|null $userId
      */
     public function setUserId(?int $userId): void
     {
@@ -54,12 +58,31 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
     }
 
     /**
-     * @param string $savePath
-     * @param string $sessionName
+     * @param int $length
+     *
+     * @throws SessionException
+     */
+    public function setLengthSessionID(int $length): void
+    {
+        if ($length < 32) {
+            throw new SessionException('could not set length session ID below 32');
+        }
+
+        $this->lengthSessionID = $length;
+    }
+
+    public function getLengthSessionID(): int
+    {
+        return $this->lengthSessionID;
+    }
+
+    /**
+     * @param string $path
+     * @param string $name
      *
      * @return bool
      */
-    public function open($savePath, $sessionName): bool
+    public function open($path, $name): bool
     {
         return true;
     }
@@ -73,130 +96,158 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
     }
 
     /**
-     * @param string $sessionId
+     * @param string $id
      *
-     * @throws DatabaseException
+     * @throws SessionException
      *
      * @return string
      */
-    public function read($sessionId): string
+    public function read($id): string
     {
-        $sql = 'SELECT content FROM sessions WHERE id = :id';
-        $params = ['id' => $sessionId];
+        try {
+            $sql = 'SELECT content FROM sessions WHERE id = :id';
+            $params = ['id' => $id];
 
-        return (string) $this->db->selectVar($sql, $params);
+            return (string) $this->db->selectVar($sql, $params);
+        } catch (DatabaseException $e) {
+            throw new SessionException('could not read session: ' . $e->getMessage(), $e->getCode(), $e->getPrevious());
+        }
     }
 
     /**
-     * @param string $sessionId
+     * @param string $id
      * @param string $data
      *
-     * @throws DatabaseException
+     * @throws SessionException
      *
      * @return bool
      */
-    public function write($sessionId, $data): bool
+    public function write($id, $data): bool
     {
-        $sql = 'REPLACE INTO sessions VALUES(:id, :id_user, NOW(), :content)';
-        $params = ['id' => $sessionId, 'id_user' => $this->userId, 'content' => $data];
+        try {
+            $sql = 'REPLACE INTO sessions VALUES(:id, :id_user, UTC_TIMESTAMP(), :content)';
+            $params = ['id' => $id, 'id_user' => $this->userId, 'content' => $data];
 
-        $this->db->exec($sql, $params);
+            $this->db->exec($sql, $params);
 
-        return true;
+            return true;
+        } catch (DatabaseException $e) {
+            throw new SessionException('could not update session: ' . $e->getMessage(), $e->getCode(), $e->getPrevious());
+        }
     }
 
     /**
-     * @param string $sessionId
+     * @param string $id
      *
-     * @throws DatabaseException
+     * @throws SessionException
      *
      * @return bool
      */
-    public function destroy($sessionId): bool
+    public function destroy($id): bool
     {
-        $sql = 'DELETE FROM sessions WHERE id = :id';
-        $params = ['id' => $sessionId];
-        $this->db->delete($sql, $params);
+        try {
+            $sql = 'DELETE FROM sessions WHERE id = :id';
+            $params = ['id' => $id];
+            $this->db->delete($sql, $params);
 
-        return true;
+            return true;
+        } catch (DatabaseException $e) {
+            throw new SessionException('could not delete session: ' . $e->getMessage(), $e->getCode(), $e->getPrevious());
+        }
     }
 
     /**
-     * @param int $lifetime
+     * @param int $max_lifetime
      *
-     * @throws DatabaseException
+     * @throws SessionException
      *
      * @return bool
      */
-    public function gc($lifetime): bool
+    public function gc($max_lifetime): bool
     {
-        $sql = 'DELETE FROM sessions WHERE DATE_ADD(last_access, INTERVAL :seconds second) < NOW()';
-        $params = ['seconds' => $lifetime];
-        $this->db->delete($sql, $params);
+        try {
+            $sql = 'DELETE FROM sessions WHERE DATE_ADD(last_access, INTERVAL :seconds second) < UTC_TIMESTAMP()';
+            $params = ['seconds' => $max_lifetime];
+            $this->db->delete($sql, $params);
 
-        return true;
+            return true;
+        } catch (DatabaseException $e) {
+            throw new SessionException('could not clean old sessions: ' . $e->getMessage(), $e->getCode(), $e->getPrevious());
+        }
     }
 
     /**
      * Checks format and id exists, if not session_id will be regenerate.
      *
-     * @param string $key
+     * @param string $id
      *
-     * @throws DatabaseException
+     * @throws SessionException
      *
      * @return bool
      */
-    public function validateId($key): bool
+    public function validateId($id): bool
     {
-        if (\preg_match('/^[a-zA-Z0-9-]{127}+$/', $key) !== 1) {
-            return false;
+        try {
+            if (\preg_match('/^[a-zA-Z0-9-]{' . $this->lengthSessionID . '}+$/', $id) !== 1) {
+                return false;
+            }
+
+            $sql = 'SELECT COUNT(id) FROM sessions WHERE id=:id';
+            $params = ['id' => $id];
+            $count = $this->db->count($sql, $params);
+
+            return $count === 1;
+        } catch (DatabaseException $e) {
+            throw new SessionException('could not validate id: ' . $e->getMessage(), $e->getCode(), $e->getPrevious());
         }
-
-        $sql = 'SELECT COUNT(id) FROM sessions WHERE id=:id';
-        $params = ['id' => $key];
-        $count = $this->db->count($sql, $params);
-
-        return $count === 1;
     }
 
     /**
      * Updates the timestamp of a session when its data didn't change.
      *
-     * @param string $sessionId
-     * @param string $sessionData
+     * @param string $id
+     * @param string $data
      *
-     * @throws DatabaseException
+     * @throws SessionException
      *
      * @return bool
      */
-    public function updateTimestamp($sessionId, $sessionData): bool
+    public function updateTimestamp($id, $data): bool
     {
-        return $this->write($sessionId, $sessionData);
+        return $this->write($id, $data);
     }
 
     /**
-     * @throws \Exception
-     * @throws DatabaseException
+     * @throws SessionException
      *
      * @return string
+     * @noinspection PhpMethodNamingConventionInspection
      */
     public function create_sid(): string
     {
-        $string = '';
-        $caracters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';
+        try {
+            $string = '';
+            $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';
 
-        $countCaracters = 62;
-        for ($i = 0; $i < 127; ++$i) {
-            $string .= $caracters[\random_int(0, $countCaracters)];
+            $countCharacters = 62;
+            for ($i = 0; $i < $this->lengthSessionID; ++$i) {
+                $string .= $characters[\random_int(0, $countCharacters)];
+            }
+
+            $sql = 'SELECT COUNT(id) FROM sessions WHERE id=:id';
+            $params = ['id' => $string];
+            $count = $this->db->count($sql, $params);
+            if ($count !== 0) {
+                // @codeCoverageIgnoreStart
+                /* Could not reach this statement without mocking the function
+                 */
+                return $this->create_sid();
+                // @codeCoverageIgnoreEnd
+            }
+
+            return $string;
+        } catch (\Exception $e) {
+            throw new SessionException('could not create sid: ' . $e->getMessage(), $e->getCode(), $e->getPrevious());
         }
-
-        $sql = 'SELECT COUNT(id) FROM sessions WHERE id=:id';
-        $params = ['id' => $string];
-        $count = $this->db->count($sql, $params);
-        if ($count !== 0) {
-            return $this->create_sid();
-        }
-
-        return $string;
     }
 }

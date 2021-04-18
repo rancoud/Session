@@ -13,11 +13,11 @@ use SessionUpdateTimestampHandlerInterface;
  */
 class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInterface
 {
-    /** @var Predis */
     protected Predis $redis;
 
-    /** @var int */
     protected int $lifetime = 1440;
+
+    protected int $lengthSessionID = 127;
 
     /**
      * @param string|array $configuration
@@ -30,7 +30,7 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
     /**
      * @param Predis $redis
      */
-    public function setCurrentRedis($redis): void
+    public function setCurrentRedis(Predis $redis): void
     {
         $this->redis = $redis;
     }
@@ -44,12 +44,31 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
     }
 
     /**
-     * @param string $savePath
-     * @param string $sessionName
+     * @param int $length
+     *
+     * @throws SessionException
+     */
+    public function setLengthSessionID(int $length): void
+    {
+        if ($length < 32) {
+            throw new SessionException('could not set length session ID below 32');
+        }
+
+        $this->lengthSessionID = $length;
+    }
+
+    public function getLengthSessionID(): int
+    {
+        return $this->lengthSessionID;
+    }
+
+    /**
+     * @param string $path
+     * @param string $name
      *
      * @return bool
      */
-    public function open($savePath, $sessionName): bool
+    public function open($path, $name): bool
     {
         return true;
     }
@@ -63,47 +82,47 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
     }
 
     /**
-     * @param string $sessionId
+     * @param string $id
      *
      * @return string
      */
-    public function read($sessionId): string
+    public function read($id): string
     {
-        return (string) $this->redis->get($sessionId);
+        return (string) $this->redis->get($id);
     }
 
     /**
-     * @param string $sessionId
+     * @param string $id
      * @param string $data
      *
      * @return bool
      */
-    public function write($sessionId, $data): bool
+    public function write($id, $data): bool
     {
-        $this->redis->set($sessionId, $data);
-        $this->redis->expireat($sessionId, \time() + $this->lifetime);
+        $this->redis->set($id, $data);
+        $this->redis->expireat($id, \time() + $this->lifetime);
 
         return true;
     }
 
     /**
-     * @param string $sessionId
+     * @param string $id
      *
      * @return bool
      */
-    public function destroy($sessionId): bool
+    public function destroy($id): bool
     {
-        $this->redis->del([$sessionId]);
+        $this->redis->del([$id]);
 
         return true;
     }
 
     /**
-     * @param int $lifetime
+     * @param int $max_lifetime
      *
      * @return bool
      */
-    public function gc($lifetime): bool
+    public function gc($max_lifetime): bool
     {
         return true;
     }
@@ -111,17 +130,17 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
     /**
      * Checks format and id exists, if not session_id will be regenerate.
      *
-     * @param string $key
+     * @param string $id
      *
      * @return bool
      */
-    public function validateId($key): bool
+    public function validateId($id): bool
     {
-        if (\preg_match('/^[a-zA-Z0-9-]{127}+$/', $key) !== 1) {
+        if (\preg_match('/^[a-zA-Z0-9-]{' . $this->lengthSessionID . '}+$/', $id) !== 1) {
             return false;
         }
 
-        $exist = $this->redis->exists($key);
+        $exist = $this->redis->exists($id);
 
         return $exist === 1;
     }
@@ -129,34 +148,48 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
     /**
      * Updates the timestamp of a session when its data didn't change.
      *
-     * @param string $sessionId
-     * @param string $sessionData
+     * @param string $id
+     * @param string $data
      *
      * @return bool
      */
-    public function updateTimestamp($sessionId, $sessionData): bool
+    public function updateTimestamp($id, $data): bool
     {
-        return $this->write($sessionId, $sessionData);
+        return $this->write($id, $data);
     }
 
     /**
-     * @throws \Exception
+     * @throws SessionException
      *
      * @return string
+     * @noinspection PhpMethodNamingConventionInspection
      */
     public function create_sid(): string
     {
         $string = '';
-        $caracters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';
+        $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';
 
-        $countCaracters = 62;
-        for ($i = 0; $i < 127; ++$i) {
-            $string .= $caracters[\random_int(0, $countCaracters)];
+        try {
+            $countCharacters = 62;
+            for ($i = 0; $i < $this->lengthSessionID; ++$i) {
+                $string .= $characters[\random_int(0, $countCharacters)];
+            }
+            // @codeCoverageIgnoreStart
+        } catch (\Exception $e) {
+            /* If an appropriate source of randomness cannot be found, an Exception will be thrown.
+             * The list of randomness: https://www.php.net/manual/en/function.random-int.php
+             */
+            throw new SessionException('could not create sid: ' . $e->getMessage(), $e->getCode(), $e->getPrevious());
+            // @codeCoverageIgnoreEnd
         }
 
         $exist = $this->redis->exists($string);
         if ($exist !== 0) {
+            // @codeCoverageIgnoreStart
+            /* Could not reach this statement without mocking the function
+             */
             return $this->create_sid();
+            // @codeCoverageIgnoreEnd
         }
 
         return $string;

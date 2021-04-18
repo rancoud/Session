@@ -4,7 +4,7 @@
 
 declare(strict_types=1);
 
-namespace Rancoud\Session\Test;
+namespace tests;
 
 use PHPUnit\Framework\TestCase;
 use Predis\Client as Predis;
@@ -26,8 +26,8 @@ class RedisEncryptionTest extends TestCase
             'port'   => 6379,
         ];
 
-        $redisHost = getenv('REDIS_HOST', true);
-        $params['host'] = ($redisHost !== false) ?  $redisHost : '127.0.0.1';
+        $redisHost = \getenv('REDIS_HOST', true);
+        $params['host'] = ($redisHost !== false) ? $redisHost : '127.0.0.1';
 
         static::$redis = new Predis($params);
         static::$redis->flushdb();
@@ -77,12 +77,12 @@ class RedisEncryptionTest extends TestCase
         static::assertTrue($success);
 
         $dataInRedis = static::$redis->get($sessionId);
-        static::assertNotEquals($data, $dataInRedis);
+        static::assertNotSame($data, $dataInRedis);
 
         $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
         $encryptionTrait->setKey('randomKey');
         $dataInRedisDecrypted = $encryptionTrait->decrypt($dataInRedis);
-        static::assertEquals($data, $dataInRedisDecrypted);
+        static::assertSame($data, $dataInRedisDecrypted);
     }
 
     /**
@@ -103,7 +103,7 @@ class RedisEncryptionTest extends TestCase
         $dataOutput = $redis->read($sessionId);
         static::assertNotEmpty($dataOutput);
         static::assertIsString($dataOutput);
-        static::assertEquals($data, $dataOutput);
+        static::assertSame($data, $dataOutput);
 
         $sessionId = '';
         $dataOutput = $redis->read($sessionId);
@@ -157,7 +157,7 @@ class RedisEncryptionTest extends TestCase
         $isKeyExist = static::$redis->exists($sessionId) === 1;
         static::assertTrue($isKeyExist);
 
-        sleep(2);
+        \sleep(2);
 
         $lifetime = 0;
         $success = $redis->gc($lifetime);
@@ -181,8 +181,8 @@ class RedisEncryptionTest extends TestCase
             'port'   => 6379,
         ];
 
-        $redisHost = getenv('REDIS_HOST', true);
-        $params['host'] = ($redisHost !== false) ?  $redisHost : '127.0.0.1';
+        $redisHost = \getenv('REDIS_HOST', true);
+        $params['host'] = ($redisHost !== false) ? $redisHost : '127.0.0.1';
 
         $redis->setNewRedis($params);
 
@@ -231,15 +231,15 @@ class RedisEncryptionTest extends TestCase
         static::assertTrue($success);
 
         $dataInRedis = static::$redis->get($sessionId);
-        static::assertNotEquals($data, $dataInRedis);
+        static::assertNotSame($data, $dataInRedis);
         $ttl1 = static::$redis->ttl($sessionId);
 
         $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
         $encryptionTrait->setKey('randomKey');
         $dataInRedisDecrypted = $encryptionTrait->decrypt($dataInRedis);
-        static::assertEquals($data, $dataInRedisDecrypted);
+        static::assertSame($data, $dataInRedisDecrypted);
 
-        sleep(2);
+        \sleep(2);
 
         $ttl2 = static::$redis->ttl($sessionId);
 
@@ -247,13 +247,13 @@ class RedisEncryptionTest extends TestCase
         static::assertTrue($success);
 
         $dataInRedis2 = static::$redis->get($sessionId);
-        static::assertNotEquals($data, $dataInRedis2);
+        static::assertNotSame($data, $dataInRedis2);
         $ttl3 = static::$redis->ttl($sessionId);
 
         $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
         $encryptionTrait->setKey('randomKey');
         $dataInRedisDecrypted = $encryptionTrait->decrypt($dataInRedis2);
-        static::assertEquals($data, $dataInRedisDecrypted);
+        static::assertSame($data, $dataInRedisDecrypted);
 
         static::assertTrue($ttl2 < $ttl1);
         static::assertTrue($ttl3 > $ttl2);
@@ -271,6 +271,6 @@ class RedisEncryptionTest extends TestCase
 
         $string = $redis->create_sid();
 
-        static::assertSame(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string), 1);
+        static::assertSame(\preg_match('/^[a-zA-Z0-9-]{127}+$/', $string), 1);
     }
 }

@@ -4,11 +4,12 @@
 
 declare(strict_types=1);
 
-namespace Rancoud\Session\Test;
+namespace tests;
 
 use PHPUnit\Framework\TestCase;
 use Predis\Client as Predis;
 use Rancoud\Session\Redis;
+use Rancoud\Session\SessionException;
 
 /**
  * Class RedisTest.
@@ -26,8 +27,8 @@ class RedisTest extends TestCase
             'port'   => 6379,
         ];
 
-        $redisHost = getenv('REDIS_HOST', true);
-        $params['host'] = ($redisHost !== false) ?  $redisHost : '127.0.0.1';
+        $redisHost = \getenv('REDIS_HOST', true);
+        $params['host'] = ($redisHost !== false) ? $redisHost : '127.0.0.1';
 
         static::$redis = new Predis($params);
         static::$redis->flushdb();
@@ -68,7 +69,7 @@ class RedisTest extends TestCase
         static::assertTrue($success);
 
         $dataInRedis = static::$redis->get($sessionId);
-        static::assertEquals($data, $dataInRedis);
+        static::assertSame($data, $dataInRedis);
     }
 
     public function testRead(): void
@@ -84,7 +85,7 @@ class RedisTest extends TestCase
         $dataOutput = $redis->read($sessionId);
         static::assertNotEmpty($dataOutput);
         static::assertIsString($dataOutput);
-        static::assertEquals($data, $dataOutput);
+        static::assertSame($data, $dataOutput);
 
         $sessionId = '';
         $dataOutput = $redis->read($sessionId);
@@ -128,7 +129,7 @@ class RedisTest extends TestCase
         $isKeyExist = static::$redis->exists($sessionId) === 1;
         static::assertTrue($isKeyExist);
 
-        sleep(2);
+        \sleep(2);
 
         $lifetime = 0;
         $success = $redis->gc($lifetime);
@@ -147,8 +148,8 @@ class RedisTest extends TestCase
             'port'   => 6379,
         ];
 
-        $redisHost = getenv('REDIS_HOST', true);
-        $params['host'] = ($redisHost !== false) ?  $redisHost : '127.0.0.1';
+        $redisHost = \getenv('REDIS_HOST', true);
+        $params['host'] = ($redisHost !== false) ? $redisHost : '127.0.0.1';
 
         $redis->setNewRedis($params);
 
@@ -187,10 +188,10 @@ class RedisTest extends TestCase
         static::assertTrue($success);
 
         $dataInRedis = static::$redis->get($sessionId);
-        static::assertEquals($data, $dataInRedis);
+        static::assertSame($data, $dataInRedis);
         $ttl1 = static::$redis->ttl($sessionId);
 
-        sleep(2);
+        \sleep(2);
 
         $ttl2 = static::$redis->ttl($sessionId);
 
@@ -198,7 +199,7 @@ class RedisTest extends TestCase
         static::assertTrue($success);
 
         $dataInRedis2 = static::$redis->get($sessionId);
-        static::assertEquals($data, $dataInRedis2);
+        static::assertSame($data, $dataInRedis2);
         $ttl3 = static::$redis->ttl($sessionId);
 
         static::assertTrue($ttl2 < $ttl1);
@@ -215,6 +216,25 @@ class RedisTest extends TestCase
 
         $string = $redis->create_sid();
 
-        static::assertSame(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string), 1);
+        static::assertSame(\preg_match('/^[a-zA-Z0-9-]{127}+$/', $string), 1);
+    }
+
+    /**
+     * @throws SessionException
+     */
+    public function testLengthSessionID(): void
+    {
+        $redis = new Redis();
+        $redis->setLengthSessionID(50);
+        static::assertSame(50, $redis->getLengthSessionID());
+    }
+
+    public function testLengthSessionIDSessionException(): void
+    {
+        $this->expectException(SessionException::class);
+        $this->expectExceptionMessage('could not set length session ID below 32');
+
+        $redis = new Redis();
+        $redis->setLengthSessionID(1);
     }
 }

@@ -15,9 +15,16 @@
             "Rancoud\\Session\\": "src"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "tests\\": "tests"
+        }
+    },
     "require": {
         "php": ">=7.4.0",
-        "ext-openssl": ">=7.4.0"
+        "ext-openssl": "*",
+        "ext-session": "*",
+        "ext-mbstring": "*"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.16",
@@ -36,7 +43,7 @@
             "php-cs-fixer fix"
         ],
         "test": [
-            "phpdbg -qrr vendor/bin/phpunit --colors --coverage-text --coverage-clover ./coverage/clover.xml"
+            "phpdbg -qrr vendor/bin/phpunit --colors --coverage-html ./coverage --coverage-text --coverage-clover ./coverage/clover.xml"
         ]
     }
 }
