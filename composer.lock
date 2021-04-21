@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6a3b3bd182736d3909d92f1c896bf9df",
+    "content-hash": "675c339477b125cdcf72c5029e89f4cb",
     "packages": [],
     "packages-dev": [
         {
@@ -982,16 +982,16 @@
         },
         {
             "name": "phpunit/php-code-coverage",
-            "version": "9.2.5",
+            "version": "9.2.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/php-code-coverage.git",
-                "reference": "f3e026641cc91909d421802dd3ac7827ebfd97e1"
+                "reference": "f6293e1b30a2354e8428e004689671b83871edde"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/f3e026641cc91909d421802dd3ac7827ebfd97e1",
-                "reference": "f3e026641cc91909d421802dd3ac7827ebfd97e1",
+                "url": "https://api.github.com/repos/sebastianbergmann/php-code-coverage/zipball/f6293e1b30a2354e8428e004689671b83871edde",
+                "reference": "f6293e1b30a2354e8428e004689671b83871edde",
                 "shasum": ""
             },
             "require": {
@@ -1047,7 +1047,7 @@
             ],
             "support": {
                 "issues": "https://github.com/sebastianbergmann/php-code-coverage/issues",
-                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.5"
+                "source": "https://github.com/sebastianbergmann/php-code-coverage/tree/9.2.6"
             },
             "funding": [
                 {
@@ -1055,7 +1055,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2020-11-28T06:44:49+00:00"
+            "time": "2021-03-28T07:26:59+00:00"
         },
         {
             "name": "phpunit/php-file-iterator",
@@ -1617,26 +1617,31 @@
         },
         {
             "name": "rancoud/database",
-            "version": "6.0.3",
+            "version": "6.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rancoud/Database.git",
-                "reference": "71d1563d3fed2db02db3544fbcc1b820c3e9d33e"
+                "reference": "80b46a525d910472bc9e75e82f32a07cd5a284d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rancoud/Database/zipball/71d1563d3fed2db02db3544fbcc1b820c3e9d33e",
-                "reference": "71d1563d3fed2db02db3544fbcc1b820c3e9d33e",
+                "url": "https://api.github.com/repos/rancoud/Database/zipball/80b46a525d910472bc9e75e82f32a07cd5a284d2",
+                "reference": "80b46a525d910472bc9e75e82f32a07cd5a284d2",
                 "shasum": ""
             },
             "require": {
-                "ext-pdo": ">=7.4.0",
+                "ext-pdo": "*",
                 "php": ">=7.4.0"
             },
             "require-dev": {
                 "friendsofphp/php-cs-fixer": "^2.16",
                 "phpunit/phpunit": "^9.1",
                 "squizlabs/php_codesniffer": "^3.5"
+            },
+            "suggest": {
+                "ext-pdo_mysql": "Needed to connect MySQL",
+                "ext-pdo_pgsql": "Needed to connect PostgreSQL",
+                "ext-pdo_sqlite": "Needed to connect SQLite"
             },
             "type": "library",
             "autoload": {
@@ -1657,9 +1662,9 @@
             "description": "Database package",
             "support": {
                 "issues": "https://github.com/rancoud/Database/issues",
-                "source": "https://github.com/rancoud/Database/tree/6.0.3"
+                "source": "https://github.com/rancoud/Database/tree/6.0.4"
             },
-            "time": "2021-02-07T02:04:56+00:00"
+            "time": "2021-04-18T13:21:38+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -4233,7 +4238,9 @@
     "prefer-lowest": false,
     "platform": {
         "php": ">=7.4.0",
-        "ext-openssl": ">=7.4.0"
+        "ext-openssl": "*",
+        "ext-session": "*",
+        "ext-mbstring": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.0.0"

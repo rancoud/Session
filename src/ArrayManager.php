@@ -9,18 +9,19 @@ namespace Rancoud\Session;
  */
 trait ArrayManager
 {
-    /** @var array */
     protected static array $flashData = [];
 
+    /** @throws SessionException */
     abstract protected static function startSessionIfNotHasStarted();
 
+    /** @throws SessionException */
     abstract protected static function startSessionIfNotHasStartedForceWrite();
 
     /**
      * @param string $key
      * @param mixed  $value
      *
-     * @throws \Exception
+     * @throws SessionException
      */
     public static function set(string $key, $value): void
     {
@@ -32,7 +33,7 @@ trait ArrayManager
     /**
      * @param string $key
      *
-     * @throws \Exception
+     * @throws SessionException
      *
      * @return bool
      */
@@ -47,7 +48,7 @@ trait ArrayManager
      * @param string $key
      * @param mixed  $value
      *
-     * @throws \Exception
+     * @throws SessionException
      *
      * @return bool
      */
@@ -61,7 +62,7 @@ trait ArrayManager
     /**
      * @param string $key
      *
-     * @throws \Exception
+     * @throws SessionException
      *
      * @return mixed
      */
@@ -75,7 +76,7 @@ trait ArrayManager
     /**
      * @param string $key
      *
-     * @throws \Exception
+     * @throws SessionException
      */
     public static function remove(string $key): void
     {
@@ -87,7 +88,7 @@ trait ArrayManager
     }
 
     /**
-     * @throws \Exception
+     * @throws SessionException
      *
      * @return array
      */
@@ -101,7 +102,7 @@ trait ArrayManager
     /**
      * @param string $key
      *
-     * @throws \Exception
+     * @throws SessionException
      *
      * @return mixed
      */
@@ -118,8 +119,6 @@ trait ArrayManager
     /**
      * @param string $key
      * @param mixed  $value
-     *
-     * @throws \Exception
      */
     public static function setFlash(string $key, $value): void
     {
@@ -150,8 +149,6 @@ trait ArrayManager
     /**
      * @param string $key
      *
-     * @throws \Exception
-     *
      * @return mixed
      */
     public static function getFlash(string $key)
@@ -161,8 +158,6 @@ trait ArrayManager
 
     /**
      * @param string $key
-     *
-     * @throws \Exception
      */
     public static function removeFlash(string $key): void
     {
@@ -173,6 +168,8 @@ trait ArrayManager
 
     /**
      * @param array $keys
+     *
+     * @throws SessionException
      */
     public static function keepFlash(array $keys = []): void
     {

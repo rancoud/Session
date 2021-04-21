@@ -1,9 +1,10 @@
 <?php
+
 /** @noinspection ForgottenDebugOutputInspection */
 
 declare(strict_types=1);
 
-namespace Rancoud\Session\Test;
+namespace tests;
 
 use PHPUnit\Framework\TestCase;
 use Rancoud\Session\SessionException;
@@ -23,7 +24,7 @@ class EncryptionTest extends TestCase
         $encryptedData = $encryptionTrait->encrypt($dataToEncrypt);
 
         $finalData = $encryptionTrait->decrypt($encryptedData);
-        static::assertEquals($dataToEncrypt, $finalData);
+        static::assertSame($dataToEncrypt, $finalData);
     }
 
     public function testAllEncryptionMethods(): void
@@ -39,15 +40,15 @@ class EncryptionTest extends TestCase
             $encryptedData = $encryptionTrait->encrypt($dataToEncrypt);
 
             $finalData = $encryptionTrait->decrypt($encryptedData);
-            static::assertEquals($dataToEncrypt, $finalData, $method . ' fail!');
+            static::assertSame($dataToEncrypt, $finalData, $method . ' fail!');
         }
     }
 
     public function testExceptionMethod(): void
     {
         $this->expectException(SessionException::class);
-        $this->expectExceptionMessage('Method unknowed: method');
-        
+        $this->expectExceptionMessage('Unknown method: method');
+
         $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
         $encryptionTrait->setMethod('method');
     }
@@ -56,7 +57,7 @@ class EncryptionTest extends TestCase
     {
         $this->expectException(SessionException::class);
         $this->expectExceptionMessage('Key has to be a non-empty string');
-        
+
         $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
         $dataToEncrypt = 'this is something to encrypt';
         $encryptionTrait->encrypt($dataToEncrypt);

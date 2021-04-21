@@ -9,11 +9,9 @@ namespace Rancoud\Session;
  */
 trait Encryption
 {
-    /** @var string */
-    protected $key;
+    protected ?string $key = null;
 
-    /** @var string */
-    protected $method = 'aes-256-cbc';
+    protected string $method = 'aes-256-cbc';
 
     /**
      * @param string $key
@@ -31,7 +29,7 @@ trait Encryption
     public function setMethod(string $method): void
     {
         if (!\in_array($method, $this->getAvailableMethods(), true)) {
-            throw new SessionException(\sprintf('Method unknowed: %s', $method));
+            throw new SessionException(\sprintf('Unknown method: %s', $method));
         }
 
         $this->method = $method;
@@ -46,54 +44,43 @@ trait Encryption
         $ciphersAndAliases = \openssl_get_cipher_methods(true);
         $cipherAliases = \array_diff($ciphersAndAliases, $ciphers);
 
-        $ciphers = \array_filter($ciphers, function ($n) {
-            return \mb_stripos($n, 'ecb') === false;
-        });
-        $ciphers = \array_filter($ciphers, function ($c) {
-            return \mb_stripos($c, 'des') === false;
-        });
-        $ciphers = \array_filter($ciphers, function ($c) {
-            return \mb_stripos($c, 'rc2') === false;
-        });
-        $ciphers = \array_filter($ciphers, function ($c) {
-            return \mb_stripos($c, 'rc4') === false;
-        });
-        $ciphers = \array_filter($ciphers, function ($c) {
-            return \mb_stripos($c, 'md5') === false;
-        });
-        $ciphers = \array_filter($ciphers, function ($c) {
-            return \mb_stripos($c, '-ocb') === false;
-        });
-        $ciphers = \array_filter($ciphers, function ($c) {
-            return \mb_stripos($c, '-ccm') === false;
-        });
-        $ciphers = \array_filter($ciphers, function ($c) {
-            return \mb_stripos($c, '-gcm') === false;
-        });
-        $ciphers = \array_filter($ciphers, function ($c) {
-            return \mb_stripos($c, '-wrap') === false;
+        $ciphers = \array_filter($ciphers, static function ($n) {
+            $excludeMethods = [
+                'ecb', 'des', 'rc2', 'rc4', 'md5',
+                '-ocb', '-ccm', '-gcm', '-wrap'
+            ];
+            foreach ($excludeMethods as $excludeMethod) {
+                if (\mb_stripos($n, $excludeMethod) !== false) {
+                    return false;
+                }
+            }
+
+            return true;
         });
 
-        $cipherAliases = \array_filter($cipherAliases, function ($c) {
-            return \mb_stripos($c, 'des') === false;
-        });
-        $cipherAliases = \array_filter($cipherAliases, function ($c) {
-            return \mb_stripos($c, 'rc2') === false;
-        });
-        $cipherAliases = \array_filter($cipherAliases, function ($c) {
-            return \mb_stripos($c, '-wrap') === false;
+        $cipherAliases = \array_filter($cipherAliases, static function ($c) {
+            $excludeMethods = [
+                'des', 'rc2', '-wrap'
+            ];
+            foreach ($excludeMethods as $excludeMethod) {
+                if (\mb_stripos($c, $excludeMethod) !== false) {
+                    return false;
+                }
+            }
+
+            return true;
         });
 
         $methods = \array_merge($ciphers, $cipherAliases);
 
-        $methods = \array_filter($methods, function ($c) {
-            $forbiddenMethods = ['AES-128-CBC-HMAC-SHA1', 'AES-256-CBC-HMAC-SHA1',
-                                'aes-128-cbc-hmac-sha1', 'aes-256-cbc-hmac-sha1'];
+        return \array_filter($methods, static function ($c) {
+            $forbiddenMethods = [
+                'AES-128-CBC-HMAC-SHA1', 'AES-256-CBC-HMAC-SHA1',
+                'aes-128-cbc-hmac-sha1', 'aes-256-cbc-hmac-sha1'
+            ];
 
             return !\in_array($c, $forbiddenMethods, true);
         });
-
-        return $methods;
     }
 
     /**
@@ -101,9 +88,9 @@ trait Encryption
      *
      * @throws SessionException
      *
-     * @return string|bool
+     * @return string
      */
-    public function decrypt(string $data)
+    public function decrypt(string $data): string
     {
         $this->throwExceptionIfKeyEmpty();
 
@@ -111,9 +98,18 @@ trait Encryption
             return '';
         }
 
-        list($encrypted_data, $iv) = \explode('::', \base64_decode($data, true), 2);
+        [$encryptedData, $iv] = \explode('::', \base64_decode($data, true), 2);
 
-        return \openssl_decrypt($encrypted_data, $this->method, $this->key, 0, $iv);
+        $dataDecrypted = \openssl_decrypt($encryptedData, $this->method, $this->key, 0, $iv);
+        if ($dataDecrypted === false) {
+            // @codeCoverageIgnoreStart
+            /* Could not reach this statement without mocking the function
+             */
+            throw new SessionException('Could not decrypt with openssl_decrypt');
+            // @codeCoverageIgnoreEnd
+        }
+
+        return $dataDecrypted;
     }
 
     /**
@@ -127,11 +123,19 @@ trait Encryption
     {
         $this->throwExceptionIfKeyEmpty();
 
-        $iv = \openssl_random_pseudo_bytes(\openssl_cipher_iv_length($this->method));
-        $encrypted = \openssl_encrypt($data, $this->method, $this->key, 0, $iv);
-        $data = \base64_encode($encrypted . '::' . $iv);
+        /** @noinspection CryptographicallySecureRandomnessInspection */
+        $iv = \openssl_random_pseudo_bytes(\openssl_cipher_iv_length($this->method), $cstrong);
+        if ($iv === false || $cstrong === false) {
+            // @codeCoverageIgnoreStart
+            /* Could not reach this statement without mocking the function
+             */
+            throw new SessionException('IV generation failed');
+            // @codeCoverageIgnoreEnd
+        }
 
-        return $data;
+        $encrypted = \openssl_encrypt($data, $this->method, $this->key, 0, $iv);
+
+        return \base64_encode($encrypted . '::' . $iv);
     }
 
     /**

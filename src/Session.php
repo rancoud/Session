@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Rancoud\Session;
 
-use Exception;
-
 /**
  * Class Session.
  */
@@ -13,13 +11,10 @@ class Session extends DriverManager
 {
     use ArrayManager;
 
-    /** @var bool */
     protected static bool $hasStarted = false;
 
-    /** @var bool */
     protected static bool $hasChanged = true;
 
-    /** @var array */
     protected static array $options = [
         'read_and_close'   => true,
         'cookie_httponly'  => '1',
@@ -31,7 +26,7 @@ class Session extends DriverManager
     /**
      * @param array $options
      *
-     * @throws Exception
+     * @throws SessionException
      */
     public static function start(array $options = []): void
     {
@@ -45,7 +40,7 @@ class Session extends DriverManager
     /**
      * @param array $options
      *
-     * @throws Exception
+     * @throws SessionException
      */
     protected static function populateOptions(array $options = []): void
     {
@@ -55,7 +50,7 @@ class Session extends DriverManager
     }
 
     /**
-     * @throws Exception
+     * @throws SessionException
      */
     protected static function setupAndStart(): void
     {
@@ -100,13 +95,11 @@ class Session extends DriverManager
     {
         \session_name(static::getOption('name'));
 
-        \session_set_save_handler(static::$driver);
+        \session_set_save_handler(static::$driver, true);
 
         \session_save_path(static::getOption('save_path'));
 
         static::setupCookieParams();
-
-        \register_shutdown_function('session_write_close');
     }
 
     /**
@@ -197,7 +190,7 @@ class Session extends DriverManager
     }
 
     /**
-     * @throws Exception
+     * @throws SessionException
      */
     public static function regenerate(): bool
     {
@@ -270,11 +263,12 @@ class Session extends DriverManager
     public static function setId(string $id): string
     {
         static::$hasChanged = true;
+
         return \session_id($id);
     }
 
     /**
-     * @throws Exception
+     * @throws SessionException
      */
     public static function gc(): void
     {
@@ -284,7 +278,7 @@ class Session extends DriverManager
     }
 
     /**
-     * @throws Exception
+     * @throws SessionException
      */
     protected static function startSessionIfNotHasStarted(): void
     {
@@ -294,7 +288,7 @@ class Session extends DriverManager
     }
 
     /**
-     * @throws Exception
+     * @throws SessionException
      */
     protected static function startSessionIfNotHasStartedForceWrite(): void
     {
@@ -333,7 +327,7 @@ class Session extends DriverManager
 
     /**
      * @param string $key
-     * @param        $value
+     * @param mixed  $value
      *
      * @throws SessionException
      */

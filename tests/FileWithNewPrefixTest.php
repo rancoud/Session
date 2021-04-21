@@ -4,7 +4,7 @@
 
 declare(strict_types=1);
 
-namespace Rancoud\Session\Test;
+namespace tests;
 
 use PHPUnit\Framework\TestCase;
 use Rancoud\Session\File;
@@ -16,20 +16,20 @@ class FileWithNewPrefixTest extends TestCase
 {
     protected function setUp(): void
     {
-        $path = ini_get('session.save_path');
+        $path = \ini_get('session.save_path');
         if (empty($path)) {
-            $path = DIRECTORY_SEPARATOR . 'tmp';
+            $path = \DIRECTORY_SEPARATOR . 'tmp';
         }
 
-        $pattern = $path . DIRECTORY_SEPARATOR . 'myprefix_*';
-        foreach (glob($pattern) as $file) {
-            if (file_exists($file)) {
-                unlink($file);
+        $pattern = $path . \DIRECTORY_SEPARATOR . 'myprefix_*';
+        foreach (\glob($pattern) as $file) {
+            if (\file_exists($file)) {
+                \unlink($file);
             }
         }
 
-        if (is_dir($path . DIRECTORY_SEPARATOR . 'tests')) {
-            rmdir($path . DIRECTORY_SEPARATOR . 'tests');
+        if (\is_dir($path . \DIRECTORY_SEPARATOR . 'tests')) {
+            \rmdir($path . \DIRECTORY_SEPARATOR . 'tests');
         }
     }
 
@@ -38,9 +38,9 @@ class FileWithNewPrefixTest extends TestCase
      */
     private function getPath(): string
     {
-        $path = ini_get('session.save_path');
+        $path = \ini_get('session.save_path');
         if (empty($path)) {
-            return DIRECTORY_SEPARATOR . 'tmp';
+            return \DIRECTORY_SEPARATOR . 'tmp';
         }
 
         return $path;
@@ -49,7 +49,7 @@ class FileWithNewPrefixTest extends TestCase
     /**
      * @param File $file
      *
-     * @throws \PHPUnit\Framework\AssertionFailedError
+     * @throws \Rancoud\Session\SessionException
      */
     private function openSessionForSavingSavePath(File $file): void
     {
@@ -57,6 +57,9 @@ class FileWithNewPrefixTest extends TestCase
         static::assertTrue($success);
     }
 
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
     public function testOpen(): void
     {
         $file = new File();
@@ -66,10 +69,10 @@ class FileWithNewPrefixTest extends TestCase
         $success = $file->open($savePath, $sessionName);
         static::assertTrue($success);
 
-        $savePathNotCreated = $savePath . DIRECTORY_SEPARATOR . 'tests';
+        $savePathNotCreated = $savePath . \DIRECTORY_SEPARATOR . 'tests';
         $success = $file->open($savePathNotCreated, $sessionName);
         static::assertTrue($success);
-        $success = file_exists($savePathNotCreated);
+        $success = \file_exists($savePathNotCreated);
         static::assertTrue($success);
     }
 
@@ -81,6 +84,9 @@ class FileWithNewPrefixTest extends TestCase
         static::assertTrue($success);
     }
 
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
     public function testWrite(): void
     {
         $file = new File();
@@ -93,10 +99,13 @@ class FileWithNewPrefixTest extends TestCase
         $success = $file->write($sessionId, $data);
         static::assertTrue($success);
 
-        $dataInFile = file_get_contents($this->getPath() . DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
-        static::assertEquals($data, $dataInFile);
+        $dataInFile = \file_get_contents($this->getPath() . \DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
+        static::assertSame($data, $dataInFile);
     }
 
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
     public function testRead(): void
     {
         $file = new File();
@@ -112,7 +121,7 @@ class FileWithNewPrefixTest extends TestCase
         $dataOutput = $file->read($sessionId);
         static::assertNotEmpty($dataOutput);
         static::assertIsString($dataOutput);
-        static::assertEquals($data, $dataOutput);
+        static::assertSame($data, $dataOutput);
 
         $sessionId = '';
         $dataOutput = $file->read($sessionId);
@@ -120,6 +129,9 @@ class FileWithNewPrefixTest extends TestCase
         static::assertIsString($dataOutput);
     }
 
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
     public function testDestroy(): void
     {
         $file = new File();
@@ -136,14 +148,17 @@ class FileWithNewPrefixTest extends TestCase
         $success = $file->write($sessionId, $data);
         static::assertTrue($success);
 
-        $isFileExist = file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
+        $isFileExist = \file_exists($this->getPath() . \DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
         static::assertTrue($isFileExist);
         $success = $file->destroy($sessionId);
         static::assertTrue($success);
-        $isFileNotExist = !file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
+        $isFileNotExist = !\file_exists($this->getPath() . \DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
         static::assertTrue($isFileNotExist);
     }
 
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
     public function testGc(): void
     {
         $file = new File();
@@ -156,17 +171,20 @@ class FileWithNewPrefixTest extends TestCase
         $success = $file->write($sessionId, $data);
         static::assertTrue($success);
 
-        $isFileExist = file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
+        $isFileExist = \file_exists($this->getPath() . \DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
         static::assertTrue($isFileExist);
 
         $lifetime = -1000;
         $success = $file->gc($lifetime);
         static::assertTrue($success);
 
-        $isFileNotExist = !file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
+        $isFileNotExist = !\file_exists($this->getPath() . \DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
         static::assertTrue($isFileNotExist);
     }
 
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
     public function testValidateId(): void
     {
         $file = new File();
@@ -185,6 +203,9 @@ class FileWithNewPrefixTest extends TestCase
         static::assertFalse($file->validateId('kjlfez/fez'));
     }
 
+    /**
+     * @throws \Rancoud\Session\SessionException
+     */
     public function testUpdateTimestamp(): void
     {
         $file = new File();
@@ -197,20 +218,20 @@ class FileWithNewPrefixTest extends TestCase
         $success = $file->write($sessionId, $data);
         static::assertTrue($success);
 
-        $dataInFile = file_get_contents($this->getPath() . DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
-        $oldFileModifiedTime = filemtime($this->getPath() . DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
-        static::assertEquals($data, $dataInFile);
+        $dataInFile = \file_get_contents($this->getPath() . \DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
+        $oldFileModifiedTime = \filemtime($this->getPath() . \DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
+        static::assertSame($data, $dataInFile);
 
-        sleep(1);
+        \sleep(1);
         $success = $file->updateTimestamp($sessionId, $data);
         static::assertTrue($success);
 
-        clearstatcache();
+        \clearstatcache();
 
-        $dataInFile2 = file_get_contents($this->getPath() . DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
-        static::assertEquals($data, $dataInFile2);
-        static::assertEquals($dataInFile, $dataInFile2);
-        $newFileModifiedTime = filemtime($this->getPath() . DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
+        $dataInFile2 = \file_get_contents($this->getPath() . \DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
+        static::assertSame($data, $dataInFile2);
+        static::assertSame($dataInFile, $dataInFile2);
+        $newFileModifiedTime = \filemtime($this->getPath() . \DIRECTORY_SEPARATOR . 'myprefix_' . $sessionId);
 
         static::assertTrue($oldFileModifiedTime < $newFileModifiedTime);
     }
@@ -225,6 +246,6 @@ class FileWithNewPrefixTest extends TestCase
 
         $string = $file->create_sid();
 
-        static::assertSame(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string), 1);
+        static::assertSame(\preg_match('/^[a-zA-Z0-9-]{127}+$/', $string), 1);
     }
 }

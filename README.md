@@ -90,7 +90,7 @@ Session::useCurrentRedisDriver($redis);
 Session::set('key', 'value');
 $value = Session::get('key');
 ```
-With your own driver implementing SessionHandlerInterface
+With your own driver implementing `SessionHandlerInterface` and/or `SessionUpdateTimestampHandlerInterface`
 ```php
 $driver = new MyCustomDriver();
 Session::useCustomDriver($driver);
@@ -147,11 +147,15 @@ When flash data is restore, it will be delete in $_SESSION.
 #### Static PHP Session Default Driver
 * useDefaultDriver(): void  
 * useDefaultEncryptionDriver(key: string, [method: string|null = null]): void  
+* setLengthSessionID(length: int): void  
+* getLengthSessionID(): int  
 
 #### Static File Driver
 * useFileDriver(): void  
 * useFileEncryptionDriver(key: string, [method: string|null = null]): void  
 * setPrefixForFile(prefix: string): void  
+* setLengthSessionID(length: int): void
+* getLengthSessionID(): int
 
 #### Static Database Driver
 * useNewDatabaseDriver(configuration: \Rancoud\Database\Configurator|array): void  
@@ -159,15 +163,55 @@ When flash data is restore, it will be delete in $_SESSION.
 * useNewDatabaseEncryptionDriver(configuration: \Rancoud\Database\Configurator|array, key: string, [method: string = null]): void  
 * useCurrentDatabaseEncryptionDriver(databaseInstance: \Rancoud\Database\Database, key: string, [method: string = null]): void  
 * setUserIdForDatabase(userId: int): void  
+* setLengthSessionID(length: int): void
+* getLengthSessionID(): int
 
 #### Static Redis Driver
 * useNewRedisDriver(configuration: array|string): void  
 * useCurrentRedisDriver(redisInstance: \Predis\Client): void  
 * useNewRedisEncryptionDriver(configuration: array|string, key: string, [method: string = null]): void  
 * useCurrentRedisEncryptionDriver(redisInstance: \Predis\Client, key: string, [method: string = null]): void  
+* setLengthSessionID(length: int): void
+* getLengthSessionID(): int
 
 #### Static Custom Driver
 * useCustomDriver(customDriver: \SessionHandlerInterface): void  
+
+## Session options
+List of session options you can change:  
+* save_path
+* name
+* save_handler
+* auto_start
+* gc_probability
+* gc_divisor
+* gc_maxlifetime
+* serialize_handler
+* cookie_lifetime
+* cookie_path
+* cookie_domain
+* cookie_secure
+* cookie_httponly
+* cookie_samesite
+* use_strict_mode
+* use_cookies
+* use_only_cookies
+* referer_check
+* cache_limiter
+* cache_expire
+* use_trans_sid
+* trans_sid_tags
+* trans_sid_hosts
+* sid_length
+* sid_bits_per_character
+* upload_progress.enabled
+* upload_progress.cleanup
+* upload_progress.prefix
+* upload_progress.name
+* upload_progress.freq
+* upload_progress.min_freq
+* lazy_write
+* read_and_close
 
 ## Driver Informations
 ### Default

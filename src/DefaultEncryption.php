@@ -14,31 +14,31 @@ class DefaultEncryption extends SessionHandler
     use Encryption;
 
     /**
-     * @param string $sessionId
+     * @param string $id
      *
      * @throws SessionException
      *
      * @return string
      */
-    public function read($sessionId): string
+    public function read($id): string
     {
-        $encryptedData = parent::read($sessionId);
+        $encryptedData = parent::read($id);
 
         return $this->decrypt($encryptedData);
     }
 
     /**
-     * @param string $sessionId
+     * @param string $id
      * @param string $data
      *
      * @throws SessionException
      *
      * @return bool
      */
-    public function write($sessionId, $data): bool
+    public function write($id, $data): bool
     {
         $cryptedData = $this->encrypt($data);
 
-        return parent::write($sessionId, $cryptedData);
+        return parent::write($id, $cryptedData);
     }
 }

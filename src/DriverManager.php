@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Rancoud\Session;
 
+use Predis\Client as PredisClient;
+use Rancoud\Database\Configurator;
+use Rancoud\Database\Database as DB;
 use SessionHandler;
 use SessionHandlerInterface;
 
@@ -12,15 +15,15 @@ use SessionHandlerInterface;
  */
 abstract class DriverManager
 {
-    /** @var SessionHandlerInterface */
     protected static ?SessionHandlerInterface $driver = null;
 
+    /** @throws SessionException */
     abstract protected static function throwExceptionIfHasStarted();
 
     abstract protected static function getLifetimeForRedis();
 
     /**
-     * @throws \Exception
+     * @throws SessionException
      */
     protected static function configureDriver(): void
     {
@@ -30,7 +33,7 @@ abstract class DriverManager
     }
 
     /**
-     * @throws \Exception
+     * @throws SessionException
      */
     public static function useDefaultDriver(): void
     {
@@ -43,7 +46,7 @@ abstract class DriverManager
      * @param string      $key
      * @param string|null $method
      *
-     * @throws \Exception
+     * @throws SessionException
      */
     public static function useDefaultEncryptionDriver(string $key, string $method = null): void
     {
@@ -56,7 +59,7 @@ abstract class DriverManager
     }
 
     /**
-     * @throws \Exception
+     * @throws SessionException
      */
     public static function useFileDriver(): void
     {
@@ -69,7 +72,7 @@ abstract class DriverManager
      * @param string      $key
      * @param string|null $method
      *
-     * @throws \Exception
+     * @throws SessionException
      */
     public static function useFileEncryptionDriver(string $key, string $method = null): void
     {
@@ -82,9 +85,9 @@ abstract class DriverManager
     }
 
     /**
-     * @param \Rancoud\Database\Configurator|array $configuration
+     * @param Configurator|array $configuration
      *
-     * @throws \Exception
+     * @throws SessionException
      */
     public static function useNewDatabaseDriver($configuration): void
     {
@@ -97,11 +100,11 @@ abstract class DriverManager
     }
 
     /**
-     * @param \Rancoud\Database\Database $databaseInstance
+     * @param DB $databaseInstance
      *
-     * @throws \Exception
+     * @throws SessionException
      */
-    public static function useCurrentDatabaseDriver($databaseInstance): void
+    public static function useCurrentDatabaseDriver(DB $databaseInstance): void
     {
         static::throwExceptionIfHasStarted();
 
@@ -112,13 +115,13 @@ abstract class DriverManager
     }
 
     /**
-     * @param \Rancoud\Database\Configurator|array $configuration
-     * @param string                               $key
-     * @param string                               $method
+     * @param Configurator|array $configuration
+     * @param string             $key
+     * @param string|null        $method
      *
-     * @throws \Exception
+     * @throws SessionException
      */
-    public static function useNewDatabaseEncryptionDriver($configuration, string $key, string $method = null): void
+    public static function useNewDatabaseEncryptionDriver($configuration, string $key, ?string $method = null): void
     {
         static::throwExceptionIfHasStarted();
 
@@ -130,13 +133,13 @@ abstract class DriverManager
     }
 
     /**
-     * @param \Rancoud\Database\Database $databaseInstance
-     * @param string                     $key
-     * @param string                     $method
+     * @param DB          $databaseInstance
+     * @param string      $key
+     * @param string|null $method
      *
-     * @throws \Exception
+     * @throws SessionException
      */
-    public static function useCurrentDatabaseEncryptionDriver($databaseInstance, string $key, string $method = null): void
+    public static function useCurrentDatabaseEncryptionDriver(DB $databaseInstance, string $key, ?string $method = null): void
     {
         static::throwExceptionIfHasStarted();
 
@@ -150,7 +153,7 @@ abstract class DriverManager
     /**
      * @param array|string $configuration
      *
-     * @throws \Exception
+     * @throws SessionException
      */
     public static function useNewRedisDriver($configuration): void
     {
@@ -164,11 +167,11 @@ abstract class DriverManager
     }
 
     /**
-     * @param \Predis\Client $redisInstance
+     * @param PredisClient $redisInstance
      *
-     * @throws \Exception
+     * @throws SessionException
      */
-    public static function useCurrentRedisDriver($redisInstance): void
+    public static function useCurrentRedisDriver(PredisClient $redisInstance): void
     {
         static::throwExceptionIfHasStarted();
 
@@ -182,9 +185,9 @@ abstract class DriverManager
     /**
      * @param array|string $configuration
      * @param string       $key
-     * @param string       $method
+     * @param string|null  $method
      *
-     * @throws \Exception
+     * @throws SessionException
      */
     public static function useNewRedisEncryptionDriver($configuration, string $key, string $method = null): void
     {
@@ -199,13 +202,13 @@ abstract class DriverManager
     }
 
     /**
-     * @param \Predis\Client $redisInstance
-     * @param string         $key
-     * @param string         $method
+     * @param PredisClient $redisInstance
+     * @param string       $key
+     * @param string|null  $method
      *
-     * @throws \Exception
+     * @throws SessionException
      */
-    public static function useCurrentRedisEncryptionDriver($redisInstance, string $key, string $method = null): void
+    public static function useCurrentRedisEncryptionDriver(PredisClient $redisInstance, string $key, string $method = null): void
     {
         static::throwExceptionIfHasStarted();
 
@@ -218,13 +221,13 @@ abstract class DriverManager
     }
 
     /**
-     * @param Encryption $driver
-     * @param            $key
-     * @param            $method
+     * @param Encryption  $driver (use Encryption trait)
+     * @param string      $key
+     * @param string|null $method
      *
-     * @throws \Exception
+     * @throws SessionException
      */
-    private static function setKeyAndMethod($driver, $key, $method): void
+    private static function setKeyAndMethod($driver, string $key, ?string $method): void
     {
         $driver->setKey($key);
         if ($method !== null) {
@@ -235,7 +238,7 @@ abstract class DriverManager
     /**
      * @param SessionHandlerInterface $customDriver
      *
-     * @throws \Exception
+     * @throws SessionException
      */
     public static function useCustomDriver(SessionHandlerInterface $customDriver): void
     {
@@ -258,6 +261,7 @@ abstract class DriverManager
     public static function setUserIdForDatabase(int $userId): void
     {
         if (\method_exists(static::$driver, 'setUserId')) {
+            /** @noinspection PhpPossiblePolymorphicInvocationInspection */
             static::$driver->setUserId($userId);
         }
     }
@@ -268,6 +272,7 @@ abstract class DriverManager
     public static function setPrefixForFile(string $prefix): void
     {
         if (\method_exists(static::$driver, 'setPrefix')) {
+            /** @noinspection PhpPossiblePolymorphicInvocationInspection */
             static::$driver->setPrefix($prefix);
         }
     }

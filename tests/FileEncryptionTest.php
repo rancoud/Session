@@ -1,12 +1,14 @@
 <?php
+
 /** @noinspection ForgottenDebugOutputInspection */
 
 declare(strict_types=1);
 
-namespace Rancoud\Session\Test;
+namespace tests;
 
 use PHPUnit\Framework\TestCase;
 use Rancoud\Session\FileEncryption;
+use Rancoud\Session\SessionException;
 
 /**
  * Class FileEncryptionTest.
@@ -15,39 +17,47 @@ class FileEncryptionTest extends TestCase
 {
     protected function setUp(): void
     {
-        $path = ini_get('session.save_path');
+        $path = \ini_get('session.save_path');
         if (empty($path)) {
-            $path = DIRECTORY_SEPARATOR . 'tmp';
+            $path = \DIRECTORY_SEPARATOR . 'tmp';
         }
 
-        $pattern = $path . DIRECTORY_SEPARATOR . 'sess_*';
-        foreach (glob($pattern) as $file) {
-            if (file_exists($file)) {
-                unlink($file);
+        $pattern = $path . \DIRECTORY_SEPARATOR . 'sess_*';
+        foreach (\glob($pattern) as $file) {
+            if (\file_exists($file)) {
+                \unlink($file);
             }
         }
 
-        if (is_dir($path . DIRECTORY_SEPARATOR . 'tests')) {
-            rmdir($path . DIRECTORY_SEPARATOR . 'tests');
+        if (\is_dir($path . \DIRECTORY_SEPARATOR . 'tests')) {
+            \rmdir($path . \DIRECTORY_SEPARATOR . 'tests');
         }
     }
 
     private function getPath(): string
     {
-        $path = ini_get('session.save_path');
+        $path = \ini_get('session.save_path');
         if (empty($path)) {
-            return DIRECTORY_SEPARATOR . 'tmp';
+            return \DIRECTORY_SEPARATOR . 'tmp';
         }
 
         return $path;
     }
 
+    /**
+     * @param FileEncryption $fileEncryption
+     *
+     * @throws SessionException
+     */
     private function openSessionForSavingSavePath(FileEncryption $fileEncryption): void
     {
         $success = $fileEncryption->open($this->getPath(), '');
         static::assertTrue($success);
     }
 
+    /**
+     * @throws SessionException
+     */
     public function testOpen(): void
     {
         $fileEncryption = new FileEncryption();
@@ -58,10 +68,10 @@ class FileEncryptionTest extends TestCase
         $success = $fileEncryption->open($savePath, $sessionName);
         static::assertTrue($success);
 
-        $savePathNotCreated = $savePath . DIRECTORY_SEPARATOR . 'tests';
+        $savePathNotCreated = $savePath . \DIRECTORY_SEPARATOR . 'tests';
         $success = $fileEncryption->open($savePathNotCreated, $sessionName);
         static::assertTrue($success);
-        $success = file_exists($savePathNotCreated);
+        $success = \file_exists($savePathNotCreated);
         static::assertTrue($success);
     }
 
@@ -74,7 +84,7 @@ class FileEncryptionTest extends TestCase
     }
 
     /**
-     * @throws \Rancoud\Session\SessionException
+     * @throws SessionException
      */
     public function testWrite(): void
     {
@@ -88,17 +98,17 @@ class FileEncryptionTest extends TestCase
         $success = $fileEncryption->write($sessionId, $data);
         static::assertTrue($success);
 
-        $dataInFile = file_get_contents($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
-        static::assertNotEquals($data, $dataInFile);
+        $dataInFile = \file_get_contents($this->getPath() . \DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        static::assertNotSame($data, $dataInFile);
 
         $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
         $encryptionTrait->setKey('randomKey');
         $dataInFileDecrypted = $encryptionTrait->decrypt($dataInFile);
-        static::assertEquals($data, $dataInFileDecrypted);
+        static::assertSame($data, $dataInFileDecrypted);
     }
 
     /**
-     * @throws \Rancoud\Session\SessionException
+     * @throws SessionException
      */
     public function testRead(): void
     {
@@ -115,7 +125,7 @@ class FileEncryptionTest extends TestCase
         $dataOutput = $fileEncryption->read($sessionId);
         static::assertNotEmpty($dataOutput);
         static::assertIsString($dataOutput);
-        static::assertEquals($data, $dataOutput);
+        static::assertSame($data, $dataOutput);
 
         $sessionId = '';
         $dataOutput = $fileEncryption->read($sessionId);
@@ -124,7 +134,7 @@ class FileEncryptionTest extends TestCase
     }
 
     /**
-     * @throws \Rancoud\Session\SessionException
+     * @throws SessionException
      */
     public function testDestroy(): void
     {
@@ -142,16 +152,16 @@ class FileEncryptionTest extends TestCase
         $success = $fileEncryption->write($sessionId, $data);
         static::assertTrue($success);
 
-        $isFileExist = file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        $isFileExist = \file_exists($this->getPath() . \DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
         static::assertTrue($isFileExist);
         $success = $fileEncryption->destroy($sessionId);
         static::assertTrue($success);
-        $isFileNotExist = !file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        $isFileNotExist = !\file_exists($this->getPath() . \DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
         static::assertTrue($isFileNotExist);
     }
 
     /**
-     * @throws \Rancoud\Session\SessionException
+     * @throws SessionException
      */
     public function testGc(): void
     {
@@ -165,19 +175,19 @@ class FileEncryptionTest extends TestCase
         $success = $fileEncryption->write($sessionId, $data);
         static::assertTrue($success);
 
-        $isFileExist = file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        $isFileExist = \file_exists($this->getPath() . \DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
         static::assertTrue($isFileExist);
 
         $lifetime = -1000;
         $success = $fileEncryption->gc($lifetime);
         static::assertTrue($success);
 
-        $isFileNotExist = !file_exists($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        $isFileNotExist = !\file_exists($this->getPath() . \DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
         static::assertTrue($isFileNotExist);
     }
 
     /**
-     * @throws \Rancoud\Session\SessionException
+     * @throws SessionException
      */
     public function testValidateId(): void
     {
@@ -198,7 +208,7 @@ class FileEncryptionTest extends TestCase
     }
 
     /**
-     * @throws \Rancoud\Session\SessionException
+     * @throws SessionException
      */
     public function testUpdateTimestamp(): void
     {
@@ -212,31 +222,31 @@ class FileEncryptionTest extends TestCase
         $success = $fileEncryption->write($sessionId, $data);
         static::assertTrue($success);
 
-        $dataInFile = file_get_contents($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
-        $oldFileModifiedTime = filemtime($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
-        static::assertNotEquals($data, $dataInFile);
+        $dataInFile = \file_get_contents($this->getPath() . \DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        $oldFileModifiedTime = \filemtime($this->getPath() . \DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        static::assertNotSame($data, $dataInFile);
 
         $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
         $encryptionTrait->setKey('randomKey');
         $dataInFileDecrypted = $encryptionTrait->decrypt($dataInFile);
-        static::assertEquals($data, $dataInFileDecrypted);
+        static::assertSame($data, $dataInFileDecrypted);
 
-        sleep(1);
+        \sleep(1);
         $success = $fileEncryption->updateTimestamp($sessionId, $data);
         static::assertTrue($success);
 
-        clearstatcache();
+        \clearstatcache();
 
-        $dataInFile2 = file_get_contents($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
-        static::assertNotEquals($data, $dataInFile2);
+        $dataInFile2 = \file_get_contents($this->getPath() . \DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        static::assertNotSame($data, $dataInFile2);
 
         $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
         $encryptionTrait->setKey('randomKey');
         $dataInFileDecrypted = $encryptionTrait->decrypt($dataInFile2);
-        static::assertEquals($data, $dataInFileDecrypted);
-        static::assertNotEquals($dataInFile, $dataInFile2);
+        static::assertSame($data, $dataInFileDecrypted);
+        static::assertNotSame($dataInFile, $dataInFile2);
 
-        $newFileModifiedTime = filemtime($this->getPath() . DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
+        $newFileModifiedTime = \filemtime($this->getPath() . \DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
 
         static::assertTrue($oldFileModifiedTime < $newFileModifiedTime);
     }
@@ -251,6 +261,6 @@ class FileEncryptionTest extends TestCase
 
         $string = $fileEncryption->create_sid();
 
-        static::assertSame(preg_match('/^[a-zA-Z0-9-]{127}+$/', $string), 1);
+        static::assertSame(\preg_match('/^[a-zA-Z0-9-]{127}+$/', $string), 1);
     }
 }
