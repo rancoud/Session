@@ -147,11 +147,15 @@ When flash data is restore, it will be delete in $_SESSION.
 #### Static PHP Session Default Driver
 * useDefaultDriver(): void  
 * useDefaultEncryptionDriver(key: string, [method: string|null = null]): void  
+* setLengthSessionID(length: int): void  
+* getLengthSessionID(): int  
 
 #### Static File Driver
 * useFileDriver(): void  
 * useFileEncryptionDriver(key: string, [method: string|null = null]): void  
 * setPrefixForFile(prefix: string): void  
+* setLengthSessionID(length: int): void
+* getLengthSessionID(): int
 
 #### Static Database Driver
 * useNewDatabaseDriver(configuration: \Rancoud\Database\Configurator|array): void  
@@ -159,12 +163,16 @@ When flash data is restore, it will be delete in $_SESSION.
 * useNewDatabaseEncryptionDriver(configuration: \Rancoud\Database\Configurator|array, key: string, [method: string = null]): void  
 * useCurrentDatabaseEncryptionDriver(databaseInstance: \Rancoud\Database\Database, key: string, [method: string = null]): void  
 * setUserIdForDatabase(userId: int): void  
+* setLengthSessionID(length: int): void
+* getLengthSessionID(): int
 
 #### Static Redis Driver
 * useNewRedisDriver(configuration: array|string): void  
 * useCurrentRedisDriver(redisInstance: \Predis\Client): void  
 * useNewRedisEncryptionDriver(configuration: array|string, key: string, [method: string = null]): void  
 * useCurrentRedisEncryptionDriver(redisInstance: \Predis\Client, key: string, [method: string = null]): void  
+* setLengthSessionID(length: int): void
+* getLengthSessionID(): int
 
 #### Static Custom Driver
 * useCustomDriver(customDriver: \SessionHandlerInterface): void  
