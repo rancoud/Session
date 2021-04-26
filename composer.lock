@@ -1617,16 +1617,16 @@
         },
         {
             "name": "rancoud/database",
-            "version": "6.0.4",
+            "version": "6.0.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rancoud/Database.git",
-                "reference": "80b46a525d910472bc9e75e82f32a07cd5a284d2"
+                "reference": "cce738e3ee38e5e219caaa133f787685496671d4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rancoud/Database/zipball/80b46a525d910472bc9e75e82f32a07cd5a284d2",
-                "reference": "80b46a525d910472bc9e75e82f32a07cd5a284d2",
+                "url": "https://api.github.com/repos/rancoud/Database/zipball/cce738e3ee38e5e219caaa133f787685496671d4",
+                "reference": "cce738e3ee38e5e219caaa133f787685496671d4",
                 "shasum": ""
             },
             "require": {
@@ -1662,9 +1662,9 @@
             "description": "Database package",
             "support": {
                 "issues": "https://github.com/rancoud/Database/issues",
-                "source": "https://github.com/rancoud/Database/tree/6.0.4"
+                "source": "https://github.com/rancoud/Database/tree/6.0.5"
             },
-            "time": "2021-04-18T13:21:38+00:00"
+            "time": "2021-04-23T21:55:51+00:00"
         },
         {
             "name": "sebastian/cli-parser",
