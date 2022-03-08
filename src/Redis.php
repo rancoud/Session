@@ -122,6 +122,7 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
      *
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function gc($max_lifetime): bool
     {
         return true;

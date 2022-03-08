@@ -163,6 +163,7 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
      *
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function gc($max_lifetime): bool
     {
         try {
