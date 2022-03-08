@@ -261,7 +261,7 @@ abstract class DriverManager
     public static function setUserIdForDatabase(int $userId): void
     {
         if (\method_exists(static::$driver, 'setUserId')) {
-            /** @noinspection PhpPossiblePolymorphicInvocationInspection */
+            /* @noinspection PhpPossiblePolymorphicInvocationInspection */
             static::$driver->setUserId($userId);
         }
     }
@@ -272,7 +272,7 @@ abstract class DriverManager
     public static function setPrefixForFile(string $prefix): void
     {
         if (\method_exists(static::$driver, 'setPrefix')) {
-            /** @noinspection PhpPossiblePolymorphicInvocationInspection */
+            /* @noinspection PhpPossiblePolymorphicInvocationInspection */
             static::$driver->setPrefix($prefix);
         }
     }
