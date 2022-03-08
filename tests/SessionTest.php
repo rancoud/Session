@@ -486,7 +486,7 @@ class SessionTest extends TestCase
         Session::useFileEncryptionDriver('randomKey', 'incorrect');
     }
 
-    //exception quand methode pas bonne dans les encryption
+    // exception quand methode pas bonne dans les encryption
 
     /**
      * @runInSeparateProcess
