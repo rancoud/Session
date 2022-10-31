@@ -13,8 +13,6 @@ use Rancoud\Session\SessionException;
 
 /**
  * Class SessionTest.
- *
- * @runTestsInSeparateProcesses
  */
 class SessionTest extends TestCase
 {
