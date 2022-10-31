@@ -22,9 +22,27 @@ class SessionTest extends TestCase
         @session_destroy();
 
         $class = new ReflectionClass(Session::class);
-        $prop = $class->getProperty('hasStarted');
-        $prop->setAccessible(true);
-        $prop->setValue(false);
+        $propHasStarted = $class->getProperty('hasStarted');
+        $propHasStarted->setAccessible(true);
+        $propHasStarted->setValue(false);
+
+        $propDriver = $class->getProperty('driver');
+        $propDriver->setAccessible(true);
+        $propDriver->setValue(null);
+
+        $propHasChanged = $class->getProperty('hasChanged');
+        $propHasChanged->setAccessible(true);
+        $propHasChanged->setValue(true);
+
+        $propOptions = $class->getProperty('options');
+        $propOptions->setAccessible(true);
+        $propOptions->setValue([
+            'read_and_close'   => true,
+            'cookie_httponly'  => '1',
+            'use_only_cookies' => '1',
+            'use_trans_sid'    => '0',
+            'use_strict_mode'  => '1'
+        ]);
 
         $path = \ini_get('session.save_path');
         if (empty($path)) {
