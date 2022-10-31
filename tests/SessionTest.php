@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 use Rancoud\Session\File;
 use Rancoud\Session\Session;
 use Rancoud\Session\SessionException;
+use ReflectionClass;
 
 /**
  * Class SessionTest.
@@ -18,6 +19,31 @@ class SessionTest extends TestCase
 {
     protected function setUp(): void
     {
+        @session_destroy();
+
+        $class = new ReflectionClass(Session::class);
+        $propHasStarted = $class->getProperty('hasStarted');
+        $propHasStarted->setAccessible(true);
+        $propHasStarted->setValue(false);
+
+        $propDriver = $class->getProperty('driver');
+        $propDriver->setAccessible(true);
+        $propDriver->setValue(null);
+
+        $propHasChanged = $class->getProperty('hasChanged');
+        $propHasChanged->setAccessible(true);
+        $propHasChanged->setValue(true);
+
+        $propOptions = $class->getProperty('options');
+        $propOptions->setAccessible(true);
+        $propOptions->setValue([
+            'read_and_close'   => true,
+            'cookie_httponly'  => '1',
+            'use_only_cookies' => '1',
+            'use_trans_sid'    => '0',
+            'use_strict_mode'  => '1'
+        ]);
+
         $path = \ini_get('session.save_path');
         if (empty($path)) {
             $path = \DIRECTORY_SEPARATOR . 'tmp';
@@ -32,8 +58,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testGetNull(): void
@@ -43,8 +67,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testSet(): void
@@ -55,15 +77,13 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testHas(): void
     {
-        Session::set('a', 'b');
+        Session::set('c', 'd');
 
-        $value = Session::has('a');
+        $value = Session::has('c');
         static::assertTrue($value);
 
         $value = Session::has('empty');
@@ -71,35 +91,31 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testHasKeyAndValue(): void
     {
-        Session::set('a', 'b');
+        Session::set('e', 'f');
 
-        $value = Session::hasKeyAndValue('a', 'b');
+        $value = Session::hasKeyAndValue('e', 'f');
         static::assertTrue($value);
 
         $value = Session::has('empty');
         static::assertFalse($value);
 
-        $value = Session::hasKeyAndValue('a', 'empty');
+        $value = Session::hasKeyAndValue('e', 'empty');
         static::assertFalse($value);
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testRemove(): void
     {
-        Session::set('a', 'b');
+        Session::set('g', 'h');
 
-        Session::remove('a');
-        $value = Session::get('a');
+        Session::remove('g');
+        $value = Session::get('g');
         static::assertNull($value);
 
         Session::remove('empty');
@@ -108,24 +124,20 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testGetAndRemove(): void
     {
-        Session::set('a', 'b');
+        Session::set('i', 'j');
 
-        $value = Session::getAndRemove('a');
-        static::assertSame('b', $value);
+        $value = Session::getAndRemove('i');
+        static::assertSame('j', $value);
 
         $value = Session::getAndRemove('empty');
         static::assertNull($value);
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testStartException(): void
@@ -139,8 +151,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testUseDefaultDriverWhenAlreadyStartedException(): void
@@ -154,8 +164,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testUseFileDriverWhenAlreadyStartedException(): void
@@ -169,8 +177,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testUseCustomDriverWhenAlreadyStartedException(): void
@@ -184,8 +190,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testUseDefaultDriver(): void
@@ -197,8 +201,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testUseDefaultEncryptionDriver(): void
@@ -210,8 +212,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testUseFileDriver(): void
@@ -223,8 +223,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testUseFileDriverWithPrefix(): void
@@ -250,8 +248,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testUseFileEncryptionDriver(): void
@@ -263,8 +259,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testUseNewDatabaseDriver(): void
@@ -287,8 +281,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testUseNewDatabaseEncryptionDriver(): void
@@ -311,8 +303,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Rancoud\Database\DatabaseException
      * @throws \Exception
      */
@@ -337,8 +327,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Rancoud\Database\DatabaseException
      * @throws \Exception
      */
@@ -371,8 +359,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testUseNewRedisDriver(): void
@@ -393,8 +379,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testUseNewRedisEncryptionDriver(): void
@@ -415,8 +399,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testUseCurrentRedisDriver(): void
@@ -438,8 +420,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testUseCurrentRedisEncryptionDriver(): void
@@ -461,8 +441,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testUseCustomDriver(): void
@@ -474,8 +452,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testUseEncryptionDriverThrowExceptionWhenMethodIncrorrect(): void
@@ -487,8 +463,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws SessionException
      * @throws \Exception
      */
@@ -508,9 +482,7 @@ class SessionTest extends TestCase
         static::assertSame('my_other_name', $customOption);
     }
 
-    /**
-     * @runInSeparateProcess
-     */
+    /**/
     public function testSetOptionThrowException(): void
     {
         $this->expectException(SessionException::class);
@@ -520,8 +492,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testGetAll(): void
@@ -536,8 +506,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testFlash(): void
@@ -601,8 +569,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testRollback(): void
@@ -618,8 +584,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testUnsaved(): void
@@ -636,8 +600,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testRegenerate(): void
@@ -650,8 +612,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testDestroy(): void
@@ -665,8 +625,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testSetReadOnly(): void
@@ -677,8 +635,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Rancoud\Database\DatabaseException
      * @throws \Exception
      */

@@ -124,6 +124,7 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
      *
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function gc($max_lifetime): bool
     {
         $pattern = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . '*';

@@ -48,8 +48,6 @@ class DefaultEncryptionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     *
      * @throws \Exception
      */
     public function testReadAndWrite(): void
