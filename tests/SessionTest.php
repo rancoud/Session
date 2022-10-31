@@ -18,6 +18,10 @@ class SessionTest extends TestCase
 {
     protected function setUp(): void
     {
+        if (Session::hasStarted()) {
+            Session::destroy();
+        }
+
         $path = \ini_get('session.save_path');
         if (empty($path)) {
             $path = \DIRECTORY_SEPARATOR . 'tmp';
