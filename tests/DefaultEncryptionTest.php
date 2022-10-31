@@ -49,6 +49,7 @@ class DefaultEncryptionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */

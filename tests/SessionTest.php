@@ -33,6 +33,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -44,6 +45,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -56,6 +58,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -72,6 +75,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -91,6 +95,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -109,6 +114,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -125,6 +131,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -140,6 +147,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -155,6 +163,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -170,6 +179,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -185,6 +195,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -198,6 +209,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -211,6 +223,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -224,6 +237,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -251,6 +265,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -264,6 +279,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -288,6 +304,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -312,6 +329,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Rancoud\Database\DatabaseException
      * @throws \Exception
@@ -338,6 +356,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Rancoud\Database\DatabaseException
      * @throws \Exception
@@ -372,6 +391,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -394,6 +414,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -416,6 +437,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -439,6 +461,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -462,6 +485,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -475,6 +499,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -488,6 +513,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws SessionException
      * @throws \Exception
@@ -510,6 +536,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      */
     public function testSetOptionThrowException(): void
     {
@@ -521,6 +548,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -537,6 +565,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -602,6 +631,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -619,6 +649,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -637,6 +668,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -651,6 +683,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -666,6 +699,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Exception
      */
@@ -678,6 +712,7 @@ class SessionTest extends TestCase
 
     /**
      * @runInSeparateProcess
+     * @preserveGlobalState disabled
      *
      * @throws \Rancoud\Database\DatabaseException
      * @throws \Exception
