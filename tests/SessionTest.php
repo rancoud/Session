@@ -63,9 +63,9 @@ class SessionTest extends TestCase
      */
     public function testHas(): void
     {
-        Session::set('a', 'b');
+        Session::set('c', 'd');
 
-        $value = Session::has('a');
+        $value = Session::has('c');
         static::assertTrue($value);
 
         $value = Session::has('empty');
@@ -77,15 +77,15 @@ class SessionTest extends TestCase
      */
     public function testHasKeyAndValue(): void
     {
-        Session::set('a', 'b');
+        Session::set('e', 'f');
 
-        $value = Session::hasKeyAndValue('a', 'b');
+        $value = Session::hasKeyAndValue('e', 'f');
         static::assertTrue($value);
 
         $value = Session::has('empty');
         static::assertFalse($value);
 
-        $value = Session::hasKeyAndValue('a', 'empty');
+        $value = Session::hasKeyAndValue('e', 'empty');
         static::assertFalse($value);
     }
 
@@ -94,10 +94,10 @@ class SessionTest extends TestCase
      */
     public function testRemove(): void
     {
-        Session::set('a', 'b');
+        Session::set('g', 'h');
 
-        Session::remove('a');
-        $value = Session::get('a');
+        Session::remove('g');
+        $value = Session::get('g');
         static::assertNull($value);
 
         Session::remove('empty');
@@ -110,10 +110,10 @@ class SessionTest extends TestCase
      */
     public function testGetAndRemove(): void
     {
-        Session::set('a', 'b');
+        Session::set('i', 'j');
 
-        $value = Session::getAndRemove('a');
-        static::assertSame('b', $value);
+        $value = Session::getAndRemove('i');
+        static::assertSame('j', $value);
 
         $value = Session::getAndRemove('empty');
         static::assertNull($value);
