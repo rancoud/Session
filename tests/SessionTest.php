@@ -19,6 +19,8 @@ class SessionTest extends TestCase
 {
     protected function setUp(): void
     {
+        @session_destroy();
+
         $class = new ReflectionClass(Session::class);
         $prop = $class->getProperty('hasStarted');
         $prop->setAccessible(true);
