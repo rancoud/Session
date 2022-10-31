@@ -11,6 +11,8 @@ use Rancoud\Session\Session;
 
 /**
  * Class DefaultEncryptionTest.
+ *
+ * @runTestsInSeparateProcesses
  */
 class DefaultEncryptionTest extends TestCase
 {
