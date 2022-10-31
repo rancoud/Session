@@ -11,8 +11,6 @@ use Rancoud\Session\Session;
 
 /**
  * Class DefaultEncryptionTest.
- *
- * @runTestsInSeparateProcesses
  */
 class DefaultEncryptionTest extends TestCase
 {
@@ -50,9 +48,6 @@ class DefaultEncryptionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testReadAndWrite(): void
