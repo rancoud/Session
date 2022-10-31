@@ -18,10 +18,6 @@ class SessionTest extends TestCase
 {
     protected function setUp(): void
     {
-        if (Session::hasStarted()) {
-            Session::destroy();
-        }
-
         $path = \ini_get('session.save_path');
         if (empty($path)) {
             $path = \DIRECTORY_SEPARATOR . 'tmp';
@@ -120,6 +116,8 @@ class SessionTest extends TestCase
      */
     public function testStartException(): void
     {
+        @session_destroy();
+
         $this->expectException(SessionException::class);
         $this->expectExceptionMessage('Session already started');
 
@@ -133,6 +131,8 @@ class SessionTest extends TestCase
      */
     public function testUseDefaultDriverWhenAlreadyStartedException(): void
     {
+        @session_destroy();
+
         $this->expectException(SessionException::class);
         $this->expectExceptionMessage('Session already started');
 
@@ -146,6 +146,8 @@ class SessionTest extends TestCase
      */
     public function testUseFileDriverWhenAlreadyStartedException(): void
     {
+        @session_destroy();
+
         $this->expectException(SessionException::class);
         $this->expectExceptionMessage('Session already started');
 
@@ -159,6 +161,8 @@ class SessionTest extends TestCase
      */
     public function testUseCustomDriverWhenAlreadyStartedException(): void
     {
+        @session_destroy();
+
         $this->expectException(SessionException::class);
         $this->expectExceptionMessage('Session already started');
 
@@ -172,6 +176,8 @@ class SessionTest extends TestCase
      */
     public function testUseDefaultDriver(): void
     {
+        @session_destroy();
+
         Session::useDefaultDriver();
         Session::start();
 
@@ -183,6 +189,8 @@ class SessionTest extends TestCase
      */
     public function testUseDefaultEncryptionDriver(): void
     {
+        @session_destroy();
+
         Session::useDefaultEncryptionDriver('randomKey');
         Session::start();
 
@@ -194,6 +202,8 @@ class SessionTest extends TestCase
      */
     public function testUseFileDriver(): void
     {
+        @session_destroy();
+
         Session::useFileDriver();
         Session::start();
 
@@ -205,6 +215,8 @@ class SessionTest extends TestCase
      */
     public function testUseFileDriverWithPrefix(): void
     {
+        @session_destroy();
+
         $prefix = 'youhou_';
         Session::useFileDriver();
         Session::setPrefixForFile($prefix);
