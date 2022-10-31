@@ -34,9 +34,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testGetNull(): void
@@ -46,9 +43,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testSet(): void
@@ -59,9 +53,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testHas(): void
@@ -76,9 +67,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testHasKeyAndValue(): void
@@ -96,9 +84,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testRemove(): void
@@ -115,9 +100,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testGetAndRemove(): void
@@ -132,9 +114,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testStartException(): void
@@ -148,9 +127,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testUseDefaultDriverWhenAlreadyStartedException(): void
@@ -164,9 +140,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testUseFileDriverWhenAlreadyStartedException(): void
@@ -180,9 +153,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testUseCustomDriverWhenAlreadyStartedException(): void
@@ -196,9 +166,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testUseDefaultDriver(): void
@@ -210,9 +177,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testUseDefaultEncryptionDriver(): void
@@ -224,9 +188,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testUseFileDriver(): void
@@ -238,9 +199,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testUseFileDriverWithPrefix(): void
@@ -266,9 +224,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testUseFileEncryptionDriver(): void
@@ -280,9 +235,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testUseNewDatabaseDriver(): void
@@ -305,9 +257,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testUseNewDatabaseEncryptionDriver(): void
@@ -330,9 +279,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Rancoud\Database\DatabaseException
      * @throws \Exception
      */
@@ -357,9 +303,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Rancoud\Database\DatabaseException
      * @throws \Exception
      */
@@ -392,9 +335,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testUseNewRedisDriver(): void
@@ -415,9 +355,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testUseNewRedisEncryptionDriver(): void
@@ -438,9 +375,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testUseCurrentRedisDriver(): void
@@ -462,9 +396,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testUseCurrentRedisEncryptionDriver(): void
@@ -486,9 +417,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testUseCustomDriver(): void
@@ -500,9 +428,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testUseEncryptionDriverThrowExceptionWhenMethodIncrorrect(): void
@@ -514,9 +439,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws SessionException
      * @throws \Exception
      */
@@ -536,10 +458,7 @@ class SessionTest extends TestCase
         static::assertSame('my_other_name', $customOption);
     }
 
-    /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
+    /**/
     public function testSetOptionThrowException(): void
     {
         $this->expectException(SessionException::class);
@@ -549,9 +468,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testGetAll(): void
@@ -566,9 +482,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testFlash(): void
@@ -632,9 +545,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testRollback(): void
@@ -650,9 +560,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testUnsaved(): void
@@ -669,9 +576,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testRegenerate(): void
@@ -684,9 +588,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testDestroy(): void
@@ -700,9 +601,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Exception
      */
     public function testSetReadOnly(): void
@@ -713,9 +611,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     *
      * @throws \Rancoud\Database\DatabaseException
      * @throws \Exception
      */
