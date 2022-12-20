@@ -128,6 +128,10 @@ class EncryptionTest extends TestCase
             );
         }
 
+        if (\PHP_MAJOR_VERSION >= 8 && \PHP_MINOR_VERSION >= 2) {
+            $forbiddenMethods[] = 'chacha20-poly1305';
+        }
+
         $countInvalidMethods = \count($forbiddenMethods);
         foreach ($forbiddenMethods as $method) {
             try {

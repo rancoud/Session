@@ -127,6 +127,10 @@ trait Encryption
                 );
             }
 
+            if (\PHP_MAJOR_VERSION >= 8 && \PHP_MINOR_VERSION >= 2) {
+                $forbiddenMethods[] = 'chacha20-poly1305';
+            }
+
             return !\in_array(\mb_strtolower($c), $forbiddenMethods, true);
         });
     }
