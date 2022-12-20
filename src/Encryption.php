@@ -170,9 +170,14 @@ trait Encryption
     public function encrypt(string $data): string
     {
         $this->throwExceptionIfKeyEmpty();
+        $length = false;
 
-        $length = \openssl_cipher_iv_length($this->method);
-        if ($length === false || $length < 1) {
+        try {
+            $length = \openssl_cipher_iv_length($this->method);
+            if ($length === false || $length < 1) {
+                throw new SessionException('IV generation failed');
+            }
+        } catch (\Exception $e) {
             throw new SessionException('IV generation failed');
         }
 
