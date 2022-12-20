@@ -37,6 +37,7 @@ class EncryptionTest extends TestCase
 
         $encryptionTrait->setKey('my key');
         $methods = $encryptionTrait->getAvailableMethods();
+        var_dump($methods);
         foreach ($methods as $method) {
             echo 'Method: ' . $method . "\n";
             try {

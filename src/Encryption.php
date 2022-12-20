@@ -123,8 +123,13 @@ trait Encryption
     {
         $this->throwExceptionIfKeyEmpty();
 
+        $length = \openssl_cipher_iv_length($this->method);
+        if ($length === false || $length < 1) {
+            throw new SessionException('IV generation failed');
+        }
+
         /** @noinspection CryptographicallySecureRandomnessInspection */
-        $iv = \openssl_random_pseudo_bytes(\openssl_cipher_iv_length($this->method), $cstrong);
+        $iv = \openssl_random_pseudo_bytes($length, $cstrong);
         if ($iv === false || $cstrong === false) {
             // @codeCoverageIgnoreStart
             /* Could not reach this statement without mocking the function
