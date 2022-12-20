@@ -37,9 +37,7 @@ class EncryptionTest extends TestCase
 
         $encryptionTrait->setKey('my key');
         $methods = $encryptionTrait->getAvailableMethods();
-        var_dump($methods);
         foreach ($methods as $method) {
-            echo 'Method: ' . $method . "\n";
             try {
                 $encryptionTrait->setMethod($method);
                 $encryptedData = $encryptionTrait->encrypt($dataToEncrypt);
@@ -64,6 +62,32 @@ class EncryptionTest extends TestCase
 
         $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
         $encryptionTrait->setMethod('method');
+    }
+
+    public function testExceptionMethodForced(): void
+    {
+        if (\PHP_MAJOR_VERSION >= 8 && \PHP_MINOR_VERSION >= 1) {
+            $this->expectException(SessionException::class);
+            $this->expectExceptionMessage('IV generation failed');
+
+            $encryptionTrait = new class() {
+                use \Rancoud\Session\Encryption;
+
+                public function setMethod(string $method): void
+                {
+                    $this->method = $method;
+                }
+            };
+
+            $dataToEncrypt = 'this is something to encrypt';
+
+            $encryptionTrait->setKey('my key');
+            $encryptionTrait->setMethod('null');
+
+            $encryptionTrait->encrypt($dataToEncrypt);
+        } else {
+            static::assertTrue(true);
+        }
     }
 
     public function testExceptionEmptyKey(): void
