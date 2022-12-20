@@ -62,6 +62,11 @@ trait Encryption
             $excludeMethods = [
                 'des', 'rc2', '-wrap'
             ];
+
+            if (\PHP_MAJOR_VERSION >= 8 && \PHP_MINOR_VERSION >= 1) {
+                $excludeMethods[] = 'id-';
+            }
+
             foreach ($excludeMethods as $excludeMethod) {
                 if (\mb_stripos($c, $excludeMethod) !== false) {
                     return false;
@@ -75,11 +80,54 @@ trait Encryption
 
         return \array_filter($methods, static function ($c) {
             $forbiddenMethods = [
-                'AES-128-CBC-HMAC-SHA1', 'AES-256-CBC-HMAC-SHA1', 'AES-128-CBC-CTS', 'AES-128-CBC-HMAC-SHA256',
-                'aes-128-cbc-hmac-sha1', 'aes-256-cbc-hmac-sha1', 'aes-128-cbc-cts', 'aes-128-cbc-hmac-sha256'
+                'aes-128-cbc-hmac-sha1', 'aes-256-cbc-hmac-sha1'
             ];
 
-            return !\in_array($c, $forbiddenMethods, true);
+            if (\PHP_MAJOR_VERSION >= 8 && \PHP_MINOR_VERSION >= 1) {
+                \array_push(
+                    $forbiddenMethods,
+                    'aes-128-cbc-cts',
+                    'aes-128-cbc-hmac-sha256',
+                    'aes-128-siv',
+                    'aes-192-cbc-cts',
+                    'aes-192-siv',
+                    'aes-256-cbc-cts',
+                    'aes-256-cbc-hmac-sha256',
+                    'aes-256-siv',
+                    'camellia-128-cbc-cts',
+                    'camellia-192-cbc-cts',
+                    'camellia-256-cbc-cts',
+                    'null',
+                    '0.3.4401.5.3.1.9.1',
+                    '0.3.4401.5.3.1.9.21',
+                    '0.3.4401.5.3.1.9.41',
+                    '1.2.410.200046.1.1.1',
+                    '1.2.410.200046.1.1.11',
+                    '1.2.410.200046.1.1.34',
+                    '1.2.410.200046.1.1.35',
+                    '1.2.410.200046.1.1.36',
+                    '1.2.410.200046.1.1.37',
+                    '1.2.410.200046.1.1.38',
+                    '1.2.410.200046.1.1.39',
+                    '1.2.410.200046.1.1.6',
+                    '1.2.840.113549.1.9.16.3.6',
+                    '1.3.14.3.2.17',
+                    '2.16.840.1.101.3.4.1.1',
+                    '2.16.840.1.101.3.4.1.21',
+                    '2.16.840.1.101.3.4.1.25',
+                    '2.16.840.1.101.3.4.1.26',
+                    '2.16.840.1.101.3.4.1.27',
+                    '2.16.840.1.101.3.4.1.41',
+                    '2.16.840.1.101.3.4.1.45',
+                    '2.16.840.1.101.3.4.1.46',
+                    '2.16.840.1.101.3.4.1.47',
+                    '2.16.840.1.101.3.4.1.5',
+                    '2.16.840.1.101.3.4.1.6',
+                    '2.16.840.1.101.3.4.1.7'
+                );
+            }
+
+            return !\in_array(\mb_strtolower($c), $forbiddenMethods, true);
         });
     }
 
