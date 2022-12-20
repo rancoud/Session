@@ -36,11 +36,15 @@ class EncryptionTest extends TestCase
         $encryptionTrait->setKey('my key');
         $methods = $encryptionTrait->getAvailableMethods();
         foreach ($methods as $method) {
-            $encryptionTrait->setMethod($method);
-            $encryptedData = $encryptionTrait->encrypt($dataToEncrypt);
+            try {
+                $encryptionTrait->setMethod($method);
+                $encryptedData = $encryptionTrait->encrypt($dataToEncrypt);
 
-            $finalData = $encryptionTrait->decrypt($encryptedData);
-            static::assertSame($dataToEncrypt, $finalData, $method . ' fail!');
+                $finalData = $encryptionTrait->decrypt($encryptedData);
+                static::assertSame($dataToEncrypt, $finalData, $method . ' fail!');
+            } catch (\Exception $e) {
+                static::fail('Method ' . $method . ' fail! (' . $e->getMessage() . ')');
+            }
         }
     }
 
