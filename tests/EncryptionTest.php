@@ -38,6 +38,7 @@ class EncryptionTest extends TestCase
         $encryptionTrait->setKey('my key');
         $methods = $encryptionTrait->getAvailableMethods();
         foreach ($methods as $method) {
+            echo 'Method: ' . $method . "\n";
             try {
                 $encryptionTrait->setMethod($method);
                 $encryptedData = $encryptionTrait->encrypt($dataToEncrypt);
@@ -50,7 +51,9 @@ class EncryptionTest extends TestCase
             }
         }
 
-        static::fail('Methods ' . \implode(', ', $failedMethods) . ' fail!');
+        if (\count($failedMethods) > 0) {
+            static::fail('Methods ' . \implode(', ', $failedMethods) . ' fail!');
+        }
     }
 
     public function testExceptionMethod(): void
