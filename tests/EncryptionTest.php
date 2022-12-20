@@ -136,7 +136,10 @@ class EncryptionTest extends TestCase
                 static::assertNotSame($dataToEncrypt, $finalData);
                 --$countInvalidMethods;
             } catch (\Exception $e) {
-                static::assertSame('IV generation failed', $e->getMessage());
+                static::assertThat($e->getMessage(), static::logicalOr(
+                    static::equalTo('IV generation failed'),
+                    static::equalTo('A tag should be provided when using AEAD mode')
+                ));
                 --$countInvalidMethods;
             }
         }
