@@ -75,8 +75,8 @@ trait Encryption
 
         return \array_filter($methods, static function ($c) {
             $forbiddenMethods = [
-                'AES-128-CBC-HMAC-SHA1', 'AES-256-CBC-HMAC-SHA1',
-                'aes-128-cbc-hmac-sha1', 'aes-256-cbc-hmac-sha1'
+                'AES-128-CBC-HMAC-SHA1', 'AES-256-CBC-HMAC-SHA1', 'AES-128-CBC-CTS',
+                'aes-128-cbc-hmac-sha1', 'aes-256-cbc-hmac-sha1', 'aes-128-cbc-cts'
             ];
 
             return !\in_array($c, $forbiddenMethods, true);
