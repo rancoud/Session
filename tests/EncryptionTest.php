@@ -138,7 +138,7 @@ class EncryptionTest extends TestCase
             } catch (\Exception $e) {
                 static::assertThat($e->getMessage(), static::logicalOr(
                     static::equalTo('IV generation failed'),
-                    static::equalTo('A tag should be provided when using AEAD mode')
+                    static::equalTo('openssl_encrypt(): A tag should be provided when using AEAD mode')
                 ));
                 --$countInvalidMethods;
             }
