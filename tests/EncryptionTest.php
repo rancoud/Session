@@ -29,6 +29,8 @@ class EncryptionTest extends TestCase
 
     public function testAllEncryptionMethods(): void
     {
+        $failedMethods = [];
+
         $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
 
         $dataToEncrypt = 'this is something to encrypt';
@@ -43,9 +45,12 @@ class EncryptionTest extends TestCase
                 $finalData = $encryptionTrait->decrypt($encryptedData);
                 static::assertSame($dataToEncrypt, $finalData, $method . ' fail!');
             } catch (\Exception $e) {
-                static::fail('Method ' . $method . ' fail! (' . $e->getMessage() . ')');
+                $failedMethods[] = $method;
+                continue;
             }
         }
+
+        static::fail('Methods ' . \implode(', ', $failedMethods) . ' fail!');
     }
 
     public function testExceptionMethod(): void
