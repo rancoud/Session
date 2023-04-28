@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection ForgottenDebugOutputInspection */
-
 declare(strict_types=1);
 
 namespace tests;
@@ -19,7 +17,7 @@ class SessionTest extends TestCase
 {
     protected function setUp(): void
     {
-        @session_destroy();
+        @\session_destroy();
 
         $class = new ReflectionClass(Session::class);
         $propHasStarted = $class->getProperty('hasStarted');
@@ -265,7 +263,6 @@ class SessionTest extends TestCase
     {
         $params = [
             'driver'   => 'mysql',
-            'host'     => 'mysql',
             'user'     => 'root',
             'password' => '',
             'database' => 'test_database'
@@ -287,7 +284,6 @@ class SessionTest extends TestCase
     {
         $params = [
             'driver'   => 'mysql',
-            'host'     => 'mysql',
             'user'     => 'root',
             'password' => '',
             'database' => 'test_database'
@@ -365,7 +361,6 @@ class SessionTest extends TestCase
     {
         $params = [
             'scheme' => 'tcp',
-            'host'   => 'redis',
             'port'   => 6379,
         ];
 
@@ -385,7 +380,6 @@ class SessionTest extends TestCase
     {
         $params = [
             'scheme' => 'tcp',
-            'host'   => 'redis',
             'port'   => 6379,
         ];
 
@@ -405,7 +399,6 @@ class SessionTest extends TestCase
     {
         $params = [
             'scheme' => 'tcp',
-            'host'   => 'redis',
             'port'   => 6379,
         ];
 
@@ -426,7 +419,6 @@ class SessionTest extends TestCase
     {
         $params = [
             'scheme' => 'tcp',
-            'host'   => 'redis',
             'port'   => 6379,
         ];
 
@@ -482,7 +474,6 @@ class SessionTest extends TestCase
         static::assertSame('my_other_name', $customOption);
     }
 
-    /**/
     public function testSetOptionThrowException(): void
     {
         $this->expectException(SessionException::class);

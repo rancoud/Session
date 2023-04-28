@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection ForgottenDebugOutputInspection */
-
 declare(strict_types=1);
 
 namespace tests;
@@ -22,7 +20,6 @@ class RedisEncryptionTest extends TestCase
     {
         $params = [
             'scheme' => 'tcp',
-            'host'   => 'redis',
             'port'   => 6379,
         ];
 
@@ -177,7 +174,6 @@ class RedisEncryptionTest extends TestCase
 
         $params = [
             'scheme' => 'tcp',
-            'host'   => 'redis',
             'port'   => 6379,
         ];
 
@@ -271,6 +267,6 @@ class RedisEncryptionTest extends TestCase
 
         $string = $redis->create_sid();
 
-        static::assertSame(\preg_match('/^[a-zA-Z0-9-]{127}+$/', $string), 1);
+        static::assertMatchesRegularExpression('/^[a-zA-Z0-9-]{127}+$/', $string);
     }
 }

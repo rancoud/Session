@@ -123,6 +123,8 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
      * @param int $max_lifetime
      *
      * @return bool
+     *
+     * @noinspection PhpLanguageLevelInspection
      */
     #[\ReturnTypeWillChange]
     public function gc($max_lifetime): bool
@@ -143,6 +145,8 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
      * @param string $id
      *
      * @return bool
+     *
+     * @noinspection PhpMissingParamTypeInspection
      */
     public function validateId($id): bool
     {
@@ -162,6 +166,8 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
      * @param string $data
      *
      * @return bool
+     *
+     * @noinspection PhpMissingParamTypeInspection
      */
     public function updateTimestamp($id, $data): bool
     {
@@ -172,9 +178,10 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
      * @throws SessionException
      *
      * @return string
+     *
      * @noinspection PhpMethodNamingConventionInspection
      */
-    public function create_sid(): string
+    public function create_sid(): string // phpcs:ignore
     {
         $string = '';
         $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';

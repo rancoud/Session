@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection ForgottenDebugOutputInspection */
-
 declare(strict_types=1);
 
 namespace tests;
@@ -238,7 +236,7 @@ class FileTest extends TestCase
 
         $string = $file->create_sid();
 
-        static::assertSame(\preg_match('/^[a-zA-Z0-9-]{127}+$/', $string), 1);
+        static::assertMatchesRegularExpression('/^[a-zA-Z0-9-]{127}+$/', $string);
     }
 
     /**

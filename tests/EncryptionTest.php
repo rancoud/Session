@@ -1,7 +1,5 @@
 <?php
 
-/** @noinspection ForgottenDebugOutputInspection */
-
 declare(strict_types=1);
 
 namespace tests;
