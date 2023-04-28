@@ -174,7 +174,6 @@ trait Encryption
     public function encrypt(string $data): string
     {
         $this->throwExceptionIfKeyEmpty();
-        $length = false;
 
         try {
             $length = \openssl_cipher_iv_length($this->method);
@@ -187,6 +186,7 @@ trait Encryption
 
         /** @noinspection CryptographicallySecureRandomnessInspection */
         $iv = \openssl_random_pseudo_bytes($length, $cstrong);
+        /* @noinspection PhpStrictComparisonWithOperandsOfDifferentTypesInspection */
         if ($iv === false || $cstrong === false) {
             // @codeCoverageIgnoreStart
             /* Could not reach this statement without mocking the function

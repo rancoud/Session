@@ -121,6 +121,8 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
      * @param int $max_lifetime
      *
      * @return bool
+     *
+     * @noinspection PhpLanguageLevelInspection
      */
     #[\ReturnTypeWillChange]
     public function gc($max_lifetime): bool
@@ -134,6 +136,8 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
      * @param string $id
      *
      * @return bool
+     *
+     * @noinspection PhpMissingParamTypeInspection
      */
     public function validateId($id): bool
     {
@@ -153,6 +157,8 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
      * @param string $data
      *
      * @return bool
+     *
+     * @noinspection PhpMissingParamTypeInspection
      */
     public function updateTimestamp($id, $data): bool
     {
@@ -163,9 +169,10 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
      * @throws SessionException
      *
      * @return string
+     *
      * @noinspection PhpMethodNamingConventionInspection
      */
-    public function create_sid(): string
+    public function create_sid(): string // phpcs:ignore
     {
         $string = '';
         $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';

@@ -1,6 +1,6 @@
 <?php
 
-/** @noinspection SqlDialectInspection */
+/** @noinspection SqlResolve */
 
 declare(strict_types=1);
 
@@ -132,7 +132,7 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
 
             return true;
         } catch (DatabaseException $e) {
-            throw new SessionException('could not update session: ' . $e->getMessage(), $e->getCode(), $e->getPrevious());
+            throw new SessionException('could not update session: ' . $e->getMessage(), $e->getCode(), $e->getPrevious()); // phpcs:ignore
         }
     }
 
@@ -152,7 +152,7 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
 
             return true;
         } catch (DatabaseException $e) {
-            throw new SessionException('could not delete session: ' . $e->getMessage(), $e->getCode(), $e->getPrevious());
+            throw new SessionException('could not delete session: ' . $e->getMessage(), $e->getCode(), $e->getPrevious()); // phpcs:ignore
         }
     }
 
@@ -162,6 +162,8 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
      * @throws SessionException
      *
      * @return bool
+     *
+     * @noinspection PhpLanguageLevelInspection
      */
     #[\ReturnTypeWillChange]
     public function gc($max_lifetime): bool
@@ -173,7 +175,7 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
 
             return true;
         } catch (DatabaseException $e) {
-            throw new SessionException('could not clean old sessions: ' . $e->getMessage(), $e->getCode(), $e->getPrevious());
+            throw new SessionException('could not clean old sessions: ' . $e->getMessage(), $e->getCode(), $e->getPrevious()); // phpcs:ignore
         }
     }
 
@@ -185,6 +187,8 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
      * @throws SessionException
      *
      * @return bool
+     *
+     * @noinspection PhpMissingParamTypeInspection
      */
     public function validateId($id): bool
     {
@@ -212,6 +216,8 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
      * @throws SessionException
      *
      * @return bool
+     *
+     * @noinspection PhpMissingParamTypeInspection
      */
     public function updateTimestamp($id, $data): bool
     {
@@ -222,9 +228,10 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
      * @throws SessionException
      *
      * @return string
+     *
      * @noinspection PhpMethodNamingConventionInspection
      */
-    public function create_sid(): string
+    public function create_sid(): string // phpcs:ignore
     {
         try {
             $string = '';

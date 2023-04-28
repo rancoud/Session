@@ -1,5 +1,7 @@
 <?php
 
+/** @noinspection SqlResolve */
+
 declare(strict_types=1);
 
 namespace tests;
@@ -282,8 +284,6 @@ class DatabaseTest extends TestCase
 
         static::assertTrue($database->write($sessionId, $data));
 
-        $sql = 'SELECT id_user FROM sessions WHERE id = :id';
-        $params = ['id' => $sessionId];
         $userIdInDatabase = static::$db->selectVar($sql, $params);
         static::assertNull($userIdInDatabase);
         static::assertSame($userId, $userIdInDatabase);
@@ -297,7 +297,6 @@ class DatabaseTest extends TestCase
         $database = new Database();
         $params = [
             'driver'   => 'mysql',
-            'host'     => 'mariadb',
             'user'     => 'root',
             'password' => '',
             'database' => 'test_database'
@@ -420,9 +419,6 @@ class DatabaseTest extends TestCase
 
         static::assertTrue($database->updateTimestamp($sessionId, $data));
 
-        $sql = 'SELECT * FROM sessions WHERE id = :id';
-        $params = ['id' => $sessionId];
-
         $row2 = static::$db->selectRow($sql, $params);
 
         static::assertNotEmpty($row2);
@@ -441,7 +437,7 @@ class DatabaseTest extends TestCase
 
         $string = $database->create_sid();
 
-        static::assertSame(\preg_match('/^[a-zA-Z0-9-]{127}+$/', $string), 1);
+        static::assertMatchesRegularExpression('/^[a-zA-Z0-9-]{127}+$/', $string);
     }
 
     /**

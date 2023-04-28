@@ -139,7 +139,7 @@ abstract class DriverManager
      *
      * @throws SessionException
      */
-    public static function useCurrentDatabaseEncryptionDriver(DB $databaseInstance, string $key, ?string $method = null): void
+    public static function useCurrentDatabaseEncryptionDriver(DB $databaseInstance, string $key, ?string $method = null): void // phpcs:ignore
     {
         static::throwExceptionIfHasStarted();
 
@@ -208,7 +208,7 @@ abstract class DriverManager
      *
      * @throws SessionException
      */
-    public static function useCurrentRedisEncryptionDriver(PredisClient $redisInstance, string $key, string $method = null): void
+    public static function useCurrentRedisEncryptionDriver(PredisClient $redisInstance, string $key, string $method = null): void // phpcs:ignore
     {
         static::throwExceptionIfHasStarted();
 
@@ -226,6 +226,8 @@ abstract class DriverManager
      * @param string|null $method
      *
      * @throws SessionException
+     *
+     * @noinspection PhpMissingParamTypeInspection
      */
     private static function setKeyAndMethod($driver, string $key, ?string $method): void
     {
@@ -261,7 +263,6 @@ abstract class DriverManager
     public static function setUserIdForDatabase(int $userId): void
     {
         if (\method_exists(static::$driver, 'setUserId')) {
-            /* @noinspection PhpPossiblePolymorphicInvocationInspection */
             static::$driver->setUserId($userId);
         }
     }
@@ -272,7 +273,6 @@ abstract class DriverManager
     public static function setPrefixForFile(string $prefix): void
     {
         if (\method_exists(static::$driver, 'setPrefix')) {
-            /* @noinspection PhpPossiblePolymorphicInvocationInspection */
             static::$driver->setPrefix($prefix);
         }
     }
