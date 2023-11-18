@@ -1247,16 +1247,16 @@
         },
         {
             "name": "rancoud/database",
-            "version": "6.0.5",
+            "version": "6.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rancoud/Database.git",
-                "reference": "cce738e3ee38e5e219caaa133f787685496671d4"
+                "reference": "8a3ebe0618c9c5405ddb5645329c9b1f820c93e3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rancoud/Database/zipball/cce738e3ee38e5e219caaa133f787685496671d4",
-                "reference": "cce738e3ee38e5e219caaa133f787685496671d4",
+                "url": "https://api.github.com/repos/rancoud/Database/zipball/8a3ebe0618c9c5405ddb5645329c9b1f820c93e3",
+                "reference": "8a3ebe0618c9c5405ddb5645329c9b1f820c93e3",
                 "shasum": ""
             },
             "require": {
@@ -1264,7 +1264,7 @@
                 "php": ">=7.4.0"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.16",
+                "friendsofphp/php-cs-fixer": "^2.16 || ^3.0",
                 "phpunit/phpunit": "^9.1",
                 "squizlabs/php_codesniffer": "^3.5"
             },
@@ -1292,9 +1292,9 @@
             "description": "Database package",
             "support": {
                 "issues": "https://github.com/rancoud/Database/issues",
-                "source": "https://github.com/rancoud/Database/tree/6.0.5"
+                "source": "https://github.com/rancoud/Database/tree/6.0.6"
             },
-            "time": "2021-04-23T21:55:51+00:00"
+            "time": "2023-11-14T18:01:58+00:00"
         },
         {
             "name": "sebastian/cli-parser",
