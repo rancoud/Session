@@ -22,25 +22,47 @@ class SessionTest extends TestCase
         $class = new ReflectionClass(Session::class);
         $propHasStarted = $class->getProperty('hasStarted');
         $propHasStarted->setAccessible(true);
-        $propHasStarted->setValue(false);
+        if (\PHP_MAJOR_VERSION === 8 && \PHP_MINOR_VERSION >= 3) {
+            $class->setStaticPropertyValue('hasStarted', false);
+        } else {
+            $propHasStarted->setValue(false);
+        }
 
         $propDriver = $class->getProperty('driver');
         $propDriver->setAccessible(true);
-        $propDriver->setValue(null);
+        if (\PHP_MAJOR_VERSION === 8 && \PHP_MINOR_VERSION >= 3) {
+            $class->setStaticPropertyValue('driver', null);
+        } else {
+            $propDriver->setValue(null);
+        }
 
         $propHasChanged = $class->getProperty('hasChanged');
         $propHasChanged->setAccessible(true);
-        $propHasChanged->setValue(true);
+        if (\PHP_MAJOR_VERSION === 8 && \PHP_MINOR_VERSION >= 3) {
+            $class->setStaticPropertyValue('hasChanged', true);
+        } else {
+            $propHasChanged->setValue(true);
+        }
 
         $propOptions = $class->getProperty('options');
         $propOptions->setAccessible(true);
-        $propOptions->setValue([
-            'read_and_close'   => true,
-            'cookie_httponly'  => '1',
-            'use_only_cookies' => '1',
-            'use_trans_sid'    => '0',
-            'use_strict_mode'  => '1'
-        ]);
+        if (\PHP_MAJOR_VERSION === 8 && \PHP_MINOR_VERSION >= 3) {
+            $class->setStaticPropertyValue('options', [
+                'read_and_close'   => true,
+                'cookie_httponly'  => '1',
+                'use_only_cookies' => '1',
+                'use_trans_sid'    => '0',
+                'use_strict_mode'  => '1'
+            ]);
+        } else {
+            $propOptions->setValue([
+                'read_and_close'   => true,
+                'cookie_httponly'  => '1',
+                'use_only_cookies' => '1',
+                'use_trans_sid'    => '0',
+                'use_strict_mode'  => '1'
+            ]);
+        }
 
         $path = \ini_get('session.save_path');
         if (empty($path)) {
