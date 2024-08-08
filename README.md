@@ -242,4 +242,4 @@ composer require predis/predis
 ```
 
 ## How to Dev
-`docker-compose build && docker-compose run lib composer ci` for launching tests
+`docker compose build && docker compose run lib composer ci` for launching tests
