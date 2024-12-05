@@ -1447,16 +1447,16 @@
         },
         {
             "name": "rancoud/database",
-            "version": "6.0.12",
+            "version": "6.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rancoud/Database.git",
-                "reference": "0061dbafea21cf6166ff0291ff0086015a8572f5"
+                "reference": "f3a98000b6ba4e70247579a10774cc856618908b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rancoud/Database/zipball/0061dbafea21cf6166ff0291ff0086015a8572f5",
-                "reference": "0061dbafea21cf6166ff0291ff0086015a8572f5",
+                "url": "https://api.github.com/repos/rancoud/Database/zipball/f3a98000b6ba4e70247579a10774cc856618908b",
+                "reference": "f3a98000b6ba4e70247579a10774cc856618908b",
                 "shasum": ""
             },
             "require": {
@@ -1492,9 +1492,9 @@
             "description": "Database package",
             "support": {
                 "issues": "https://github.com/rancoud/Database/issues",
-                "source": "https://github.com/rancoud/Database/tree/6.0.12"
+                "source": "https://github.com/rancoud/Database/tree/6.1.0"
             },
-            "time": "2024-11-09T21:16:24+00:00"
+            "time": "2024-12-05T21:45:37+00:00"
         },
         {
             "name": "react/cache",
@@ -4494,7 +4494,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
@@ -4503,6 +4503,6 @@
         "ext-session": "*",
         "ext-mbstring": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }
