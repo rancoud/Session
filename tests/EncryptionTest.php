@@ -69,7 +69,7 @@ class EncryptionTest extends TestCase
             'aes-256-cbc-hmac-sha1'
         ];
 
-        $encryptionTrait = new class() {
+        $encryptionTrait = new class {
             use \Rancoud\Session\Encryption;
 
             public function setMethod(string $method): void
