@@ -105,7 +105,9 @@ class DatabaseEncryptionTest extends TestCase
         static::assertNotEmpty($row);
         static::assertNotSame($data, $row['content']);
 
-        $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
+        $encryptionTrait = new class {
+            use \Rancoud\Session\Encryption;
+        };
         $encryptionTrait->setKey('randomKey');
         $dataInDatabaseDecrypted = $encryptionTrait->decrypt($row['content']);
         static::assertSame($data, $dataInDatabaseDecrypted);
@@ -339,7 +341,9 @@ class DatabaseEncryptionTest extends TestCase
         static::assertNotEmpty($row1);
         static::assertNotSame($data, $row1['content']);
 
-        $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
+        $encryptionTrait = new class {
+            use \Rancoud\Session\Encryption;
+        };
         $encryptionTrait->setKey('randomKey');
         $dataInDatabaseDecrypted = $encryptionTrait->decrypt($row1['content']);
         static::assertSame($data, $dataInDatabaseDecrypted);
@@ -352,7 +356,9 @@ class DatabaseEncryptionTest extends TestCase
 
         static::assertNotEmpty($row2);
         static::assertNotSame($data, $row2['content']);
-        $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
+        $encryptionTrait = new class {
+            use \Rancoud\Session\Encryption;
+        };
         $encryptionTrait->setKey('randomKey');
         $dataInDatabaseDecrypted = $encryptionTrait->decrypt($row2['content']);
         static::assertSame($data, $dataInDatabaseDecrypted);

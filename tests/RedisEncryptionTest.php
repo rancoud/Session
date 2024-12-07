@@ -76,7 +76,9 @@ class RedisEncryptionTest extends TestCase
         $dataInRedis = static::$redis->get($sessionId);
         static::assertNotSame($data, $dataInRedis);
 
-        $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
+        $encryptionTrait = new class {
+            use \Rancoud\Session\Encryption;
+        };
         $encryptionTrait->setKey('randomKey');
         $dataInRedisDecrypted = $encryptionTrait->decrypt($dataInRedis);
         static::assertSame($data, $dataInRedisDecrypted);
@@ -230,7 +232,9 @@ class RedisEncryptionTest extends TestCase
         static::assertNotSame($data, $dataInRedis);
         $ttl1 = static::$redis->ttl($sessionId);
 
-        $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
+        $encryptionTrait = new class {
+            use \Rancoud\Session\Encryption;
+        };
         $encryptionTrait->setKey('randomKey');
         $dataInRedisDecrypted = $encryptionTrait->decrypt($dataInRedis);
         static::assertSame($data, $dataInRedisDecrypted);
@@ -246,7 +250,9 @@ class RedisEncryptionTest extends TestCase
         static::assertNotSame($data, $dataInRedis2);
         $ttl3 = static::$redis->ttl($sessionId);
 
-        $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
+        $encryptionTrait = new class {
+            use \Rancoud\Session\Encryption;
+        };
         $encryptionTrait->setKey('randomKey');
         $dataInRedisDecrypted = $encryptionTrait->decrypt($dataInRedis2);
         static::assertSame($data, $dataInRedisDecrypted);

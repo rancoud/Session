@@ -99,7 +99,9 @@ class FileEncryptionTest extends TestCase
         $dataInFile = \file_get_contents($this->getPath() . \DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
         static::assertNotSame($data, $dataInFile);
 
-        $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
+        $encryptionTrait = new class {
+            use \Rancoud\Session\Encryption;
+        };
         $encryptionTrait->setKey('randomKey');
         $dataInFileDecrypted = $encryptionTrait->decrypt($dataInFile);
         static::assertSame($data, $dataInFileDecrypted);
@@ -224,7 +226,9 @@ class FileEncryptionTest extends TestCase
         $oldFileModifiedTime = \filemtime($this->getPath() . \DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
         static::assertNotSame($data, $dataInFile);
 
-        $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
+        $encryptionTrait = new class {
+            use \Rancoud\Session\Encryption;
+        };
         $encryptionTrait->setKey('randomKey');
         $dataInFileDecrypted = $encryptionTrait->decrypt($dataInFile);
         static::assertSame($data, $dataInFileDecrypted);
@@ -238,7 +242,9 @@ class FileEncryptionTest extends TestCase
         $dataInFile2 = \file_get_contents($this->getPath() . \DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
         static::assertNotSame($data, $dataInFile2);
 
-        $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
+        $encryptionTrait = new class {
+            use \Rancoud\Session\Encryption;
+        };
         $encryptionTrait->setKey('randomKey');
         $dataInFileDecrypted = $encryptionTrait->decrypt($dataInFile2);
         static::assertSame($data, $dataInFileDecrypted);
