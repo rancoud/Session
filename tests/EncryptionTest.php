@@ -14,7 +14,9 @@ class EncryptionTest extends TestCase
 {
     public function testDefaultEncryption(): void
     {
-        $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
+        $encryptionTrait = new class {
+            use \Rancoud\Session\Encryption;
+        };
 
         $dataToEncrypt = 'this is something to encrypt';
 
@@ -29,7 +31,9 @@ class EncryptionTest extends TestCase
     {
         $failedMethods = [];
 
-        $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
+        $encryptionTrait = new class {
+            use \Rancoud\Session\Encryption;
+        };
 
         $dataToEncrypt = 'this is something to encrypt';
 
@@ -58,7 +62,9 @@ class EncryptionTest extends TestCase
         $this->expectException(SessionException::class);
         $this->expectExceptionMessage('Unknown method: method');
 
-        $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
+        $encryptionTrait = new class {
+            use \Rancoud\Session\Encryption;
+        };
         $encryptionTrait->setMethod('method');
     }
 
@@ -154,7 +160,9 @@ class EncryptionTest extends TestCase
         $this->expectException(SessionException::class);
         $this->expectExceptionMessage('Key has to be a non-empty string');
 
-        $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
+        $encryptionTrait = new class {
+            use \Rancoud\Session\Encryption;
+        };
         $dataToEncrypt = 'this is something to encrypt';
         $encryptionTrait->encrypt($dataToEncrypt);
     }

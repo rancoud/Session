@@ -58,7 +58,9 @@ class DefaultEncryptionTest extends TestCase
         $data = $this->foundSessionFile();
         static::assertNotFalse($data);
 
-        $encryptionTrait = $this->getObjectForTrait('Rancoud\Session\Encryption');
+        $encryptionTrait = new class {
+            use \Rancoud\Session\Encryption;
+        };
         $encryptionTrait->setKey('randomKey');
         $dataDecrypted = $encryptionTrait->decrypt($data);
         static::assertSame('a|s:1:"b";', $dataDecrypted);
