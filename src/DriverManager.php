@@ -48,7 +48,7 @@ abstract class DriverManager
      *
      * @throws SessionException
      */
-    public static function useDefaultEncryptionDriver(string $key, string $method = null): void
+    public static function useDefaultEncryptionDriver(string $key, ?string $method = null): void
     {
         static::throwExceptionIfHasStarted();
 
@@ -74,7 +74,7 @@ abstract class DriverManager
      *
      * @throws SessionException
      */
-    public static function useFileEncryptionDriver(string $key, string $method = null): void
+    public static function useFileEncryptionDriver(string $key, ?string $method = null): void
     {
         static::throwExceptionIfHasStarted();
 
@@ -189,7 +189,7 @@ abstract class DriverManager
      *
      * @throws SessionException
      */
-    public static function useNewRedisEncryptionDriver($configuration, string $key, string $method = null): void
+    public static function useNewRedisEncryptionDriver($configuration, string $key, ?string $method = null): void
     {
         static::throwExceptionIfHasStarted();
 
@@ -208,7 +208,7 @@ abstract class DriverManager
      *
      * @throws SessionException
      */
-    public static function useCurrentRedisEncryptionDriver(PredisClient $redisInstance, string $key, string $method = null): void // phpcs:ignore
+    public static function useCurrentRedisEncryptionDriver(PredisClient $redisInstance, string $key, ?string $method = null): void // phpcs:ignore
     {
         static::throwExceptionIfHasStarted();
 
