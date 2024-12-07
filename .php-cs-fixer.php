@@ -20,6 +20,7 @@ $rules = [
         'spacing' => 'one'
     ],
     'declare_strict_types'        => true,
+    'get_class_to_class_keyword'  => false,
     'global_namespace_import'     => false,
     'linebreak_after_opening_tag' => true,
     'mb_str_functions'            => true,
