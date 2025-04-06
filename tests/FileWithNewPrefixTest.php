@@ -31,9 +31,6 @@ class FileWithNewPrefixTest extends TestCase
         }
     }
 
-    /**
-     * @return string
-     */
     private function getPath(): string
     {
         $path = \ini_get('session.save_path');
@@ -45,8 +42,6 @@ class FileWithNewPrefixTest extends TestCase
     }
 
     /**
-     * @param File $file
-     *
      * @throws \Rancoud\Session\SessionException
      */
     private function openSessionForSavingSavePath(File $file): void

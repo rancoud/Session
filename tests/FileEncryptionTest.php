@@ -43,8 +43,6 @@ class FileEncryptionTest extends TestCase
     }
 
     /**
-     * @param FileEncryption $fileEncryption
-     *
      * @throws SessionException
      */
     private function openSessionForSavingSavePath(FileEncryption $fileEncryption): void
