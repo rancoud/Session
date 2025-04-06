@@ -13,17 +13,12 @@ trait Encryption
 
     protected string $method = 'aes-256-cbc';
 
-    /**
-     * @param string $key
-     */
     public function setKey(string $key): void
     {
         $this->key = $key;
     }
 
     /**
-     * @param string $method
-     *
      * @throws SessionException
      */
     public function setMethod(string $method): void
@@ -35,9 +30,6 @@ trait Encryption
         $this->method = $method;
     }
 
-    /**
-     * @return array
-     */
     public function getAvailableMethods(): array
     {
         $ciphers = \openssl_get_cipher_methods();
@@ -141,11 +133,7 @@ trait Encryption
     }
 
     /**
-     * @param string $data
-     *
      * @throws SessionException
-     *
-     * @return string
      */
     public function decrypt(string $data): string
     {
@@ -170,11 +158,7 @@ trait Encryption
     }
 
     /**
-     * @param string $data
-     *
      * @throws SessionException
-     *
-     * @return string
      */
     public function encrypt(string $data): string
     {

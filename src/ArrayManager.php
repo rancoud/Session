@@ -18,9 +18,6 @@ trait ArrayManager
     abstract protected static function startSessionIfNotHasStartedForceWrite();
 
     /**
-     * @param string $key
-     * @param mixed  $value
-     *
      * @throws SessionException
      */
     public static function set(string $key, $value): void
@@ -31,11 +28,7 @@ trait ArrayManager
     }
 
     /**
-     * @param string $key
-     *
      * @throws SessionException
-     *
-     * @return bool
      */
     public static function has(string $key): bool
     {
@@ -45,12 +38,7 @@ trait ArrayManager
     }
 
     /**
-     * @param string $key
-     * @param mixed  $value
-     *
      * @throws SessionException
-     *
-     * @return bool
      */
     public static function hasKeyAndValue(string $key, $value): bool
     {
@@ -60,11 +48,7 @@ trait ArrayManager
     }
 
     /**
-     * @param string $key
-     *
      * @throws SessionException
-     *
-     * @return mixed
      */
     public static function get(string $key)
     {
@@ -74,8 +58,6 @@ trait ArrayManager
     }
 
     /**
-     * @param string $key
-     *
      * @throws SessionException
      */
     public static function remove(string $key): void
@@ -89,8 +71,6 @@ trait ArrayManager
 
     /**
      * @throws SessionException
-     *
-     * @return array
      */
     public static function getAll(): array
     {
@@ -100,11 +80,7 @@ trait ArrayManager
     }
 
     /**
-     * @param string $key
-     *
      * @throws SessionException
-     *
-     * @return mixed
      */
     public static function getAndRemove(string $key)
     {
@@ -116,49 +92,26 @@ trait ArrayManager
         return $value;
     }
 
-    /**
-     * @param string $key
-     * @param mixed  $value
-     */
     public static function setFlash(string $key, $value): void
     {
         static::$flashData[$key] = $value;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return bool
-     */
     public static function hasFlash(string $key): bool
     {
         return \array_key_exists($key, static::$flashData);
     }
 
-    /**
-     * @param string $key
-     * @param mixed  $value
-     *
-     * @return bool
-     */
     public static function hasFlashKeyAndValue(string $key, $value): bool
     {
         return \array_key_exists($key, static::$flashData) && static::$flashData[$key] === $value;
     }
 
-    /**
-     * @param string $key
-     *
-     * @return mixed
-     */
     public static function getFlash(string $key)
     {
         return (static::hasFlash($key)) ? static::$flashData[$key] : null;
     }
 
-    /**
-     * @param string $key
-     */
     public static function removeFlash(string $key): void
     {
         if (static::hasFlash($key)) {
@@ -167,8 +120,6 @@ trait ArrayManager
     }
 
     /**
-     * @param array $keys
-     *
      * @throws SessionException
      */
     public static function keepFlash(array $keys = []): void
@@ -188,9 +139,6 @@ trait ArrayManager
         }
     }
 
-    /**
-     * @return array
-     */
     public static function getAllFlash(): array
     {
         return static::$flashData;

@@ -14,7 +14,6 @@ use Rancoud\Session\SessionException;
  */
 class RedisTest extends TestCase
 {
-    /** @var Predis */
     private static Predis $redis;
 
     public static function setUpBeforeClass(): void

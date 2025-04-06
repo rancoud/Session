@@ -15,8 +15,6 @@ class DatabaseEncryption extends Database
      * @param string $id
      *
      * @throws SessionException
-     *
-     * @return string
      */
     public function read($id): string
     {
@@ -30,8 +28,6 @@ class DatabaseEncryption extends Database
      * @param string $data
      *
      * @throws SessionException
-     *
-     * @return bool
      */
     public function write($id, $data): bool
     {

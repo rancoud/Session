@@ -43,9 +43,6 @@ abstract class DriverManager
     }
 
     /**
-     * @param string      $key
-     * @param string|null $method
-     *
      * @throws SessionException
      */
     public static function useDefaultEncryptionDriver(string $key, ?string $method = null): void
@@ -69,9 +66,6 @@ abstract class DriverManager
     }
 
     /**
-     * @param string      $key
-     * @param string|null $method
-     *
      * @throws SessionException
      */
     public static function useFileEncryptionDriver(string $key, ?string $method = null): void
@@ -100,8 +94,6 @@ abstract class DriverManager
     }
 
     /**
-     * @param DB $databaseInstance
-     *
      * @throws SessionException
      */
     public static function useCurrentDatabaseDriver(DB $databaseInstance): void
@@ -116,8 +108,6 @@ abstract class DriverManager
 
     /**
      * @param Configurator|array $configuration
-     * @param string             $key
-     * @param string|null        $method
      *
      * @throws SessionException
      */
@@ -133,10 +123,6 @@ abstract class DriverManager
     }
 
     /**
-     * @param DB          $databaseInstance
-     * @param string      $key
-     * @param string|null $method
-     *
      * @throws SessionException
      */
     public static function useCurrentDatabaseEncryptionDriver(DB $databaseInstance, string $key, ?string $method = null): void // phpcs:ignore
@@ -167,8 +153,6 @@ abstract class DriverManager
     }
 
     /**
-     * @param PredisClient $redisInstance
-     *
      * @throws SessionException
      */
     public static function useCurrentRedisDriver(PredisClient $redisInstance): void
@@ -184,8 +168,6 @@ abstract class DriverManager
 
     /**
      * @param array|string $configuration
-     * @param string       $key
-     * @param string|null  $method
      *
      * @throws SessionException
      */
@@ -202,10 +184,6 @@ abstract class DriverManager
     }
 
     /**
-     * @param PredisClient $redisInstance
-     * @param string       $key
-     * @param string|null  $method
-     *
      * @throws SessionException
      */
     public static function useCurrentRedisEncryptionDriver(PredisClient $redisInstance, string $key, ?string $method = null): void // phpcs:ignore
@@ -221,9 +199,7 @@ abstract class DriverManager
     }
 
     /**
-     * @param Encryption  $driver (use Encryption trait)
-     * @param string      $key
-     * @param string|null $method
+     * @param Encryption $driver (use Encryption trait)
      *
      * @throws SessionException
      *
@@ -238,8 +214,6 @@ abstract class DriverManager
     }
 
     /**
-     * @param SessionHandlerInterface $customDriver
-     *
      * @throws SessionException
      */
     public static function useCustomDriver(SessionHandlerInterface $customDriver): void
@@ -249,17 +223,11 @@ abstract class DriverManager
         static::$driver = $customDriver;
     }
 
-    /**
-     * @return SessionHandlerInterface
-     */
     public static function getDriver(): SessionHandlerInterface
     {
         return static::$driver;
     }
 
-    /**
-     * @param int $userId
-     */
     public static function setUserIdForDatabase(int $userId): void
     {
         if (\method_exists(static::$driver, 'setUserId')) {
@@ -267,9 +235,6 @@ abstract class DriverManager
         }
     }
 
-    /**
-     * @param string $prefix
-     */
     public static function setPrefixForFile(string $prefix): void
     {
         if (\method_exists(static::$driver, 'setPrefix')) {

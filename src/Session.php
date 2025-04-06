@@ -24,8 +24,6 @@ class Session extends DriverManager
     ];
 
     /**
-     * @param array $options
-     *
      * @throws SessionException
      */
     public static function start(array $options = []): void
@@ -38,8 +36,6 @@ class Session extends DriverManager
     }
 
     /**
-     * @param array $options
-     *
      * @throws SessionException
      */
     protected static function populateOptions(array $options = []): void
@@ -104,8 +100,6 @@ class Session extends DriverManager
 
     /**
      * @throws SessionException
-     *
-     * @return bool
      */
     protected static function startSession(): bool
     {
@@ -117,8 +111,6 @@ class Session extends DriverManager
     }
 
     /**
-     * @param array $options
-     *
      * @throws SessionException
      */
     protected static function validateOptions(array $options = []): void
@@ -199,9 +191,6 @@ class Session extends DriverManager
         return \session_regenerate_id(true);
     }
 
-    /**
-     * @return bool
-     */
     public static function destroy(): bool
     {
         static::$hasChanged = true;
@@ -219,17 +208,11 @@ class Session extends DriverManager
         \session_write_close();
     }
 
-    /**
-     * @return bool
-     */
     public static function rollback(): bool
     {
         return \session_reset();
     }
 
-    /**
-     * @return bool
-     */
     public static function unsaved(): bool
     {
         static::$hasStarted = false;
@@ -239,27 +222,16 @@ class Session extends DriverManager
         return \session_abort();
     }
 
-    /**
-     * @return bool
-     */
     public static function hasStarted(): bool
     {
         return static::$hasStarted;
     }
 
-    /**
-     * @return string
-     */
     public static function getId(): string
     {
         return \session_id();
     }
 
-    /**
-     * @param string $id
-     *
-     * @return string
-     */
     public static function setId(string $id): string
     {
         static::$hasChanged = true;
@@ -317,8 +289,6 @@ class Session extends DriverManager
 
     /**
      * @throws SessionException
-     *
-     * @return int
      */
     protected static function getLifetimeForRedis(): int
     {
@@ -326,9 +296,6 @@ class Session extends DriverManager
     }
 
     /**
-     * @param string $key
-     * @param mixed  $value
-     *
      * @throws SessionException
      */
     public static function setOption(string $key, $value): void
@@ -339,8 +306,6 @@ class Session extends DriverManager
     }
 
     /**
-     * @param array $options
-     *
      * @throws SessionException
      */
     public static function setOptions(array $options): void
@@ -351,11 +316,7 @@ class Session extends DriverManager
     }
 
     /**
-     * @param string $key
-     *
      * @throws SessionException
-     *
-     * @return mixed
      */
     public static function getOption(string $key)
     {

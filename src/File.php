@@ -18,17 +18,12 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
 
     protected int $lengthSessionID = 127;
 
-    /**
-     * @param string $prefix
-     */
     public function setPrefix(string $prefix): void
     {
         $this->prefix = $prefix;
     }
 
     /**
-     * @param int $length
-     *
      * @throws SessionException
      */
     public function setLengthSessionID(int $length): void
@@ -50,8 +45,6 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
      * @param string $name
      *
      * @throws SessionException
-     *
-     * @return bool
      */
     public function open($path, $name): bool
     {
@@ -68,9 +61,6 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
         return true;
     }
 
-    /**
-     * @return bool
-     */
     public function close(): bool
     {
         return true;
@@ -78,8 +68,6 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
 
     /**
      * @param string $id
-     *
-     * @return string
      */
     public function read($id): string
     {
@@ -94,8 +82,6 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
     /**
      * @param string $id
      * @param string $data
-     *
-     * @return bool
      */
     public function write($id, $data): bool
     {
@@ -106,8 +92,6 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
 
     /**
      * @param string $id
-     *
-     * @return bool
      */
     public function destroy($id): bool
     {
@@ -121,8 +105,6 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
 
     /**
      * @param int $max_lifetime
-     *
-     * @return bool
      *
      * @noinspection PhpLanguageLevelInspection
      */
@@ -144,8 +126,6 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
      *
      * @param string $id
      *
-     * @return bool
-     *
      * @noinspection PhpMissingParamTypeInspection
      */
     public function validateId($id): bool
@@ -165,8 +145,6 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
      * @param string $id
      * @param string $data
      *
-     * @return bool
-     *
      * @noinspection PhpMissingParamTypeInspection
      */
     public function updateTimestamp($id, $data): bool
@@ -176,8 +154,6 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
 
     /**
      * @throws SessionException
-     *
-     * @return string
      *
      * @noinspection PhpMethodNamingConventionInspection
      */

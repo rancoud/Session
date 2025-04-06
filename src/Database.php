@@ -41,25 +41,17 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
         }
     }
 
-    /**
-     * @param DB $database
-     */
     public function setCurrentDatabase(DB $database): void
     {
         $this->db = $database;
     }
 
-    /**
-     * @param int|null $userId
-     */
     public function setUserId(?int $userId): void
     {
         $this->userId = $userId;
     }
 
     /**
-     * @param int $length
-     *
      * @throws SessionException
      */
     public function setLengthSessionID(int $length): void
@@ -79,17 +71,12 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
     /**
      * @param string $path
      * @param string $name
-     *
-     * @return bool
      */
     public function open($path, $name): bool
     {
         return true;
     }
 
-    /**
-     * @return bool
-     */
     public function close(): bool
     {
         return true;
@@ -99,8 +86,6 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
      * @param string $id
      *
      * @throws SessionException
-     *
-     * @return string
      */
     public function read($id): string
     {
@@ -119,8 +104,6 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
      * @param string $data
      *
      * @throws SessionException
-     *
-     * @return bool
      */
     public function write($id, $data): bool
     {
@@ -140,8 +123,6 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
      * @param string $id
      *
      * @throws SessionException
-     *
-     * @return bool
      */
     public function destroy($id): bool
     {
@@ -160,8 +141,6 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
      * @param int $max_lifetime
      *
      * @throws SessionException
-     *
-     * @return bool
      *
      * @noinspection PhpLanguageLevelInspection
      */
@@ -185,8 +164,6 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
      * @param string $id
      *
      * @throws SessionException
-     *
-     * @return bool
      *
      * @noinspection PhpMissingParamTypeInspection
      */
@@ -215,8 +192,6 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
      *
      * @throws SessionException
      *
-     * @return bool
-     *
      * @noinspection PhpMissingParamTypeInspection
      */
     public function updateTimestamp($id, $data): bool
@@ -226,8 +201,6 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
 
     /**
      * @throws SessionException
-     *
-     * @return string
      *
      * @noinspection PhpMethodNamingConventionInspection
      */

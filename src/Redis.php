@@ -27,25 +27,17 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
         $this->redis = new Predis($configuration);
     }
 
-    /**
-     * @param Predis $redis
-     */
     public function setCurrentRedis(Predis $redis): void
     {
         $this->redis = $redis;
     }
 
-    /**
-     * @param int $lifetime
-     */
     public function setLifetime(int $lifetime): void
     {
         $this->lifetime = $lifetime;
     }
 
     /**
-     * @param int $length
-     *
      * @throws SessionException
      */
     public function setLengthSessionID(int $length): void
@@ -65,17 +57,12 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
     /**
      * @param string $path
      * @param string $name
-     *
-     * @return bool
      */
     public function open($path, $name): bool
     {
         return true;
     }
 
-    /**
-     * @return bool
-     */
     public function close(): bool
     {
         return true;
@@ -83,8 +70,6 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
 
     /**
      * @param string $id
-     *
-     * @return string
      */
     public function read($id): string
     {
@@ -94,8 +79,6 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
     /**
      * @param string $id
      * @param string $data
-     *
-     * @return bool
      */
     public function write($id, $data): bool
     {
@@ -107,8 +90,6 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
 
     /**
      * @param string $id
-     *
-     * @return bool
      */
     public function destroy($id): bool
     {
@@ -119,8 +100,6 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
 
     /**
      * @param int $max_lifetime
-     *
-     * @return bool
      *
      * @noinspection PhpLanguageLevelInspection
      */
@@ -134,8 +113,6 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
      * Checks format and id exists, if not session_id will be regenerate.
      *
      * @param string $id
-     *
-     * @return bool
      *
      * @noinspection PhpMissingParamTypeInspection
      */
@@ -156,8 +133,6 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
      * @param string $id
      * @param string $data
      *
-     * @return bool
-     *
      * @noinspection PhpMissingParamTypeInspection
      */
     public function updateTimestamp($id, $data): bool
@@ -167,8 +142,6 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
 
     /**
      * @throws SessionException
-     *
-     * @return string
      *
      * @noinspection PhpMethodNamingConventionInspection
      */

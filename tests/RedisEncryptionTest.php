@@ -13,7 +13,6 @@ use Rancoud\Session\RedisEncryption;
  */
 class RedisEncryptionTest extends TestCase
 {
-    /** @var Predis */
     private static Predis $redis;
 
     public static function setUpBeforeClass(): void
