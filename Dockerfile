@@ -8,6 +8,13 @@ RUN apk --update --no-cache add \
 RUN docker-php-ext-install \
   pdo_mysql
 
+RUN apk add --no-cache \
+    $PHPIZE_DEPS \
+    linux-headers \
+    && pecl install xdebug-3.4.2 \
+    && docker-php-ext-enable xdebug \
+    && rm -rf /tmp/* /var/cache/apk/*
+
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
 WORKDIR /app
