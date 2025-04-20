@@ -13,11 +13,7 @@ use Rancoud\Database\DatabaseException;
 use Rancoud\Session\Database;
 use Rancoud\Session\SessionException;
 
-/**
- * Class DatabaseTest.
- *
- * @internal
- */
+/** @internal */
 class DatabaseTest extends TestCase
 {
     protected static DB $db;

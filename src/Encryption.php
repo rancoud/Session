@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rancoud\Session;
 
-/**
- * Trait Encryption.
- */
 trait Encryption
 {
     protected ?string $key = null;
@@ -154,7 +151,7 @@ trait Encryption
             if ($length === false || $length < 1) {
                 throw new SessionException('IV generation failed');
             }
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             throw new SessionException('IV generation failed');
         }
 

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rancoud\Session;
 
-/**
- * Class Session.
- */
 class Session extends DriverManager
 {
     use ArrayManager;
@@ -152,7 +149,6 @@ class Session extends DriverManager
     /** @throws SessionException */
     protected static function setupCookieParams(): void
     {
-        // https://www.php.net/manual/fr/function.session-set-cookie-params.php new signature
         \session_set_cookie_params(
             [
                 'lifetime' => static::getOption('cookie_lifetime'),
@@ -269,9 +265,7 @@ class Session extends DriverManager
         return (int) static::getOption('cookie_lifetime');
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function setOption(string $key, $value): void
     {
         static::$hasChanged = true;

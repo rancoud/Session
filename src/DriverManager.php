@@ -8,9 +8,6 @@ use Predis\Client as PredisClient;
 use Rancoud\Database\Configurator;
 use Rancoud\Database\Database as DB;
 
-/**
- * Class DriverManager.
- */
 abstract class DriverManager
 {
     protected static ?\SessionHandlerInterface $driver = null;
@@ -66,12 +63,8 @@ abstract class DriverManager
         static::$driver = $driver;
     }
 
-    /**
-     * @param array|Configurator $configuration
-     *
-     * @throws SessionException
-     */
-    public static function useNewDatabaseDriver($configuration): void
+    /** @throws SessionException */
+    public static function useNewDatabaseDriver(array|Configurator $configuration): void
     {
         static::throwExceptionIfHasStarted();
 
@@ -92,12 +85,8 @@ abstract class DriverManager
         static::$driver = $driver;
     }
 
-    /**
-     * @param array|Configurator $configuration
-     *
-     * @throws SessionException
-     */
-    public static function useNewDatabaseEncryptionDriver($configuration, string $key, ?string $method = null): void
+    /** @throws SessionException */
+    public static function useNewDatabaseEncryptionDriver(array|Configurator $configuration, string $key, ?string $method = null): void
     {
         static::throwExceptionIfHasStarted();
 
@@ -120,12 +109,8 @@ abstract class DriverManager
         static::$driver = $driver;
     }
 
-    /**
-     * @param array|string $configuration
-     *
-     * @throws SessionException
-     */
-    public static function useNewRedisDriver($configuration): void
+    /** @throws SessionException */
+    public static function useNewRedisDriver(array|string $configuration): void
     {
         static::throwExceptionIfHasStarted();
 
@@ -148,12 +133,8 @@ abstract class DriverManager
         static::$driver = $driver;
     }
 
-    /**
-     * @param array|string $configuration
-     *
-     * @throws SessionException
-     */
-    public static function useNewRedisEncryptionDriver($configuration, string $key, ?string $method = null): void
+    /** @throws SessionException */
+    public static function useNewRedisEncryptionDriver(array|string $configuration, string $key, ?string $method = null): void
     {
         static::throwExceptionIfHasStarted();
 
@@ -182,10 +163,8 @@ abstract class DriverManager
      * @param Encryption $driver (use Encryption trait)
      *
      * @throws SessionException
-     *
-     * @noinspection PhpMissingParamTypeInspection
      */
-    private static function setKeyAndMethod($driver, string $key, ?string $method): void
+    private static function setKeyAndMethod(mixed $driver, string $key, ?string $method): void
     {
         $driver->setKey($key);
         if ($method !== null) {

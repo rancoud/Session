@@ -7,11 +7,7 @@ namespace tests;
 use PHPUnit\Framework\TestCase;
 use Rancoud\Session\SessionException;
 
-/**
- * Class EncryptedTest.
- *
- * @internal
- */
+/** @internal */
 class EncryptionTest extends TestCase
 {
     public function testDefaultEncryption(): void
@@ -48,7 +44,7 @@ class EncryptionTest extends TestCase
 
                 $finalData = $encryptionTrait->decrypt($encryptedData);
                 static::assertSame($dataToEncrypt, $finalData, $method . ' fail!');
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $failedMethods[] = $method;
 
                 continue;
