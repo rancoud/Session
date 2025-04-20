@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "535d0adae7a37d515170d7b6cd97f1c4",
+    "content-hash": "840e8a891c43b9d741e98a479a64bffb",
     "packages": [],
     "packages-dev": [
         {
@@ -1380,26 +1380,25 @@
         },
         {
             "name": "rancoud/database",
-            "version": "6.1.1",
+            "version": "7.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/rancoud/Database.git",
-                "reference": "e6e71b3df84b6e485fea83f52305a7686b8b5532"
+                "reference": "97c961a43feed6c2110fe6b73bfb1d59825aaee9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/rancoud/Database/zipball/e6e71b3df84b6e485fea83f52305a7686b8b5532",
-                "reference": "e6e71b3df84b6e485fea83f52305a7686b8b5532",
+                "url": "https://api.github.com/repos/rancoud/Database/zipball/97c961a43feed6c2110fe6b73bfb1d59825aaee9",
+                "reference": "97c961a43feed6c2110fe6b73bfb1d59825aaee9",
                 "shasum": ""
             },
             "require": {
                 "ext-pdo": "*",
-                "php": ">=7.4.0"
+                "php": ">=8.4.0"
             },
             "require-dev": {
-                "friendsofphp/php-cs-fixer": "^2.16 || ^3.0",
-                "phpunit/phpunit": "^9.1 || ^10.0 || ^11.0",
-                "squizlabs/php_codesniffer": "^3.5"
+                "friendsofphp/php-cs-fixer": "^3.0",
+                "phpunit/phpunit": "^12.0"
             },
             "suggest": {
                 "ext-pdo_mysql": "Needed to connect MySQL",
@@ -1425,9 +1424,9 @@
             "description": "Database package",
             "support": {
                 "issues": "https://github.com/rancoud/Database/issues",
-                "source": "https://github.com/rancoud/Database/tree/6.1.1"
+                "source": "https://github.com/rancoud/Database/tree/7.0.0"
             },
-            "time": "2024-12-07T22:10:08+00:00"
+            "time": "2025-04-20T20:41:14+00:00"
         },
         {
             "name": "react/cache",
