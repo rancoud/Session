@@ -93,11 +93,7 @@ class File implements \SessionHandlerInterface, \SessionUpdateTimestampHandlerIn
         return true;
     }
 
-    /**
-     * @param int $max_lifetime
-     *
-     * @noinspection PhpLanguageLevelInspection
-     */
+    /** @param int $max_lifetime */
     #[\ReturnTypeWillChange]
     public function gc($max_lifetime): bool
     {

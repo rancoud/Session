@@ -137,8 +137,6 @@ class Database implements \SessionHandlerInterface, \SessionUpdateTimestampHandl
      * @param int $max_lifetime
      *
      * @throws SessionException
-     *
-     * @noinspection PhpLanguageLevelInspection
      */
     #[\ReturnTypeWillChange]
     public function gc($max_lifetime): bool
