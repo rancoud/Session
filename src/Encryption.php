@@ -18,9 +18,7 @@ trait Encryption
         $this->key = $key;
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function setMethod(string $method): void
     {
         if (!\in_array($method, $this->getAvailableMethods(), true)) {
@@ -52,12 +50,8 @@ trait Encryption
 
         $cipherAliases = \array_filter($cipherAliases, static function ($c) {
             $excludeMethods = [
-                'des', 'rc2', '-wrap'
+                'des', 'rc2', '-wrap', 'id-'
             ];
-
-            if (\PHP_MAJOR_VERSION >= 8 && \PHP_MINOR_VERSION >= 1) {
-                $excludeMethods[] = 'id-';
-            }
 
             foreach ($excludeMethods as $excludeMethod) {
                 if (\mb_stripos($c, $excludeMethod) !== false) {
@@ -75,66 +69,60 @@ trait Encryption
                 'aes-128-cbc-hmac-sha1', 'aes-256-cbc-hmac-sha1'
             ];
 
-            if (\PHP_MAJOR_VERSION >= 8 && \PHP_MINOR_VERSION >= 1) {
-                \array_push(
-                    $forbiddenMethods,
-                    'aes-128-cbc-cts',
-                    'aes-128-cbc-hmac-sha256',
-                    'aes-128-siv',
-                    'aes-192-cbc-cts',
-                    'aes-192-siv',
-                    'aes-256-cbc-cts',
-                    'aes-256-cbc-hmac-sha256',
-                    'aes-256-siv',
-                    'camellia-128-cbc-cts',
-                    'camellia-192-cbc-cts',
-                    'camellia-256-cbc-cts',
-                    'null',
-                    'sm4-xts',
-                    '0.3.4401.5.3.1.9.1',
-                    '0.3.4401.5.3.1.9.21',
-                    '0.3.4401.5.3.1.9.41',
-                    '1.2.410.200046.1.1.1',
-                    '1.2.410.200046.1.1.11',
-                    '1.2.410.200046.1.1.34',
-                    '1.2.410.200046.1.1.35',
-                    '1.2.410.200046.1.1.36',
-                    '1.2.410.200046.1.1.37',
-                    '1.2.410.200046.1.1.38',
-                    '1.2.410.200046.1.1.39',
-                    '1.2.410.200046.1.1.6',
-                    '1.2.156.10197.1.104.10',
-                    '1.2.840.113549.1.9.16.3.6',
-                    '1.3.14.3.2.17',
-                    '2.16.840.1.101.3.4.1.1',
-                    '2.16.840.1.101.3.4.1.21',
-                    '2.16.840.1.101.3.4.1.25',
-                    '2.16.840.1.101.3.4.1.26',
-                    '2.16.840.1.101.3.4.1.27',
-                    '2.16.840.1.101.3.4.1.41',
-                    '2.16.840.1.101.3.4.1.45',
-                    '2.16.840.1.101.3.4.1.46',
-                    '2.16.840.1.101.3.4.1.47',
-                    '2.16.840.1.101.3.4.1.5',
-                    '2.16.840.1.101.3.4.1.6',
-                    '2.16.840.1.101.3.4.1.7',
-                    '1.2.156.10197.1.104.1',
-                    '1.2.156.10197.1.104.8',
-                    '1.2.156.10197.1.104.9'
-                );
-            }
+            \array_push(
+                $forbiddenMethods,
+                'aes-128-cbc-cts',
+                'aes-128-cbc-hmac-sha256',
+                'aes-128-siv',
+                'aes-192-cbc-cts',
+                'aes-192-siv',
+                'aes-256-cbc-cts',
+                'aes-256-cbc-hmac-sha256',
+                'aes-256-siv',
+                'camellia-128-cbc-cts',
+                'camellia-192-cbc-cts',
+                'camellia-256-cbc-cts',
+                'null',
+                'sm4-xts',
+                '0.3.4401.5.3.1.9.1',
+                '0.3.4401.5.3.1.9.21',
+                '0.3.4401.5.3.1.9.41',
+                '1.2.410.200046.1.1.1',
+                '1.2.410.200046.1.1.11',
+                '1.2.410.200046.1.1.34',
+                '1.2.410.200046.1.1.35',
+                '1.2.410.200046.1.1.36',
+                '1.2.410.200046.1.1.37',
+                '1.2.410.200046.1.1.38',
+                '1.2.410.200046.1.1.39',
+                '1.2.410.200046.1.1.6',
+                '1.2.156.10197.1.104.10',
+                '1.2.840.113549.1.9.16.3.6',
+                '1.3.14.3.2.17',
+                '2.16.840.1.101.3.4.1.1',
+                '2.16.840.1.101.3.4.1.21',
+                '2.16.840.1.101.3.4.1.25',
+                '2.16.840.1.101.3.4.1.26',
+                '2.16.840.1.101.3.4.1.27',
+                '2.16.840.1.101.3.4.1.41',
+                '2.16.840.1.101.3.4.1.45',
+                '2.16.840.1.101.3.4.1.46',
+                '2.16.840.1.101.3.4.1.47',
+                '2.16.840.1.101.3.4.1.5',
+                '2.16.840.1.101.3.4.1.6',
+                '2.16.840.1.101.3.4.1.7',
+                '1.2.156.10197.1.104.1',
+                '1.2.156.10197.1.104.8',
+                '1.2.156.10197.1.104.9'
+            );
 
-            if (\PHP_MAJOR_VERSION >= 8 && \PHP_MINOR_VERSION >= 2) {
-                $forbiddenMethods[] = 'chacha20-poly1305';
-            }
+            $forbiddenMethods[] = 'chacha20-poly1305';
 
             return !\in_array(\mb_strtolower($c), $forbiddenMethods, true);
         });
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function decrypt(string $data): string
     {
         $this->throwExceptionIfKeyEmpty();
@@ -148,8 +136,7 @@ trait Encryption
         $dataDecrypted = \openssl_decrypt($encryptedData, $this->method, $this->key, 0, $iv);
         if ($dataDecrypted === false) {
             // @codeCoverageIgnoreStart
-            /* Could not reach this statement without mocking the function
-             */
+            // Could not reach this statement without mocking the function
             throw new SessionException('Could not decrypt with openssl_decrypt');
             // @codeCoverageIgnoreEnd
         }
@@ -157,9 +144,7 @@ trait Encryption
         return $dataDecrypted;
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function encrypt(string $data): string
     {
         $this->throwExceptionIfKeyEmpty();
@@ -175,11 +160,10 @@ trait Encryption
 
         /** @noinspection CryptographicallySecureRandomnessInspection */
         $iv = \openssl_random_pseudo_bytes($length, $cstrong);
-        /* @noinspection PhpStrictComparisonWithOperandsOfDifferentTypesInspection */
+        // @noinspection PhpStrictComparisonWithOperandsOfDifferentTypesInspection
         if ($iv === false || $cstrong === false) {
             // @codeCoverageIgnoreStart
-            /* Could not reach this statement without mocking the function
-             */
+            // Could not reach this statement without mocking the function
             throw new SessionException('IV generation failed');
             // @codeCoverageIgnoreEnd
         }
@@ -189,9 +173,7 @@ trait Encryption
         return \base64_encode($encrypted . '::' . $iv);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     protected function throwExceptionIfKeyEmpty(): void
     {
         if ($this->key === null || $this->key === '') {

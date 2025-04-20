@@ -11,6 +11,8 @@ use Rancoud\Session\SessionException;
 
 /**
  * Class RedisTest.
+ *
+ * @internal
  */
 class RedisTest extends TestCase
 {
@@ -201,9 +203,7 @@ class RedisTest extends TestCase
         static::assertTrue($ttl3 > $ttl2);
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testCreateId(): void
     {
         $redis = new Redis();
@@ -214,9 +214,7 @@ class RedisTest extends TestCase
         static::assertMatchesRegularExpression('/^[a-zA-Z0-9-]{127}+$/', $string);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testLengthSessionID(): void
     {
         $redis = new Redis();

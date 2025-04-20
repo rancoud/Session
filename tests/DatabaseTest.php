@@ -15,14 +15,14 @@ use Rancoud\Session\SessionException;
 
 /**
  * Class DatabaseTest.
+ *
+ * @internal
  */
 class DatabaseTest extends TestCase
 {
     protected static DB $db;
 
-    /**
-     * @throws DatabaseException
-     */
+    /** @throws DatabaseException */
     public static function setUpBeforeClass(): void
     {
         $conf = new Configurator([
@@ -38,23 +38,21 @@ class DatabaseTest extends TestCase
 
         static::$db = new DB($conf);
 
-        $sql = <<<SQL
-                CREATE TABLE IF NOT EXISTS `sessions` (
-                  `id` varchar(128) NOT NULL,
-                  `id_user` int(10) unsigned DEFAULT NULL,
-                  `last_access` datetime NOT NULL,
-                  `content` text NOT NULL,
-                  PRIMARY KEY (`id`)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-            SQL;
+        $sql = <<<'SQL'
+            CREATE TABLE IF NOT EXISTS `sessions` (
+              `id` varchar(128) NOT NULL,
+              `id_user` int(10) unsigned DEFAULT NULL,
+              `last_access` datetime NOT NULL,
+              `content` text NOT NULL,
+              PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+        SQL;
 
         static::$db->exec($sql);
         static::$db->truncateTables('sessions');
     }
 
-    /**
-     * @throws DatabaseException
-     */
+    /** @throws DatabaseException */
     protected function setUp(): void
     {
         static::$db->truncateTables('sessions');
@@ -100,9 +98,7 @@ class DatabaseTest extends TestCase
         static::assertSame($data, $row['content']);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testWriteSessionException(): void
     {
         $this->expectException(SessionException::class);
@@ -120,9 +116,7 @@ class DatabaseTest extends TestCase
         $database->write('invalid_session_id', '');
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testRead(): void
     {
         $database = new Database();
@@ -145,9 +139,7 @@ class DatabaseTest extends TestCase
         static::assertIsString($dataOutput);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testReadSessionException(): void
     {
         $this->expectException(SessionException::class);
@@ -191,9 +183,7 @@ class DatabaseTest extends TestCase
         static::assertTrue($isRowNotExist);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testDestroySessionException(): void
     {
         $this->expectException(SessionException::class);
@@ -237,9 +227,7 @@ class DatabaseTest extends TestCase
         static::assertTrue($isRowNotExist);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testGcSessionException(): void
     {
         $this->expectException(SessionException::class);
@@ -289,9 +277,7 @@ class DatabaseTest extends TestCase
         static::assertSame($userId, $userIdInDatabase);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testSetNewDatabaseWithArray(): void
     {
         $database = new Database();
@@ -339,9 +325,7 @@ class DatabaseTest extends TestCase
         static::assertTrue($database->write($sessionId, $data));
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testSetNewDatabaseSessionException(): void
     {
         $this->expectException(SessionException::class);
@@ -354,9 +338,7 @@ class DatabaseTest extends TestCase
         ]);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testValidateId(): void
     {
         $database = new Database();
@@ -373,9 +355,7 @@ class DatabaseTest extends TestCase
         static::assertFalse($database->validateId('kjlfez/fez'));
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testValidateIdSessionException(): void
     {
         $this->expectException(SessionException::class);
@@ -427,9 +407,7 @@ class DatabaseTest extends TestCase
         static::assertTrue($row1['last_access'] < $row2['last_access']);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testCreateId(): void
     {
         $database = new Database();
@@ -440,9 +418,7 @@ class DatabaseTest extends TestCase
         static::assertMatchesRegularExpression('/^[a-zA-Z0-9-]{127}+$/', $string);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testCreateIdSessionException(): void
     {
         $this->expectException(SessionException::class);
@@ -460,9 +436,7 @@ class DatabaseTest extends TestCase
         $database->create_sid();
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testLengthSessionID(): void
     {
         $database = new Database();

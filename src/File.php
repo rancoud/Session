@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace Rancoud\Session;
 
-use SessionHandlerInterface;
-use SessionUpdateTimestampHandlerInterface;
-
 /**
  * Class File.
  */
-class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInterface
+class File implements \SessionHandlerInterface, \SessionUpdateTimestampHandlerInterface
 {
     protected ?string $savePath = null;
 
@@ -23,9 +20,7 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
         $this->prefix = $prefix;
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function setLengthSessionID(int $length): void
     {
         if ($length < 32) {
@@ -50,10 +45,9 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
     {
         $this->savePath = $path;
 
-        if (!\is_dir($this->savePath) && !\mkdir($this->savePath, 0750) && !\is_dir($this->savePath)) {
+        if (!\is_dir($this->savePath) && !\mkdir($this->savePath, 0o750) && !\is_dir($this->savePath)) {
             // @codeCoverageIgnoreStart
-            /* Could not reach this statement without mocking the filesystem
-             */
+            // Could not reach this statement without mocking the filesystem
             throw new SessionException(\sprintf('Directory "%s" was not created', $this->savePath));
             // @codeCoverageIgnoreEnd
         }
@@ -66,9 +60,7 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
         return true;
     }
 
-    /**
-     * @param string $id
-     */
+    /** @param string $id */
     public function read($id): string
     {
         $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $id;
@@ -90,9 +82,7 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
         return !(\file_put_contents($filename, $data) === false);
     }
 
-    /**
-     * @param string $id
-     */
+    /** @param string $id */
     public function destroy($id): bool
     {
         $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $id;
@@ -179,8 +169,7 @@ class File implements SessionHandlerInterface, SessionUpdateTimestampHandlerInte
         $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $string;
         if (\file_exists($filename)) {
             // @codeCoverageIgnoreStart
-            /* Could not reach this statement without mocking the filesystem
-             */
+            // Could not reach this statement without mocking the filesystem
             return $this->create_sid();
             // @codeCoverageIgnoreEnd
         }

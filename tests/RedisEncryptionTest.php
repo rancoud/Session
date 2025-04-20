@@ -10,6 +10,8 @@ use Rancoud\Session\RedisEncryption;
 
 /**
  * Class RedisEncryptionTest.
+ *
+ * @internal
  */
 class RedisEncryptionTest extends TestCase
 {
@@ -57,9 +59,7 @@ class RedisEncryptionTest extends TestCase
         static::assertTrue($success);
     }
 
-    /**
-     * @throws \Rancoud\Session\SessionException
-     */
+    /** @throws \Rancoud\Session\SessionException */
     public function testWrite(): void
     {
         $redis = new RedisEncryption();
@@ -75,7 +75,7 @@ class RedisEncryptionTest extends TestCase
         $dataInRedis = static::$redis->get($sessionId);
         static::assertNotSame($data, $dataInRedis);
 
-        $encryptionTrait = new class {
+        $encryptionTrait = new class() {
             use \Rancoud\Session\Encryption;
         };
         $encryptionTrait->setKey('randomKey');
@@ -83,9 +83,7 @@ class RedisEncryptionTest extends TestCase
         static::assertSame($data, $dataInRedisDecrypted);
     }
 
-    /**
-     * @throws \Rancoud\Session\SessionException
-     */
+    /** @throws \Rancoud\Session\SessionException */
     public function testRead(): void
     {
         $redis = new RedisEncryption();
@@ -109,9 +107,7 @@ class RedisEncryptionTest extends TestCase
         static::assertIsString($dataOutput);
     }
 
-    /**
-     * @throws \Rancoud\Session\SessionException
-     */
+    /** @throws \Rancoud\Session\SessionException */
     public function testDestroy(): void
     {
         $redis = new RedisEncryption();
@@ -136,9 +132,7 @@ class RedisEncryptionTest extends TestCase
         static::assertTrue($isKeyNotExist);
     }
 
-    /**
-     * @throws \Rancoud\Session\SessionException
-     */
+    /** @throws \Rancoud\Session\SessionException */
     public function testGc(): void
     {
         $redis = new RedisEncryption();
@@ -165,9 +159,7 @@ class RedisEncryptionTest extends TestCase
         static::assertTrue($isKeyNotExist);
     }
 
-    /**
-     * @throws \Rancoud\Session\SessionException
-     */
+    /** @throws \Rancoud\Session\SessionException */
     public function testSetNewRedis(): void
     {
         $redis = new RedisEncryption();
@@ -190,9 +182,7 @@ class RedisEncryptionTest extends TestCase
         static::assertTrue($success);
     }
 
-    /**
-     * @throws \Rancoud\Session\SessionException
-     */
+    /** @throws \Rancoud\Session\SessionException */
     public function testValidateId(): void
     {
         $redis = new RedisEncryption();
@@ -211,9 +201,7 @@ class RedisEncryptionTest extends TestCase
         static::assertFalse($redis->validateId('kjlfez/fez'));
     }
 
-    /**
-     * @throws \Rancoud\Session\SessionException
-     */
+    /** @throws \Rancoud\Session\SessionException */
     public function testUpdateTimestamp(): void
     {
         $redis = new RedisEncryption();
@@ -231,7 +219,7 @@ class RedisEncryptionTest extends TestCase
         static::assertNotSame($data, $dataInRedis);
         $ttl1 = static::$redis->ttl($sessionId);
 
-        $encryptionTrait = new class {
+        $encryptionTrait = new class() {
             use \Rancoud\Session\Encryption;
         };
         $encryptionTrait->setKey('randomKey');
@@ -249,7 +237,7 @@ class RedisEncryptionTest extends TestCase
         static::assertNotSame($data, $dataInRedis2);
         $ttl3 = static::$redis->ttl($sessionId);
 
-        $encryptionTrait = new class {
+        $encryptionTrait = new class() {
             use \Rancoud\Session\Encryption;
         };
         $encryptionTrait->setKey('randomKey');
@@ -260,9 +248,7 @@ class RedisEncryptionTest extends TestCase
         static::assertTrue($ttl3 > $ttl2);
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testCreateId(): void
     {
         $redis = new RedisEncryption();

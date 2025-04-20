@@ -10,6 +10,8 @@ use Rancoud\Session\SessionException;
 
 /**
  * Class FileEncryptionTest.
+ *
+ * @internal
  */
 class FileEncryptionTest extends TestCase
 {
@@ -42,18 +44,14 @@ class FileEncryptionTest extends TestCase
         return $path;
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     private function openSessionForSavingSavePath(FileEncryption $fileEncryption): void
     {
         $success = $fileEncryption->open($this->getPath(), '');
         static::assertTrue($success);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testOpen(): void
     {
         $fileEncryption = new FileEncryption();
@@ -79,9 +77,7 @@ class FileEncryptionTest extends TestCase
         static::assertTrue($success);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testWrite(): void
     {
         $fileEncryption = new FileEncryption();
@@ -97,7 +93,7 @@ class FileEncryptionTest extends TestCase
         $dataInFile = \file_get_contents($this->getPath() . \DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
         static::assertNotSame($data, $dataInFile);
 
-        $encryptionTrait = new class {
+        $encryptionTrait = new class() {
             use \Rancoud\Session\Encryption;
         };
         $encryptionTrait->setKey('randomKey');
@@ -105,9 +101,7 @@ class FileEncryptionTest extends TestCase
         static::assertSame($data, $dataInFileDecrypted);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testRead(): void
     {
         $fileEncryption = new FileEncryption();
@@ -131,9 +125,7 @@ class FileEncryptionTest extends TestCase
         static::assertIsString($dataOutput);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testDestroy(): void
     {
         $fileEncryption = new FileEncryption();
@@ -158,9 +150,7 @@ class FileEncryptionTest extends TestCase
         static::assertTrue($isFileNotExist);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testGc(): void
     {
         $fileEncryption = new FileEncryption();
@@ -184,9 +174,7 @@ class FileEncryptionTest extends TestCase
         static::assertTrue($isFileNotExist);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testValidateId(): void
     {
         $fileEncryption = new FileEncryption();
@@ -205,9 +193,7 @@ class FileEncryptionTest extends TestCase
         static::assertFalse($fileEncryption->validateId('kjlfez/fez'));
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testUpdateTimestamp(): void
     {
         $fileEncryption = new FileEncryption();
@@ -224,7 +210,7 @@ class FileEncryptionTest extends TestCase
         $oldFileModifiedTime = \filemtime($this->getPath() . \DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
         static::assertNotSame($data, $dataInFile);
 
-        $encryptionTrait = new class {
+        $encryptionTrait = new class() {
             use \Rancoud\Session\Encryption;
         };
         $encryptionTrait->setKey('randomKey');
@@ -240,7 +226,7 @@ class FileEncryptionTest extends TestCase
         $dataInFile2 = \file_get_contents($this->getPath() . \DIRECTORY_SEPARATOR . 'sess_' . $sessionId);
         static::assertNotSame($data, $dataInFile2);
 
-        $encryptionTrait = new class {
+        $encryptionTrait = new class() {
             use \Rancoud\Session\Encryption;
         };
         $encryptionTrait->setKey('randomKey');
@@ -253,9 +239,7 @@ class FileEncryptionTest extends TestCase
         static::assertTrue($oldFileModifiedTime < $newFileModifiedTime);
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testCreateId(): void
     {
         $fileEncryption = new FileEncryption();

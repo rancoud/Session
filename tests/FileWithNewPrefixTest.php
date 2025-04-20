@@ -9,6 +9,8 @@ use Rancoud\Session\File;
 
 /**
  * Class FileWithNewPrefixTest.
+ *
+ * @internal
  */
 class FileWithNewPrefixTest extends TestCase
 {
@@ -41,18 +43,14 @@ class FileWithNewPrefixTest extends TestCase
         return $path;
     }
 
-    /**
-     * @throws \Rancoud\Session\SessionException
-     */
+    /** @throws \Rancoud\Session\SessionException */
     private function openSessionForSavingSavePath(File $file): void
     {
         $success = $file->open($this->getPath(), '');
         static::assertTrue($success);
     }
 
-    /**
-     * @throws \Rancoud\Session\SessionException
-     */
+    /** @throws \Rancoud\Session\SessionException */
     public function testOpen(): void
     {
         $file = new File();
@@ -77,9 +75,7 @@ class FileWithNewPrefixTest extends TestCase
         static::assertTrue($success);
     }
 
-    /**
-     * @throws \Rancoud\Session\SessionException
-     */
+    /** @throws \Rancoud\Session\SessionException */
     public function testWrite(): void
     {
         $file = new File();
@@ -96,9 +92,7 @@ class FileWithNewPrefixTest extends TestCase
         static::assertSame($data, $dataInFile);
     }
 
-    /**
-     * @throws \Rancoud\Session\SessionException
-     */
+    /** @throws \Rancoud\Session\SessionException */
     public function testRead(): void
     {
         $file = new File();
@@ -122,9 +116,7 @@ class FileWithNewPrefixTest extends TestCase
         static::assertIsString($dataOutput);
     }
 
-    /**
-     * @throws \Rancoud\Session\SessionException
-     */
+    /** @throws \Rancoud\Session\SessionException */
     public function testDestroy(): void
     {
         $file = new File();
@@ -149,9 +141,7 @@ class FileWithNewPrefixTest extends TestCase
         static::assertTrue($isFileNotExist);
     }
 
-    /**
-     * @throws \Rancoud\Session\SessionException
-     */
+    /** @throws \Rancoud\Session\SessionException */
     public function testGc(): void
     {
         $file = new File();
@@ -175,9 +165,7 @@ class FileWithNewPrefixTest extends TestCase
         static::assertTrue($isFileNotExist);
     }
 
-    /**
-     * @throws \Rancoud\Session\SessionException
-     */
+    /** @throws \Rancoud\Session\SessionException */
     public function testValidateId(): void
     {
         $file = new File();
@@ -196,9 +184,7 @@ class FileWithNewPrefixTest extends TestCase
         static::assertFalse($file->validateId('kjlfez/fez'));
     }
 
-    /**
-     * @throws \Rancoud\Session\SessionException
-     */
+    /** @throws \Rancoud\Session\SessionException */
     public function testUpdateTimestamp(): void
     {
         $file = new File();
@@ -229,9 +215,7 @@ class FileWithNewPrefixTest extends TestCase
         static::assertTrue($oldFileModifiedTime < $newFileModifiedTime);
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testCreateId(): void
     {
         $file = new File();
