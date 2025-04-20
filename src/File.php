@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rancoud\Session;
 
-/**
- * Class File.
- */
 class File implements \SessionHandlerInterface, \SessionUpdateTimestampHandlerInterface
 {
     protected ?string $savePath = null;
@@ -35,13 +32,8 @@ class File implements \SessionHandlerInterface, \SessionUpdateTimestampHandlerIn
         return $this->lengthSessionID;
     }
 
-    /**
-     * @param string $path
-     * @param string $name
-     *
-     * @throws SessionException
-     */
-    public function open($path, $name): bool
+    /** @throws SessionException */
+    public function open(string $path, string $name): bool
     {
         $this->savePath = $path;
 
@@ -60,8 +52,7 @@ class File implements \SessionHandlerInterface, \SessionUpdateTimestampHandlerIn
         return true;
     }
 
-    /** @param string $id */
-    public function read($id): string
+    public function read(string $id): string
     {
         $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $id;
         if (\file_exists($filename) && \is_file($filename)) {
@@ -71,19 +62,14 @@ class File implements \SessionHandlerInterface, \SessionUpdateTimestampHandlerIn
         return '';
     }
 
-    /**
-     * @param string $id
-     * @param string $data
-     */
-    public function write($id, $data): bool
+    public function write(string $id, string $data): bool
     {
         $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $id;
 
         return !(\file_put_contents($filename, $data) === false);
     }
 
-    /** @param string $id */
-    public function destroy($id): bool
+    public function destroy(string $id): bool
     {
         $filename = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . $id;
         if (\file_exists($filename) && \is_file($filename)) {
@@ -93,9 +79,8 @@ class File implements \SessionHandlerInterface, \SessionUpdateTimestampHandlerIn
         return true;
     }
 
-    /** @param int $max_lifetime */
     #[\ReturnTypeWillChange]
-    public function gc($max_lifetime): bool
+    public function gc(int $max_lifetime): bool
     {
         $pattern = $this->savePath . \DIRECTORY_SEPARATOR . $this->prefix . '*';
         foreach (\glob($pattern) as $file) {
@@ -107,14 +92,8 @@ class File implements \SessionHandlerInterface, \SessionUpdateTimestampHandlerIn
         return true;
     }
 
-    /**
-     * Checks format and id exists, if not session_id will be regenerate.
-     *
-     * @param string $id
-     *
-     * @noinspection PhpMissingParamTypeInspection
-     */
-    public function validateId($id): bool
+    /** Checks format and id exists, if not session_id will be regenerate. */
+    public function validateId(string $id): bool
     {
         if (\preg_match('/^[a-zA-Z0-9-]{' . $this->lengthSessionID . '}+$/', $id) !== 1) {
             return false;
@@ -125,15 +104,8 @@ class File implements \SessionHandlerInterface, \SessionUpdateTimestampHandlerIn
         return \file_exists($filename);
     }
 
-    /**
-     * Updates the timestamp of a session when its data didn't change.
-     *
-     * @param string $id
-     * @param string $data
-     *
-     * @noinspection PhpMissingParamTypeInspection
-     */
-    public function updateTimestamp($id, $data): bool
+    /** Updates the timestamp of a session when its data didn't change. */
+    public function updateTimestamp(string $id, string $data): bool
     {
         return $this->write($id, $data);
     }

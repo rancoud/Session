@@ -6,9 +6,6 @@ namespace Rancoud\Session;
 
 use Predis\Client as Predis;
 
-/**
- * Class Redis.
- */
 class Redis implements \SessionHandlerInterface, \SessionUpdateTimestampHandlerInterface
 {
     protected Predis $redis;
@@ -17,8 +14,7 @@ class Redis implements \SessionHandlerInterface, \SessionUpdateTimestampHandlerI
 
     protected int $lengthSessionID = 127;
 
-    /** @param array|string $configuration */
-    public function setNewRedis($configuration): void
+    public function setNewRedis(array|string $configuration): void
     {
         $this->redis = new Predis($configuration);
     }
@@ -48,11 +44,7 @@ class Redis implements \SessionHandlerInterface, \SessionUpdateTimestampHandlerI
         return $this->lengthSessionID;
     }
 
-    /**
-     * @param string $path
-     * @param string $name
-     */
-    public function open($path, $name): bool
+    public function open(string $path, string $name): bool
     {
         return true;
     }
@@ -62,17 +54,12 @@ class Redis implements \SessionHandlerInterface, \SessionUpdateTimestampHandlerI
         return true;
     }
 
-    /** @param string $id */
-    public function read($id): string
+    public function read(string $id): string
     {
         return (string) $this->redis->get($id);
     }
 
-    /**
-     * @param string $id
-     * @param string $data
-     */
-    public function write($id, $data): bool
+    public function write(string $id, string $data): bool
     {
         $this->redis->set($id, $data);
         $this->redis->expireat($id, \time() + $this->lifetime);
@@ -80,29 +67,21 @@ class Redis implements \SessionHandlerInterface, \SessionUpdateTimestampHandlerI
         return true;
     }
 
-    /** @param string $id */
-    public function destroy($id): bool
+    public function destroy(string $id): bool
     {
         $this->redis->del([$id]);
 
         return true;
     }
 
-    /** @param int $max_lifetime */
     #[\ReturnTypeWillChange]
-    public function gc($max_lifetime): bool
+    public function gc(int $max_lifetime): bool
     {
         return true;
     }
 
-    /**
-     * Checks format and id exists, if not session_id will be regenerate.
-     *
-     * @param string $id
-     *
-     * @noinspection PhpMissingParamTypeInspection
-     */
-    public function validateId($id): bool
+    /** Checks format and id exists, if not session_id will be regenerate. */
+    public function validateId(string $id): bool
     {
         if (\preg_match('/^[a-zA-Z0-9-]{' . $this->lengthSessionID . '}+$/', $id) !== 1) {
             return false;
@@ -113,15 +92,8 @@ class Redis implements \SessionHandlerInterface, \SessionUpdateTimestampHandlerI
         return $exist === 1;
     }
 
-    /**
-     * Updates the timestamp of a session when its data didn't change.
-     *
-     * @param string $id
-     * @param string $data
-     *
-     * @noinspection PhpMissingParamTypeInspection
-     */
-    public function updateTimestamp($id, $data): bool
+    /** Updates the timestamp of a session when its data didn't change. */
+    public function updateTimestamp(string $id, string $data): bool
     {
         return $this->write($id, $data);
     }

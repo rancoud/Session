@@ -8,11 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Predis\Client as Predis;
 use Rancoud\Session\RedisEncryption;
 
-/**
- * Class RedisEncryptionTest.
- *
- * @internal
- */
+/** @internal */
 class RedisEncryptionTest extends TestCase
 {
     private static Predis $redis;

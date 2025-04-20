@@ -4,32 +4,20 @@ declare(strict_types=1);
 
 namespace Rancoud\Session;
 
-/**
- * Class DefaultEncryption.
- */
 class DefaultEncryption extends \SessionHandler
 {
     use Encryption;
 
-    /**
-     * @param string $id
-     *
-     * @throws SessionException
-     */
-    public function read($id): string
+    /** @throws SessionException */
+    public function read(string $id): string
     {
         $encryptedData = parent::read($id);
 
         return $this->decrypt($encryptedData);
     }
 
-    /**
-     * @param string $id
-     * @param string $data
-     *
-     * @throws SessionException
-     */
-    public function write($id, $data): bool
+    /** @throws SessionException */
+    public function write(string $id, string $data): bool
     {
         $cryptedData = $this->encrypt($data);
 

@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rancoud\Session;
 
-/**
- * Trait ArrayManager.
- */
 trait ArrayManager
 {
     protected static array $flashData = [];
@@ -17,9 +14,7 @@ trait ArrayManager
     /** @throws SessionException */
     abstract protected static function startSessionIfNotHasStartedForceWrite();
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function set(string $key, $value): void
     {
         static::startSessionIfNotHasStartedForceWrite();
@@ -35,9 +30,7 @@ trait ArrayManager
         return \array_key_exists($key, $_SESSION);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function hasKeyAndValue(string $key, $value): bool
     {
         static::startSessionIfNotHasStarted();

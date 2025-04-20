@@ -8,11 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Rancoud\Session\File;
 use Rancoud\Session\SessionException;
 
-/**
- * Class FileTest.
- *
- * @internal
- */
+/** @internal */
 class FileTest extends TestCase
 {
     protected function setUp(): void

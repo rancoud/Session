@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Rancoud\Session;
 
-/**
- * Trait Encryption.
- */
 trait Encryption
 {
     protected ?string $key = null;
@@ -66,11 +63,8 @@ trait Encryption
 
         return \array_filter($methods, static function ($c) {
             $forbiddenMethods = [
-                'aes-128-cbc-hmac-sha1', 'aes-256-cbc-hmac-sha1'
-            ];
-
-            \array_push(
-                $forbiddenMethods,
+                'aes-128-cbc-hmac-sha1',
+                'aes-256-cbc-hmac-sha1',
                 'aes-128-cbc-cts',
                 'aes-128-cbc-hmac-sha256',
                 'aes-128-siv',
@@ -113,10 +107,9 @@ trait Encryption
                 '2.16.840.1.101.3.4.1.7',
                 '1.2.156.10197.1.104.1',
                 '1.2.156.10197.1.104.8',
-                '1.2.156.10197.1.104.9'
-            );
-
-            $forbiddenMethods[] = 'chacha20-poly1305';
+                '1.2.156.10197.1.104.9',
+                'chacha20-poly1305'
+            ];
 
             return !\in_array(\mb_strtolower($c), $forbiddenMethods, true);
         });
@@ -154,7 +147,7 @@ trait Encryption
             if ($length === false || $length < 1) {
                 throw new SessionException('IV generation failed');
             }
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             throw new SessionException('IV generation failed');
         }
 

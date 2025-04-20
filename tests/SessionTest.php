@@ -9,11 +9,7 @@ use Rancoud\Session\File;
 use Rancoud\Session\Session;
 use Rancoud\Session\SessionException;
 
-/**
- * Class SessionTest.
- *
- * @internal
- */
+/** @internal */
 class SessionTest extends TestCase
 {
     protected function setUp(): void

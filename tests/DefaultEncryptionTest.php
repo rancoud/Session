@@ -7,11 +7,7 @@ namespace tests;
 use PHPUnit\Framework\TestCase;
 use Rancoud\Session\Session;
 
-/**
- * Class DefaultEncryptionTest.
- *
- * @internal
- */
+/** @internal */
 class DefaultEncryptionTest extends TestCase
 {
     protected function setUp(): void
@@ -29,7 +25,7 @@ class DefaultEncryptionTest extends TestCase
         }
     }
 
-    private function foundSessionFile()
+    private function foundSessionFile(): false|string
     {
         $path = \ini_get('session.save_path');
         if (empty($path)) {

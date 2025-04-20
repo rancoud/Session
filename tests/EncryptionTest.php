@@ -7,11 +7,7 @@ namespace tests;
 use PHPUnit\Framework\TestCase;
 use Rancoud\Session\SessionException;
 
-/**
- * Class EncryptedTest.
- *
- * @internal
- */
+/** @internal */
 class EncryptionTest extends TestCase
 {
     public function testDefaultEncryption(): void
@@ -48,7 +44,7 @@ class EncryptionTest extends TestCase
 
                 $finalData = $encryptionTrait->decrypt($encryptedData);
                 static::assertSame($dataToEncrypt, $finalData, $method . ' fail!');
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 $failedMethods[] = $method;
 
                 continue;
@@ -75,24 +71,7 @@ class EncryptionTest extends TestCase
     {
         $forbiddenMethods = [
             'aes-128-cbc-hmac-sha1',
-            'aes-256-cbc-hmac-sha1'
-        ];
-
-        $encryptionTrait = new class() {
-            use \Rancoud\Session\Encryption;
-
-            public function setMethod(string $method): void
-            {
-                $this->method = $method;
-            }
-        };
-
-        $dataToEncrypt = 'this is something to encrypt';
-
-        $encryptionTrait->setKey('my key');
-
-        \array_push(
-            $forbiddenMethods,
+            'aes-256-cbc-hmac-sha1',
             'aes-128-cbc-cts',
             'aes-128-cbc-hmac-sha256',
             'aes-128-siv',
@@ -130,10 +109,22 @@ class EncryptionTest extends TestCase
             '2.16.840.1.101.3.4.1.47',
             '2.16.840.1.101.3.4.1.5',
             '2.16.840.1.101.3.4.1.6',
-            '2.16.840.1.101.3.4.1.7'
-        );
+            '2.16.840.1.101.3.4.1.7',
+            'chacha20-poly1305'
+        ];
 
-        $forbiddenMethods[] = 'chacha20-poly1305';
+        $encryptionTrait = new class() {
+            use \Rancoud\Session\Encryption;
+
+            public function setMethod(string $method): void
+            {
+                $this->method = $method;
+            }
+        };
+
+        $dataToEncrypt = 'this is something to encrypt';
+
+        $encryptionTrait->setKey('my key');
 
         $countInvalidMethods = \count($forbiddenMethods);
         foreach ($forbiddenMethods as $method) {

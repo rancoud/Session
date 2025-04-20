@@ -10,9 +10,6 @@ use Rancoud\Database\Configurator;
 use Rancoud\Database\Database as DB;
 use Rancoud\Database\DatabaseException;
 
-/**
- * Class Database.
- */
 class Database implements \SessionHandlerInterface, \SessionUpdateTimestampHandlerInterface
 {
     protected DB $db;
@@ -21,12 +18,8 @@ class Database implements \SessionHandlerInterface, \SessionUpdateTimestampHandl
 
     protected int $lengthSessionID = 127;
 
-    /**
-     * @param array|Configurator $configuration
-     *
-     * @throws SessionException
-     */
-    public function setNewDatabase($configuration): void
+    /** @throws SessionException */
+    public function setNewDatabase(array|Configurator $configuration): void
     {
         try {
             if ($configuration instanceof Configurator) {
@@ -64,11 +57,7 @@ class Database implements \SessionHandlerInterface, \SessionUpdateTimestampHandl
         return $this->lengthSessionID;
     }
 
-    /**
-     * @param string $path
-     * @param string $name
-     */
-    public function open($path, $name): bool
+    public function open(string $path, string $name): bool
     {
         return true;
     }
@@ -78,12 +67,8 @@ class Database implements \SessionHandlerInterface, \SessionUpdateTimestampHandl
         return true;
     }
 
-    /**
-     * @param string $id
-     *
-     * @throws SessionException
-     */
-    public function read($id): string
+    /** @throws SessionException */
+    public function read(string $id): string
     {
         try {
             $sql = 'SELECT content FROM sessions WHERE id = :id';
@@ -95,13 +80,8 @@ class Database implements \SessionHandlerInterface, \SessionUpdateTimestampHandl
         }
     }
 
-    /**
-     * @param string $id
-     * @param string $data
-     *
-     * @throws SessionException
-     */
-    public function write($id, $data): bool
+    /** @throws SessionException */
+    public function write(string $id, string $data): bool
     {
         try {
             $sql = 'REPLACE INTO sessions VALUES(:id, :id_user, UTC_TIMESTAMP(), :content)';
@@ -115,12 +95,8 @@ class Database implements \SessionHandlerInterface, \SessionUpdateTimestampHandl
         }
     }
 
-    /**
-     * @param string $id
-     *
-     * @throws SessionException
-     */
-    public function destroy($id): bool
+    /** @throws SessionException */
+    public function destroy(string $id): bool
     {
         try {
             $sql = 'DELETE FROM sessions WHERE id = :id';
@@ -133,13 +109,9 @@ class Database implements \SessionHandlerInterface, \SessionUpdateTimestampHandl
         }
     }
 
-    /**
-     * @param int $max_lifetime
-     *
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     #[\ReturnTypeWillChange]
-    public function gc($max_lifetime): bool
+    public function gc(int $max_lifetime): bool
     {
         try {
             $sql = 'DELETE FROM sessions WHERE DATE_ADD(last_access, INTERVAL :seconds second) < UTC_TIMESTAMP()';
@@ -155,13 +127,9 @@ class Database implements \SessionHandlerInterface, \SessionUpdateTimestampHandl
     /**
      * Checks format and id exists, if not session_id will be regenerate.
      *
-     * @param string $id
-     *
      * @throws SessionException
-     *
-     * @noinspection PhpMissingParamTypeInspection
      */
-    public function validateId($id): bool
+    public function validateId(string $id): bool
     {
         try {
             if (\preg_match('/^[a-zA-Z0-9-]{' . $this->lengthSessionID . '}+$/', $id) !== 1) {
@@ -181,14 +149,9 @@ class Database implements \SessionHandlerInterface, \SessionUpdateTimestampHandl
     /**
      * Updates the timestamp of a session when its data didn't change.
      *
-     * @param string $id
-     * @param string $data
-     *
      * @throws SessionException
-     *
-     * @noinspection PhpMissingParamTypeInspection
      */
-    public function updateTimestamp($id, $data): bool
+    public function updateTimestamp(string $id, string $data): bool
     {
         return $this->write($id, $data);
     }
