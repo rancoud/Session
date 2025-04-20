@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace Rancoud\Session;
 
 use Predis\Client as Predis;
-use SessionHandlerInterface;
-use SessionUpdateTimestampHandlerInterface;
 
 /**
  * Class Redis.
  */
-class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInterface
+class Redis implements \SessionHandlerInterface, \SessionUpdateTimestampHandlerInterface
 {
     protected Predis $redis;
 
@@ -19,9 +17,7 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
 
     protected int $lengthSessionID = 127;
 
-    /**
-     * @param string|array $configuration
-     */
+    /** @param array|string $configuration */
     public function setNewRedis($configuration): void
     {
         $this->redis = new Predis($configuration);
@@ -37,9 +33,7 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
         $this->lifetime = $lifetime;
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function setLengthSessionID(int $length): void
     {
         if ($length < 32) {
@@ -68,9 +62,7 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
         return true;
     }
 
-    /**
-     * @param string $id
-     */
+    /** @param string $id */
     public function read($id): string
     {
         return (string) $this->redis->get($id);
@@ -88,9 +80,7 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
         return true;
     }
 
-    /**
-     * @param string $id
-     */
+    /** @param string $id */
     public function destroy($id): bool
     {
         $this->redis->del([$id]);
@@ -98,11 +88,7 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
         return true;
     }
 
-    /**
-     * @param int $max_lifetime
-     *
-     * @noinspection PhpLanguageLevelInspection
-     */
+    /** @param int $max_lifetime */
     #[\ReturnTypeWillChange]
     public function gc($max_lifetime): bool
     {
@@ -167,8 +153,7 @@ class Redis implements SessionHandlerInterface, SessionUpdateTimestampHandlerInt
         $exist = $this->redis->exists($string);
         if ($exist !== 0) {
             // @codeCoverageIgnoreStart
-            /* Could not reach this statement without mocking the function
-             */
+            // Could not reach this statement without mocking the function
             return $this->create_sid();
             // @codeCoverageIgnoreEnd
         }

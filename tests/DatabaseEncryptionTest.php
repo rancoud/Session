@@ -15,14 +15,14 @@ use Rancoud\Session\SessionException;
 
 /**
  * Class DatabaseEncryptionTest.
+ *
+ * @internal
  */
 class DatabaseEncryptionTest extends TestCase
 {
     protected static DB $db;
 
-    /**
-     * @throws DatabaseException
-     */
+    /** @throws DatabaseException */
     public static function setUpBeforeClass(): void
     {
         $conf = new Configurator([
@@ -38,7 +38,7 @@ class DatabaseEncryptionTest extends TestCase
 
         static::$db = new DB($conf);
 
-        $sql = <<<SQL
+        $sql = <<<'SQL'
             CREATE TABLE IF NOT EXISTS `sessions` (
               `id` varchar(128) NOT NULL,
               `id_user` int(10) unsigned DEFAULT NULL,
@@ -52,9 +52,7 @@ class DatabaseEncryptionTest extends TestCase
         static::$db->truncateTables('sessions');
     }
 
-    /**
-     * @throws DatabaseException
-     */
+    /** @throws DatabaseException */
     protected function setUp(): void
     {
         static::$db->truncateTables('sessions');
@@ -105,7 +103,7 @@ class DatabaseEncryptionTest extends TestCase
         static::assertNotEmpty($row);
         static::assertNotSame($data, $row['content']);
 
-        $encryptionTrait = new class {
+        $encryptionTrait = new class() {
             use \Rancoud\Session\Encryption;
         };
         $encryptionTrait->setKey('randomKey');
@@ -113,9 +111,7 @@ class DatabaseEncryptionTest extends TestCase
         static::assertSame($data, $dataInDatabaseDecrypted);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testRead(): void
     {
         $database = new DatabaseEncryption();
@@ -230,9 +226,7 @@ class DatabaseEncryptionTest extends TestCase
         static::assertSame($userId, $userIdInDatabase);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testSetNewDatabaseWithArray(): void
     {
         $database = new DatabaseEncryption();
@@ -284,9 +278,7 @@ class DatabaseEncryptionTest extends TestCase
         static::assertTrue($database->write($sessionId, $data));
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testSetNewDatabaseSessionException(): void
     {
         $this->expectException(SessionException::class);
@@ -299,9 +291,7 @@ class DatabaseEncryptionTest extends TestCase
         ]);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testValidateId(): void
     {
         $database = new DatabaseEncryption();
@@ -341,7 +331,7 @@ class DatabaseEncryptionTest extends TestCase
         static::assertNotEmpty($row1);
         static::assertNotSame($data, $row1['content']);
 
-        $encryptionTrait = new class {
+        $encryptionTrait = new class() {
             use \Rancoud\Session\Encryption;
         };
         $encryptionTrait->setKey('randomKey');
@@ -356,7 +346,7 @@ class DatabaseEncryptionTest extends TestCase
 
         static::assertNotEmpty($row2);
         static::assertNotSame($data, $row2['content']);
-        $encryptionTrait = new class {
+        $encryptionTrait = new class() {
             use \Rancoud\Session\Encryption;
         };
         $encryptionTrait->setKey('randomKey');
@@ -366,9 +356,7 @@ class DatabaseEncryptionTest extends TestCase
         static::assertTrue($row1['last_access'] < $row2['last_access']);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testCreateId(): void
     {
         $database = new DatabaseEncryption();

@@ -4,12 +4,10 @@ declare(strict_types=1);
 
 namespace Rancoud\Session;
 
-use SessionHandler;
-
 /**
  * Class DefaultEncryption.
  */
-class DefaultEncryption extends SessionHandler
+class DefaultEncryption extends \SessionHandler
 {
     use Encryption;
 

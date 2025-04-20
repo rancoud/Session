@@ -9,6 +9,8 @@ use Rancoud\Session\Session;
 
 /**
  * Class DefaultEncryptionTest.
+ *
+ * @internal
  */
 class DefaultEncryptionTest extends TestCase
 {
@@ -45,9 +47,7 @@ class DefaultEncryptionTest extends TestCase
         return false;
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testReadAndWrite(): void
     {
         Session::useDefaultEncryptionDriver('randomKey');
@@ -58,7 +58,7 @@ class DefaultEncryptionTest extends TestCase
         $data = $this->foundSessionFile();
         static::assertNotFalse($data);
 
-        $encryptionTrait = new class {
+        $encryptionTrait = new class() {
             use \Rancoud\Session\Encryption;
         };
         $encryptionTrait->setKey('randomKey');

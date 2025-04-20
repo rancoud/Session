@@ -23,9 +23,7 @@ class Session extends DriverManager
         'use_strict_mode'  => '1'
     ];
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function start(array $options = []): void
     {
         static::throwExceptionIfHasStarted();
@@ -35,9 +33,7 @@ class Session extends DriverManager
         static::setupAndStart();
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     protected static function populateOptions(array $options = []): void
     {
         static::validateOptions($options);
@@ -45,9 +41,7 @@ class Session extends DriverManager
         static::setOptions($options);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     protected static function setupAndStart(): void
     {
         if (static::$hasChanged === false) {
@@ -74,9 +68,7 @@ class Session extends DriverManager
         static::$hasStarted = (static::$options['read_and_close'] === false);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     protected static function throwExceptionIfHasStarted(): void
     {
         if (static::hasStarted()) {
@@ -84,9 +76,7 @@ class Session extends DriverManager
         }
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     protected static function setupSessionParameters(): void
     {
         \session_name(static::getOption('name'));
@@ -98,9 +88,7 @@ class Session extends DriverManager
         static::setupCookieParams();
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     protected static function startSession(): bool
     {
         static::validateOptions(static::$options);
@@ -110,9 +98,7 @@ class Session extends DriverManager
         return \session_start(static::$options);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     protected static function validateOptions(array $options = []): void
     {
         if (empty($options)) {
@@ -163,9 +149,7 @@ class Session extends DriverManager
         }
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     protected static function setupCookieParams(): void
     {
         // https://www.php.net/manual/fr/function.session-set-cookie-params.php new signature
@@ -181,9 +165,7 @@ class Session extends DriverManager
         );
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function regenerate(): bool
     {
         static::startSessionIfNotHasStartedForceWrite();
@@ -239,9 +221,7 @@ class Session extends DriverManager
         return \session_id($id);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function gc(): void
     {
         static::startSessionIfNotHasStartedForceWrite();
@@ -249,9 +229,7 @@ class Session extends DriverManager
         \session_gc();
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     protected static function startSessionIfNotHasStarted(): void
     {
         if (!static::hasStarted()) {
@@ -259,9 +237,7 @@ class Session extends DriverManager
         }
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     protected static function startSessionIfNotHasStartedForceWrite(): void
     {
         if (!static::hasStarted()) {
@@ -287,9 +263,7 @@ class Session extends DriverManager
         return static::$options['read_and_close'] === true;
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     protected static function getLifetimeForRedis(): int
     {
         return (int) static::getOption('cookie_lifetime');
@@ -305,9 +279,7 @@ class Session extends DriverManager
         static::$options[$key] = $value;
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function setOptions(array $options): void
     {
         static::$hasChanged = true;
@@ -315,9 +287,7 @@ class Session extends DriverManager
         static::$options = $options + static::$options;
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function getOption(string $key)
     {
         if (\array_key_exists($key, static::$options)) {

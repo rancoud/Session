@@ -10,6 +10,8 @@ use Rancoud\Session\SessionException;
 
 /**
  * Class FileTest.
+ *
+ * @internal
  */
 class FileTest extends TestCase
 {
@@ -42,18 +44,14 @@ class FileTest extends TestCase
         return $path;
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     private function openSessionForSavingSavePath(File $file): void
     {
         $success = $file->open($this->getPath(), '');
         static::assertTrue($success);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testOpen(): void
     {
         $file = new File();
@@ -76,9 +74,7 @@ class FileTest extends TestCase
         static::assertTrue($success);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testWrite(): void
     {
         $file = new File();
@@ -94,9 +90,7 @@ class FileTest extends TestCase
         static::assertSame($data, $dataInFile);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testRead(): void
     {
         $file = new File();
@@ -119,9 +113,7 @@ class FileTest extends TestCase
         static::assertIsString($dataOutput);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testDestroy(): void
     {
         $file = new File();
@@ -145,9 +137,7 @@ class FileTest extends TestCase
         static::assertTrue($isFileNotExist);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testGc(): void
     {
         $file = new File();
@@ -170,9 +160,7 @@ class FileTest extends TestCase
         static::assertTrue($isFileNotExist);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testValidateId(): void
     {
         $file = new File();
@@ -190,9 +178,7 @@ class FileTest extends TestCase
         static::assertFalse($file->validateId('kjlfez/fez'));
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testUpdateTimestamp(): void
     {
         $file = new File();
@@ -222,9 +208,7 @@ class FileTest extends TestCase
         static::assertTrue($oldFileModifiedTime < $newFileModifiedTime);
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testCreateId(): void
     {
         $file = new File();
@@ -234,9 +218,7 @@ class FileTest extends TestCase
         static::assertMatchesRegularExpression('/^[a-zA-Z0-9-]{127}+$/', $string);
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function testLengthSessionID(): void
     {
         $file = new File();

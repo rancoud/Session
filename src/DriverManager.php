@@ -7,24 +7,20 @@ namespace Rancoud\Session;
 use Predis\Client as PredisClient;
 use Rancoud\Database\Configurator;
 use Rancoud\Database\Database as DB;
-use SessionHandler;
-use SessionHandlerInterface;
 
 /**
  * Class DriverManager.
  */
 abstract class DriverManager
 {
-    protected static ?SessionHandlerInterface $driver = null;
+    protected static ?\SessionHandlerInterface $driver = null;
 
     /** @throws SessionException */
     abstract protected static function throwExceptionIfHasStarted();
 
     abstract protected static function getLifetimeForRedis();
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     protected static function configureDriver(): void
     {
         if (empty(static::$driver)) {
@@ -32,19 +28,15 @@ abstract class DriverManager
         }
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function useDefaultDriver(): void
     {
         static::throwExceptionIfHasStarted();
 
-        static::$driver = new SessionHandler();
+        static::$driver = new \SessionHandler();
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function useDefaultEncryptionDriver(string $key, ?string $method = null): void
     {
         static::throwExceptionIfHasStarted();
@@ -55,9 +47,7 @@ abstract class DriverManager
         static::$driver = $driver;
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function useFileDriver(): void
     {
         static::throwExceptionIfHasStarted();
@@ -65,9 +55,7 @@ abstract class DriverManager
         static::$driver = new File();
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function useFileEncryptionDriver(string $key, ?string $method = null): void
     {
         static::throwExceptionIfHasStarted();
@@ -79,7 +67,7 @@ abstract class DriverManager
     }
 
     /**
-     * @param Configurator|array $configuration
+     * @param array|Configurator $configuration
      *
      * @throws SessionException
      */
@@ -93,9 +81,7 @@ abstract class DriverManager
         static::$driver = $driver;
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function useCurrentDatabaseDriver(DB $databaseInstance): void
     {
         static::throwExceptionIfHasStarted();
@@ -107,7 +93,7 @@ abstract class DriverManager
     }
 
     /**
-     * @param Configurator|array $configuration
+     * @param array|Configurator $configuration
      *
      * @throws SessionException
      */
@@ -122,9 +108,7 @@ abstract class DriverManager
         static::$driver = $driver;
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function useCurrentDatabaseEncryptionDriver(DB $databaseInstance, string $key, ?string $method = null): void // phpcs:ignore
     {
         static::throwExceptionIfHasStarted();
@@ -152,9 +136,7 @@ abstract class DriverManager
         static::$driver = $driver;
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function useCurrentRedisDriver(PredisClient $redisInstance): void
     {
         static::throwExceptionIfHasStarted();
@@ -183,9 +165,7 @@ abstract class DriverManager
         static::$driver = $driver;
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function useCurrentRedisEncryptionDriver(PredisClient $redisInstance, string $key, ?string $method = null): void // phpcs:ignore
     {
         static::throwExceptionIfHasStarted();
@@ -213,17 +193,15 @@ abstract class DriverManager
         }
     }
 
-    /**
-     * @throws SessionException
-     */
-    public static function useCustomDriver(SessionHandlerInterface $customDriver): void
+    /** @throws SessionException */
+    public static function useCustomDriver(\SessionHandlerInterface $customDriver): void
     {
         static::throwExceptionIfHasStarted();
 
         static::$driver = $customDriver;
     }
 
-    public static function getDriver(): SessionHandlerInterface
+    public static function getDriver(): \SessionHandlerInterface
     {
         return static::$driver;
     }

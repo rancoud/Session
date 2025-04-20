@@ -27,9 +27,7 @@ trait ArrayManager
         $_SESSION[$key] = $value;
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function has(string $key): bool
     {
         static::startSessionIfNotHasStarted();
@@ -47,9 +45,7 @@ trait ArrayManager
         return \array_key_exists($key, $_SESSION) && $_SESSION[$key] === $value;
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function get(string $key)
     {
         static::startSessionIfNotHasStarted();
@@ -57,9 +53,7 @@ trait ArrayManager
         return (static::has($key)) ? $_SESSION[$key] : null;
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function remove(string $key): void
     {
         static::startSessionIfNotHasStartedForceWrite();
@@ -69,9 +63,7 @@ trait ArrayManager
         }
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function getAll(): array
     {
         static::startSessionIfNotHasStarted();
@@ -79,9 +71,7 @@ trait ArrayManager
         return $_SESSION;
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function getAndRemove(string $key)
     {
         static::startSessionIfNotHasStartedForceWrite();
@@ -119,9 +109,7 @@ trait ArrayManager
         }
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public static function keepFlash(array $keys = []): void
     {
         static::startSessionIfNotHasStartedForceWrite();

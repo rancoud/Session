@@ -9,13 +9,11 @@ namespace Rancoud\Session;
 use Rancoud\Database\Configurator;
 use Rancoud\Database\Database as DB;
 use Rancoud\Database\DatabaseException;
-use SessionHandlerInterface;
-use SessionUpdateTimestampHandlerInterface;
 
 /**
  * Class Database.
  */
-class Database implements SessionHandlerInterface, SessionUpdateTimestampHandlerInterface
+class Database implements \SessionHandlerInterface, \SessionUpdateTimestampHandlerInterface
 {
     protected DB $db;
 
@@ -24,7 +22,7 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
     protected int $lengthSessionID = 127;
 
     /**
-     * @param Configurator|array $configuration
+     * @param array|Configurator $configuration
      *
      * @throws SessionException
      */
@@ -51,9 +49,7 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
         $this->userId = $userId;
     }
 
-    /**
-     * @throws SessionException
-     */
+    /** @throws SessionException */
     public function setLengthSessionID(int $length): void
     {
         if ($length < 32) {
@@ -141,8 +137,6 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
      * @param int $max_lifetime
      *
      * @throws SessionException
-     *
-     * @noinspection PhpLanguageLevelInspection
      */
     #[\ReturnTypeWillChange]
     public function gc($max_lifetime): bool
@@ -220,8 +214,7 @@ class Database implements SessionHandlerInterface, SessionUpdateTimestampHandler
             $count = $this->db->count($sql, $params);
             if ($count !== 0) {
                 // @codeCoverageIgnoreStart
-                /* Could not reach this statement without mocking the function
-                 */
+                // Could not reach this statement without mocking the function
                 return $this->create_sid();
                 // @codeCoverageIgnoreEnd
             }

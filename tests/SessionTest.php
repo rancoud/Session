@@ -8,10 +8,11 @@ use PHPUnit\Framework\TestCase;
 use Rancoud\Session\File;
 use Rancoud\Session\Session;
 use Rancoud\Session\SessionException;
-use ReflectionClass;
 
 /**
  * Class SessionTest.
+ *
+ * @internal
  */
 class SessionTest extends TestCase
 {
@@ -19,50 +20,21 @@ class SessionTest extends TestCase
     {
         @\session_destroy();
 
-        $class = new ReflectionClass(Session::class);
-        $propHasStarted = $class->getProperty('hasStarted');
-        $propHasStarted->setAccessible(true);
-        if (\PHP_MAJOR_VERSION === 8 && \PHP_MINOR_VERSION >= 3) {
-            $class->setStaticPropertyValue('hasStarted', false);
-        } else {
-            $propHasStarted->setValue(false);
-        }
+        $class = new \ReflectionClass(Session::class);
 
-        $propDriver = $class->getProperty('driver');
-        $propDriver->setAccessible(true);
-        if (\PHP_MAJOR_VERSION === 8 && \PHP_MINOR_VERSION >= 3) {
-            $class->setStaticPropertyValue('driver', null);
-        } else {
-            $propDriver->setValue(null);
-        }
+        $class->setStaticPropertyValue('hasStarted', false);
 
-        $propHasChanged = $class->getProperty('hasChanged');
-        $propHasChanged->setAccessible(true);
-        if (\PHP_MAJOR_VERSION === 8 && \PHP_MINOR_VERSION >= 3) {
-            $class->setStaticPropertyValue('hasChanged', true);
-        } else {
-            $propHasChanged->setValue(true);
-        }
+        $class->setStaticPropertyValue('driver', null);
 
-        $propOptions = $class->getProperty('options');
-        $propOptions->setAccessible(true);
-        if (\PHP_MAJOR_VERSION === 8 && \PHP_MINOR_VERSION >= 3) {
-            $class->setStaticPropertyValue('options', [
-                'read_and_close'   => true,
-                'cookie_httponly'  => '1',
-                'use_only_cookies' => '1',
-                'use_trans_sid'    => '0',
-                'use_strict_mode'  => '1'
-            ]);
-        } else {
-            $propOptions->setValue([
-                'read_and_close'   => true,
-                'cookie_httponly'  => '1',
-                'use_only_cookies' => '1',
-                'use_trans_sid'    => '0',
-                'use_strict_mode'  => '1'
-            ]);
-        }
+        $class->setStaticPropertyValue('hasChanged', true);
+
+        $class->setStaticPropertyValue('options', [
+            'read_and_close'   => true,
+            'cookie_httponly'  => '1',
+            'use_only_cookies' => '1',
+            'use_trans_sid'    => '0',
+            'use_strict_mode'  => '1'
+        ]);
 
         $path = \ini_get('session.save_path');
         if (empty($path)) {
@@ -77,18 +49,14 @@ class SessionTest extends TestCase
         }
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testGetNull(): void
     {
         $value = Session::get('emptykey');
         static::assertNull($value);
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testSet(): void
     {
         Session::set('a', 'b');
@@ -96,9 +64,7 @@ class SessionTest extends TestCase
         static::assertSame('b', $value);
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testHas(): void
     {
         Session::set('c', 'd');
@@ -110,9 +76,7 @@ class SessionTest extends TestCase
         static::assertFalse($value);
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testHasKeyAndValue(): void
     {
         Session::set('e', 'f');
@@ -127,9 +91,7 @@ class SessionTest extends TestCase
         static::assertFalse($value);
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testRemove(): void
     {
         Session::set('g', 'h');
@@ -143,9 +105,7 @@ class SessionTest extends TestCase
         static::assertNull($value);
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testGetAndRemove(): void
     {
         Session::set('i', 'j');
@@ -157,9 +117,7 @@ class SessionTest extends TestCase
         static::assertNull($value);
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testStartException(): void
     {
         $this->expectException(SessionException::class);
@@ -170,9 +128,7 @@ class SessionTest extends TestCase
         Session::start();
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testUseDefaultDriverWhenAlreadyStartedException(): void
     {
         $this->expectException(SessionException::class);
@@ -183,9 +139,7 @@ class SessionTest extends TestCase
         Session::useDefaultDriver();
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testUseFileDriverWhenAlreadyStartedException(): void
     {
         $this->expectException(SessionException::class);
@@ -196,9 +150,7 @@ class SessionTest extends TestCase
         Session::useFileDriver();
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testUseCustomDriverWhenAlreadyStartedException(): void
     {
         $this->expectException(SessionException::class);
@@ -209,9 +161,7 @@ class SessionTest extends TestCase
         Session::useCustomDriver(new File());
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testUseDefaultDriver(): void
     {
         Session::useDefaultDriver();
@@ -220,9 +170,7 @@ class SessionTest extends TestCase
         static::assertInstanceOf(\SessionHandler::class, Session::getDriver());
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testUseDefaultEncryptionDriver(): void
     {
         Session::useDefaultEncryptionDriver('randomKey');
@@ -231,9 +179,7 @@ class SessionTest extends TestCase
         static::assertInstanceOf(\Rancoud\Session\DefaultEncryption::class, Session::getDriver());
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testUseFileDriver(): void
     {
         Session::useFileDriver();
@@ -242,9 +188,7 @@ class SessionTest extends TestCase
         static::assertInstanceOf(File::class, Session::getDriver());
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testUseFileDriverWithPrefix(): void
     {
         $prefix = 'youhou_';
@@ -267,9 +211,7 @@ class SessionTest extends TestCase
         }
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testUseFileEncryptionDriver(): void
     {
         Session::useFileEncryptionDriver('randomKey');
@@ -278,9 +220,7 @@ class SessionTest extends TestCase
         static::assertInstanceOf(\Rancoud\Session\FileEncryption::class, Session::getDriver());
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testUseNewDatabaseDriver(): void
     {
         $params = [
@@ -299,9 +239,7 @@ class SessionTest extends TestCase
         static::assertInstanceOf(\Rancoud\Session\Database::class, Session::getDriver());
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testUseNewDatabaseEncryptionDriver(): void
     {
         $params = [
@@ -321,8 +259,8 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @throws \Rancoud\Database\DatabaseException
      * @throws \Exception
+     * @throws \Rancoud\Database\DatabaseException
      */
     public function testUseCurrentDatabaseDriver(): void
     {
@@ -345,8 +283,8 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @throws \Rancoud\Database\DatabaseException
      * @throws \Exception
+     * @throws \Rancoud\Database\DatabaseException
      */
     public function testUseCurrentDatabaseEncryptionDriver(): void
     {
@@ -376,9 +314,7 @@ class SessionTest extends TestCase
         static::assertSame($userId, $userIdInTable);
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testUseNewRedisDriver(): void
     {
         $params = [
@@ -395,9 +331,7 @@ class SessionTest extends TestCase
         static::assertInstanceOf(\Rancoud\Session\Redis::class, Session::getDriver());
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testUseNewRedisEncryptionDriver(): void
     {
         $params = [
@@ -414,9 +348,7 @@ class SessionTest extends TestCase
         static::assertInstanceOf(\Rancoud\Session\RedisEncryption::class, Session::getDriver());
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testUseCurrentRedisDriver(): void
     {
         $params = [
@@ -434,9 +366,7 @@ class SessionTest extends TestCase
         static::assertInstanceOf(\Rancoud\Session\Redis::class, Session::getDriver());
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testUseCurrentRedisEncryptionDriver(): void
     {
         $params = [
@@ -454,9 +384,7 @@ class SessionTest extends TestCase
         static::assertInstanceOf(\Rancoud\Session\RedisEncryption::class, Session::getDriver());
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testUseCustomDriver(): void
     {
         Session::useCustomDriver(new File());
@@ -465,9 +393,7 @@ class SessionTest extends TestCase
         static::assertInstanceOf(File::class, Session::getDriver());
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testUseEncryptionDriverThrowExceptionWhenMethodIncrorrect(): void
     {
         $this->expectException(SessionException::class);
@@ -477,8 +403,8 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @throws SessionException
      * @throws \Exception
+     * @throws SessionException
      */
     public function testSetOption(): void
     {
@@ -504,9 +430,7 @@ class SessionTest extends TestCase
         Session::getOption('azerty');
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testGetAll(): void
     {
         $sessionValues = Session::getAll();
@@ -518,9 +442,7 @@ class SessionTest extends TestCase
         static::assertSame(['a' => 'b'], $sessionValues);
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testFlash(): void
     {
         $flaKey1 = 'a';
@@ -581,9 +503,7 @@ class SessionTest extends TestCase
         static::assertSame([$flaKey4 => $flaValue4], Session::getAllFlash());
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testRollback(): void
     {
         Session::set('a', 'b');
@@ -596,9 +516,7 @@ class SessionTest extends TestCase
         static::assertFalse(Session::has('azerty'));
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testUnsaved(): void
     {
         Session::set('a', 'b');
@@ -612,9 +530,7 @@ class SessionTest extends TestCase
         static::assertSame(['a' => 'b'], $_SESSION);
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testRegenerate(): void
     {
         Session::set('a', 'v');
@@ -624,9 +540,7 @@ class SessionTest extends TestCase
         static::assertNotSame($sessionId, Session::getId());
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testDestroy(): void
     {
         Session::set('a', 'v');
@@ -637,9 +551,7 @@ class SessionTest extends TestCase
         static::assertEmpty($_SESSION);
     }
 
-    /**
-     * @throws \Exception
-     */
+    /** @throws \Exception */
     public function testSetReadOnly(): void
     {
         Session::setReadOnly();
@@ -648,8 +560,8 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @throws \Rancoud\Database\DatabaseException
      * @throws \Exception
+     * @throws \Rancoud\Database\DatabaseException
      */
     public function testGc(): void
     {
