@@ -98,7 +98,7 @@ abstract class DriverManager
     }
 
     /** @throws SessionException */
-    public static function useCurrentDatabaseEncryptionDriver(DB $databaseInstance, string $key, ?string $method = null): void // phpcs:ignore
+    public static function useCurrentDatabaseEncryptionDriver(DB $databaseInstance, string $key, ?string $method = null): void
     {
         static::throwExceptionIfHasStarted();
 
@@ -147,7 +147,7 @@ abstract class DriverManager
     }
 
     /** @throws SessionException */
-    public static function useCurrentRedisEncryptionDriver(PredisClient $redisInstance, string $key, ?string $method = null): void // phpcs:ignore
+    public static function useCurrentRedisEncryptionDriver(PredisClient $redisInstance, string $key, ?string $method = null): void
     {
         static::throwExceptionIfHasStarted();
 

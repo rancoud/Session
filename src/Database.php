@@ -91,7 +91,7 @@ class Database implements \SessionHandlerInterface, \SessionUpdateTimestampHandl
 
             return true;
         } catch (DatabaseException $e) {
-            throw new SessionException('could not update session: ' . $e->getMessage(), $e->getCode(), $e->getPrevious()); // phpcs:ignore
+            throw new SessionException('could not update session: ' . $e->getMessage(), $e->getCode(), $e->getPrevious());
         }
     }
 
@@ -105,7 +105,7 @@ class Database implements \SessionHandlerInterface, \SessionUpdateTimestampHandl
 
             return true;
         } catch (DatabaseException $e) {
-            throw new SessionException('could not delete session: ' . $e->getMessage(), $e->getCode(), $e->getPrevious()); // phpcs:ignore
+            throw new SessionException('could not delete session: ' . $e->getMessage(), $e->getCode(), $e->getPrevious());
         }
     }
 
@@ -120,7 +120,7 @@ class Database implements \SessionHandlerInterface, \SessionUpdateTimestampHandl
 
             return true;
         } catch (DatabaseException $e) {
-            throw new SessionException('could not clean old sessions: ' . $e->getMessage(), $e->getCode(), $e->getPrevious()); // phpcs:ignore
+            throw new SessionException('could not clean old sessions: ' . $e->getMessage(), $e->getCode(), $e->getPrevious());
         }
     }
 
@@ -161,7 +161,7 @@ class Database implements \SessionHandlerInterface, \SessionUpdateTimestampHandl
      *
      * @noinspection PhpMethodNamingConventionInspection
      */
-    public function create_sid(): string // phpcs:ignore
+    public function create_sid(): string
     {
         try {
             $string = '';
