@@ -103,7 +103,7 @@ class Redis implements \SessionHandlerInterface, \SessionUpdateTimestampHandlerI
      *
      * @noinspection PhpMethodNamingConventionInspection
      */
-    public function create_sid(): string // phpcs:ignore
+    public function create_sid(): string
     {
         $string = '';
         $characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-';

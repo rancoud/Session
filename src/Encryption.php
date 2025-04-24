@@ -153,7 +153,7 @@ trait Encryption
 
         /** @noinspection CryptographicallySecureRandomnessInspection */
         $iv = \openssl_random_pseudo_bytes($length, $cstrong);
-        // @noinspection PhpStrictComparisonWithOperandsOfDifferentTypesInspection
+        /** @noinspection PhpStrictComparisonWithOperandsOfDifferentTypesInspection */
         if ($iv === false || $cstrong === false) {
             // @codeCoverageIgnoreStart
             // Could not reach this statement without mocking the function
