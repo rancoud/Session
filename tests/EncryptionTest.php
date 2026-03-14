@@ -7,7 +7,9 @@ namespace tests;
 use PHPUnit\Framework\TestCase;
 use Rancoud\Session\SessionException;
 
-/** @internal */
+/**
+ * @internal
+ */
 class EncryptionTest extends TestCase
 {
     public function testDefaultEncryption(): void

@@ -13,7 +13,9 @@ use Rancoud\Database\DatabaseException;
 use Rancoud\Session\DatabaseEncryption;
 use Rancoud\Session\SessionException;
 
-/** @internal */
+/**
+ * @internal
+ */
 class DatabaseEncryptionTest extends TestCase
 {
     protected static DB $db;

@@ -7,7 +7,9 @@ namespace tests;
 use PHPUnit\Framework\TestCase;
 use Rancoud\Session\Session;
 
-/** @internal */
+/**
+ * @internal
+ */
 class DefaultEncryptionTest extends TestCase
 {
     protected function setUp(): void
