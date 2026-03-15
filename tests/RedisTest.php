@@ -9,7 +9,9 @@ use Predis\Client as Predis;
 use Rancoud\Session\Redis;
 use Rancoud\Session\SessionException;
 
-/** @internal */
+/**
+ * @internal
+ */
 class RedisTest extends TestCase
 {
     private static Predis $redis;

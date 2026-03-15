@@ -7,7 +7,9 @@ namespace tests;
 use PHPUnit\Framework\TestCase;
 use Rancoud\Session\File;
 
-/** @internal */
+/**
+ * @internal
+ */
 class FileWithNewPrefixTest extends TestCase
 {
     protected function setUp(): void

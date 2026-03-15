@@ -8,7 +8,9 @@ use PHPUnit\Framework\TestCase;
 use Rancoud\Session\FileEncryption;
 use Rancoud\Session\SessionException;
 
-/** @internal */
+/**
+ * @internal
+ */
 class FileEncryptionTest extends TestCase
 {
     protected function setUp(): void
