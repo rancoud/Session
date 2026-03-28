@@ -511,4 +511,64 @@ class DatabaseTest extends TestCase
 
         $database->deleteUserSessions(1);
     }
+
+    /**
+     * @throws DatabaseException
+     * @throws SessionException
+     */
+    public function testDeleteAnonymousSessions(): void
+    {
+        $database = new Database();
+        $database->setCurrentDatabase(static::$db);
+
+        $data = 'azerty';
+
+        $database->setUserId(10);
+
+        static::assertTrue($database->write('session_id_10', $data));
+        static::assertTrue($database->write('session_id_20', $data));
+        static::assertTrue($database->write('session_id_30', $data));
+
+        $database->setUserId(null);
+
+        static::assertTrue($database->write('session_id_40', $data));
+        static::assertTrue($database->write('session_id_50', $data));
+        static::assertTrue($database->write('session_id_60', $data));
+
+        $sql = 'SELECT id FROM sessions WHERE id_user = :id_user';
+        $params = ['id_user' => 10];
+        $sessionsFromDatabase = static::$db->selectCol($sql, $params);
+        static::assertSame(['session_id_10', 'session_id_20', 'session_id_30'], $sessionsFromDatabase);
+
+        $sql = 'SELECT id FROM sessions WHERE id_user IS NULL';
+        $sessionsFromDatabase = static::$db->selectCol($sql);
+        static::assertSame(['session_id_40', 'session_id_50', 'session_id_60'], $sessionsFromDatabase);
+
+        $database->deleteAnonymousSessions(10);
+
+        $sql = 'SELECT id FROM sessions';
+        $sessionsFromDatabase = static::$db->selectCol($sql);
+        static::assertSame(['session_id_10', 'session_id_20', 'session_id_30'], $sessionsFromDatabase);
+    }
+
+    /**
+     * @throws DatabaseException
+     * @throws SessionException
+     */
+    public function testDeleteAnonymousSessionsSessionException(): void
+    {
+        $this->expectException(SessionException::class);
+        $this->expectExceptionMessage('could not delete sessions: Error Connecting Database');
+
+        $database = new Database();
+        $database->setNewDatabase([
+            'driver'   => 'mysql',
+            'host'     => 'mariadb',
+            'user'     => 'invalid',
+            'password' => '',
+            'database' => 'test_database'
+        ]);
+
+        $database->deleteAnonymousSessions();
+    }
 }

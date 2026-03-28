@@ -18,7 +18,7 @@ composer require rancoud/session
 By default session is in read only (option read_and_close = 1).  
 You can specify it using `Session::setReadWrite()` or `Session::setReadOnly()`  
 
-Session::start() is not needed, but: 
+Session::start() is not needed, but:
 * Session will automatically start in read only when using `get, has, hasKeyAndValue, getAll`
 * Session will automatically start in write mode when using `set, remove, getAndRemove, keepFlash, gc, regenerate`
 
@@ -98,86 +98,88 @@ $value = Session::get('key');
 ```
 
 ## Session
-### Static General Commands  
-* start([options: array = []]): void  
-* regenerate(): bool  
-* destroy(): bool  
-* commit(): void  
-* rollback(): bool  
-* unsaved(): bool  
-* hasStarted(): bool  
-* getId(): string  
-* setId(id: string): string  
-* gc(): void  
-* setReadOnly(): void  
-* setReadWrite(): void  
+### Static General Commands
+* start([options: array = []]): void
+* regenerate(): bool
+* destroy(): bool
+* commit(): void
+* rollback(): bool
+* unsaved(): bool
+* hasStarted(): bool
+* getId(): string
+* setId(id: string): string
+* gc(): void
+* setReadOnly(): void
+* setReadWrite(): void
 * isReadOnly(): bool
 
 ### Static Variables $_SESSION access
-* set(key: string, value: mixed): void  
-* get(key: string): mixed  
-* getAll(): array  
-* getAndRemove(key: string): mixed  
-* has(key: string): bool  
-* hasKeyAndValue(key: string, value: mixed): bool  
-* remove(key: string): void  
+* set(key: string, value: mixed): void
+* get(key: string): mixed
+* getAll(): array
+* getAndRemove(key: string): mixed
+* has(key: string): bool
+* hasKeyAndValue(key: string, value: mixed): bool
+* remove(key: string): void
 
 ### Static Variables flash access
 Flash data are store in a separate variable.  
 They will dissapear at the end of the script execution or after `commit()` `unsaved()`.  
 You can use keepFlash for saving it in $_SESSION.  
-When flash data is restore, it will be delete in $_SESSION.  
+When flash data is restore, it will be delete in $_SESSION.
 
-* setFlash(key: string, value: mixed): void  
-* getFlash(key: string): mixed  
-* getAllFlash(): array  
-* hasFlash(key: string): bool  
-* hasFlashKeyAndValue(key: string, value: mixed): bool  
-* keepFlash([keys: array = []]): void  
+* setFlash(key: string, value: mixed): void
+* getFlash(key: string): mixed
+* getAllFlash(): array
+* hasFlash(key: string): bool
+* hasFlashKeyAndValue(key: string, value: mixed): bool
+* keepFlash([keys: array = []]): void
 
-### Static Options  
-* setOption(key: string, value): void  
-* setOptions(options: array): void  
-* getOption(key: string): mixed  
+### Static Options
+* setOption(key: string, value): void
+* setOptions(options: array): void
+* getOption(key: string): mixed
 
 ### Static Driver
-* getDriver(): \SessionHandlerInterface  
+* getDriver(): \SessionHandlerInterface
 
 #### Static PHP Session Default Driver
-* useDefaultDriver(): void  
-* useDefaultEncryptionDriver(key: string, [method: string|null = null]): void  
-* setLengthSessionID(length: int): void  
-* getLengthSessionID(): int  
+* useDefaultDriver(): void
+* useDefaultEncryptionDriver(key: string, [method: string|null = null]): void
+* setLengthSessionID(length: int): void
+* getLengthSessionID(): int
 
 #### Static File Driver
-* useFileDriver(): void  
-* useFileEncryptionDriver(key: string, [method: string|null = null]): void  
-* setPrefixForFile(prefix: string): void  
+* useFileDriver(): void
+* useFileEncryptionDriver(key: string, [method: string|null = null]): void
+* setPrefixForFile(prefix: string): void
 * setLengthSessionID(length: int): void
 * getLengthSessionID(): int
 
 #### Static Database Driver
-* useNewDatabaseDriver(configuration: \Rancoud\Database\Configurator|array): void  
-* useCurrentDatabaseDriver(databaseInstance: \Rancoud\Database\Database): void  
-* useNewDatabaseEncryptionDriver(configuration: \Rancoud\Database\Configurator|array, key: string, [method: string = null]): void  
-* useCurrentDatabaseEncryptionDriver(databaseInstance: \Rancoud\Database\Database, key: string, [method: string = null]): void  
-* setUserIdForDatabase(userId: int): void  
+* useNewDatabaseDriver(configuration: \Rancoud\Database\Configurator|array): void
+* useCurrentDatabaseDriver(databaseInstance: \Rancoud\Database\Database): void
+* useNewDatabaseEncryptionDriver(configuration: \Rancoud\Database\Configurator|array, key: string, [method: string = null]): void
+* useCurrentDatabaseEncryptionDriver(databaseInstance: \Rancoud\Database\Database, key: string, [method: string = null]): void
+* setUserIdForDatabase(userId: int): void
 * setLengthSessionID(length: int): void
 * getLengthSessionID(): int
+* deleteUserSessions(int $userID): void
+* deleteAnonymousSessions(): int
 
 #### Static Redis Driver
-* useNewRedisDriver(configuration: array|string): void  
-* useCurrentRedisDriver(redisInstance: \Predis\Client): void  
-* useNewRedisEncryptionDriver(configuration: array|string, key: string, [method: string = null]): void  
-* useCurrentRedisEncryptionDriver(redisInstance: \Predis\Client, key: string, [method: string = null]): void  
+* useNewRedisDriver(configuration: array|string): void
+* useCurrentRedisDriver(redisInstance: \Predis\Client): void
+* useNewRedisEncryptionDriver(configuration: array|string, key: string, [method: string = null]): void
+* useCurrentRedisEncryptionDriver(redisInstance: \Predis\Client, key: string, [method: string = null]): void
 * setLengthSessionID(length: int): void
-* getLengthSessionID(): int
+* getLengthSessionID(): int 
 
 #### Static Custom Driver
-* useCustomDriver(customDriver: \SessionHandlerInterface): void  
+* useCustomDriver(customDriver: \SessionHandlerInterface): void
 
 ## Session options
-List of session options you can change:  
+List of session options you can change:
 * save_path
 * name
 * save_handler
