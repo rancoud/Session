@@ -57,6 +57,29 @@ class Database implements \SessionHandlerInterface, \SessionUpdateTimestampHandl
         return $this->lengthSessionID;
     }
 
+    /** @throws SessionException */
+    public function deleteUserSessions(int $userID): void
+    {
+        try {
+            $sql = 'DELETE FROM sessions WHERE id_user = :id_user';
+            $params = ['id_user' => $userID];
+            $this->db->delete($sql, $params);
+        } catch (DatabaseException $e) {
+            throw new SessionException('could not delete sessions: ' . $e->getMessage(), $e->getCode(), $e->getPrevious());
+        }
+    }
+
+    /** @throws SessionException */
+    public function deleteAnonymousSessions(): void
+    {
+        try {
+            $sql = 'DELETE FROM sessions WHERE id_user IS NULL';
+            $this->db->delete($sql);
+        } catch (DatabaseException $e) {
+            throw new SessionException('could not delete sessions: ' . $e->getMessage(), $e->getCode(), $e->getPrevious());
+        }
+    }
+
     public function open(string $path, string $name): bool
     {
         return true;
