@@ -308,8 +308,24 @@ class SessionTest extends TestCase
         $sessionId = Session::getId();
         Session::commit();
 
+        $sql = 'REPLACE INTO sessions VALUES(:id, null, UTC_TIMESTAMP(), :content)';
+        $params = ['id' => 'session_123', 'content' => 'content'];
+        $db->insert($sql, $params);
+
+        static::assertSame(1, $db->count('SELECT COUNT(id) FROM sessions WHERE id_user IS NULL'));
+        static::assertSame(1, $db->count('SELECT COUNT(id) FROM sessions WHERE id_user IS NOT NULL'));
+
         $userIdInTable = (int) $db->selectVar('SELECT id_user FROM sessions WHERE id = :id', ['id' => $sessionId]);
         static::assertSame($userId, $userIdInTable);
+
+        Session::deleteAnonymousSessionsInDatabase();
+
+        static::assertEmpty($db->count('SELECT COUNT(id) FROM sessions WHERE id_user IS NULL'));
+        static::assertSame(1, $db->count('SELECT COUNT(id) FROM sessions WHERE id_user IS NOT NULL'));
+
+        Session::deleteUserSessionsInDatabase($userId);
+
+        static::assertEmpty($db->count('SELECT COUNT(id) FROM sessions WHERE id = :id', ['id' => $sessionId]));
     }
 
     /** @throws \Exception */

@@ -198,4 +198,18 @@ abstract class DriverManager
             static::$driver->setPrefix($prefix);
         }
     }
+
+    public static function deleteUserSessionsInDatabase(int $userID): void
+    {
+        if (\method_exists(static::$driver, 'deleteUserSessions')) {
+            static::$driver->deleteUserSessions($userID);
+        }
+    }
+
+    public static function deleteAnonymousSessionsInDatabase(): void
+    {
+        if (\method_exists(static::$driver, 'deleteAnonymousSessions')) {
+            static::$driver->deleteAnonymousSessions();
+        }
+    }
 }

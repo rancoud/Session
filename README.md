@@ -164,8 +164,8 @@ When flash data is restore, it will be delete in $_SESSION.
 * setUserIdForDatabase(userId: int): void
 * setLengthSessionID(length: int): void
 * getLengthSessionID(): int
-* deleteUserSessions(int $userID): void
-* deleteAnonymousSessions(): int
+* deleteUserSessionsInDatabase(int $userID): void
+* deleteAnonymousSessionsInDatabase(): int
 
 #### Static Redis Driver
 * useNewRedisDriver(configuration: array|string): void
