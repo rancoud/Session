@@ -21,7 +21,7 @@
         }
     },
     "require": {
-        "php": ">=8.4.0",
+        "php": "^8.4.27 || ^8.5.12 || ^8.6.0",
         "ext-openssl": "*",
         "ext-session": "*",
         "ext-mbstring": "*"
@@ -30,7 +30,7 @@
         "friendsofphp/php-cs-fixer": "3.95.1",
         "phpunit/phpunit": "12.5.22",
         "predis/predis": "3.4.2",
-        "rancoud/database": "7.0.3"
+        "rancoud/database": "7.0.4"
     },
     "scripts": {
         "ci": [
@@ -41,7 +41,7 @@
             "php-cs-fixer fix -vvv"
         ],
         "test": [
-            "phpunit --colors --display-all-issues --coverage-html ./coverage --coverage-clover coverage/clover.xml --coverage-text"
+            "phpunit --colors --display-all-issues --coverage-html ./coverage --coverage-text"
         ]
     }
 }
